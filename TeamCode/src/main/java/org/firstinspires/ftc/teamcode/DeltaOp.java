@@ -61,10 +61,10 @@ public class DeltaOp extends LinearOpMode {
             }*/
 
             double throttle = ((gamepad1.right_trigger) - (gamepad1.left_trigger));
-            double pivot = gamepad1.left_stick_x;
-            double slider = gamepad1.right_stick_y;
-            double rPower = throttle - pivot;
-            double lPower = throttle + pivot;
+            double steering = gamepad1.left_stick_x;
+            double pivot = gamepad1.right_stick_y;
+            double rPower = throttle - steering;
+            double lPower = throttle + steering;
 
             if (gamepad1.a == true) {
                 //while (opModeIsActive() && )
@@ -74,10 +74,10 @@ public class DeltaOp extends LinearOpMode {
             robot.hexFrontLeft.setPower(lPower);
             robot.hexFrontRight.setPower(rPower);
             robot.hexRearLeft.setPower(lPower);
-            robot.hexRearRight.setPower(rPower);
-            robot.pivotMotor.setPower(slider/10);
-            telemetry.addData("Stick", pivot);
-            telemetry.addData("slider", slider);
+            robot.hexRearRight.setPower(steering/5);
+            robot.pivotMotor.setPower(pivot/5);
+            telemetry.addData("Stick", steering);
+            telemetry.addData("pivot", pivot);
             telemetry.addData("Live Left", robot.hexFrontLeft.getPower());
             telemetry.addData("Live Right", robot.hexFrontRight.getPower());
             telemetry.addData("Status", "Running");
