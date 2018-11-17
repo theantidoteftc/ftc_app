@@ -107,10 +107,12 @@ public class TensorFlowTest extends LinearOpMode {
 
             while (opModeIsActive()) {
                 if (tfod != null) {
+
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
+                        telemetry.addData("Objects detected", "none");
                         if (updatedRecognitions.size() >= 1) {
                             int goldMineralX = -1;
                             int silverMineral1X = -1;
@@ -120,7 +122,6 @@ public class TensorFlowTest extends LinearOpMode {
                                     telemetry.addData("# Object Detected", updatedRecognitions.size());
                                     goldMineralX = (int) recognition.getLeft();
                                     telemetry.addData("Gold: ", "found");
-
                                 } else if (silverMineral1X == -1) {
                                     silverMineral1X = (int) recognition.getLeft();
                                 } else {
