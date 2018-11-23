@@ -62,8 +62,10 @@ public class RoverRuckusHardware
     public DcMotor  hexRearRight  = null;;
     public DcMotor  hexSlide  = null;
     public DcMotor  pivotMotor  = null;
-    public Servo latchLeft = null;
-    public Servo latchRight = null;
+    public Servo marker = null; //0 on the left
+    public Servo latchLeft = null; //1 on the left
+    public Servo intake = null; //2 on the left
+    public Servo latchRight = null; //4 on the right
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -85,9 +87,14 @@ public class RoverRuckusHardware
         hexRearLeft  = hwMap.get(DcMotor.class, "hexRearLeft");
         hexRearRight = hwMap.get(DcMotor.class, "hexRearRight");
         hexSlide = hwMap.get(DcMotor.class, "hexSlide");
-        pivotMotor = hwMap.get(DcMotor.class, "pivotMotor");
+        pivotMotor = hwMap.get(DcMotor.class, "pivotMotor");;
+
+        // Define and Initialize Servos
+        marker = hwMap.get(Servo.class, "marker");;
         latchLeft = hwMap.get(Servo.class, "latchLeft");
+        intake = hwMap.get(Servo.class, "intake");
         latchRight = hwMap.get(Servo.class, "latchRight");
+
         hexFrontLeft.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         hexFrontRight.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
         hexRearLeft.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
