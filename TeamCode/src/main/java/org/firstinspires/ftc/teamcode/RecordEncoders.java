@@ -34,7 +34,10 @@ public class RecordEncoders extends LinearOpMode {
             /*telemetry.addData("Live Left", robot.hexRearLeft.getCurrentPosition());
             telemetry.addData("Live Right", robot.hexRearRight.getCurrentPosition());*/
             telemetry.addData("raw", throttle);
-            telemetry.addData("Live Pivot", robot.hexSlide.getCurrentPosition());
+            telemetry.addData("Live Left", (robot.hexFrontLeft.getCurrentPosition() + (robot.hexRearLeft.getCurrentPosition()))/2);
+            telemetry.addData("Live Right", (robot.hexFrontRight.getCurrentPosition() + (robot.hexRearRight.getCurrentPosition()))/2);
+            telemetry.addData("Live Pivot", robot.pivotMotor.getCurrentPosition());
+            telemetry.addData("Live Slide", robot.hexSlide.getCurrentPosition());
             telemetry.addData("Status", "Running");
             telemetry.update();
         }

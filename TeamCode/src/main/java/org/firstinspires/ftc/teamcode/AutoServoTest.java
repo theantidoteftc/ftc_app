@@ -77,6 +77,34 @@ public class AutoServoTest extends LinearOpMode {
 
         robot.init(hardwareMap);
 
+        // Send telemetry message to signify robot waiting;
+        telemetry.addData("Status", "Resetting Encoders");    //
+        telemetry.update();
+
+        robot.hexFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexRearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexRearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.pivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // Send telemetry message to indicate successful Encoder reset
+        telemetry.addData("Path0",  "Starting at %7d :%7d :%7d :%7d :%7d :%7d ",
+                robot.hexFrontLeft.getCurrentPosition(),
+                robot.hexFrontRight.getCurrentPosition(),
+                robot.hexRearLeft.getCurrentPosition(),
+                robot.hexRearRight.getCurrentPosition(),
+                robot.pivotMotor.getCurrentPosition(),
+                robot.hexSlide.getCurrentPosition());
+        telemetry.update();
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
@@ -86,67 +114,42 @@ public class AutoServoTest extends LinearOpMode {
         robot.latchLeft.setPosition(0.5);
         robot.latchRight.setPosition(0.5);
 
-        encoderMove(4,0.1, 1600);
-        encoderMove(5, 0.6, 5500);
+        encoderMove(0.2, 0, 5500,5);
+        sleep(750);
+        encoderMove(0.05,1600,0, 5);
+        /*telemetry.addData("meow", "meow");
+        telemetry.update();
         robot.latchLeft.setPosition(0.7);
-        robot.latchRight.setPosition(0.7);
-        sleep(1500);
+        robot.latchRight.setPosition(0.3);
+        sleep(100);
+        encoderDrive(0.25,1000, 1000, 3);*/
 
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
 
-    public void encoderMove (int key, double speed, int encoderMove) {
+    public void encoderMove(double speed, double pivotAmount, double slideAmount, double timeoutS) {
+        int newPivotMotorTarget;
+        int newHexSlideTarget;
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
-            robot.hexFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.hexFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.hexRearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.hexRearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.pivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.hexSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
             // Determine new target position, and pass to motor controller
-            if (key == 0) {
-                robot.hexFrontLeft.setTargetPosition(encoderMove);
-            } else if (key == 1) {
-                robot.hexFrontRight.setTargetPosition(encoderMove);
-            } else if (key == 2) {
-                robot.hexRearLeft.setTargetPosition(encoderMove);
-            } else if (key == 3) {
-                robot.hexRearRight.setTargetPosition(encoderMove);
-            } else if (key == 4) {
-                robot.pivotMotor.setTargetPosition(encoderMove);
-            } else if (key == 5) {
-                robot.hexSlide.setTargetPosition(encoderMove);
-            }
+            newPivotMotorTarget = robot.pivotMotor.getCurrentPosition() + (int)(pivotAmount);// * COUNTS_PER_INCH);
+            newHexSlideTarget = robot.hexSlide.getCurrentPosition() + (int)(slideAmount);// * COUNTS_PER_INCH);
+            robot.pivotMotor.setTargetPosition(newPivotMotorTarget);
+            robot.hexSlide.setTargetPosition(newHexSlideTarget);
 
             // Turn On RUN_TO_POSITION
-            robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.hexRearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.pivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.hexSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // reset the timeout time and start motion.
             runtime.reset();
-            if (key == 0) {
-                robot.hexFrontLeft.setPower(Math.abs(speed));
-            } else if (key == 1) {
-                robot.hexFrontRight.setPower(Math.abs(speed));
-            } else if (key == 2) {
-                robot.hexRearLeft.setPower(Math.abs(speed));
-            } else if (key == 3) {
-                robot.hexRearRight.setPower(Math.abs(speed));
-            } else if (key == 4) {
-                robot.pivotMotor.setPower(Math.abs(speed));
-            } else if (key == 5) {
-                robot.hexSlide.setPower(Math.abs(speed));
-            }
+            robot.pivotMotor.setPower(Math.abs(speed));
+            robot.hexSlide.setPower(Math.abs(speed));
 
             // keep looping while we are still active, and there is time left, and both motors are running.
             // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
@@ -154,12 +157,84 @@ public class AutoServoTest extends LinearOpMode {
             // always end the motion as soon as possible.
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
-            while (opModeIsActive() && robot.pivotMotor.isBusy()) {
+            while (opModeIsActive() && (runtime.seconds() < timeoutS) && (robot.pivotMotor.isBusy() || robot.hexSlide.isBusy())) {
 
                 // Display it for the driver.
-                telemetry.addData("yeet", robot.pivotMotor.getCurrentPosition());
-                telemetry.addData("Path1",  "Running to %7d", encoderMove);
-                telemetry.addData("Path2",  "Running at %7d", robot.pivotMotor.getCurrentPosition());
+                telemetry.addData("Path1",  "Running to %7d :%7d", newPivotMotorTarget,  newHexSlideTarget);
+                telemetry.addData("Path2",  "Running at %7d :%7d",
+                        robot.pivotMotor.getCurrentPosition(),
+                        robot.hexSlide.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            robot.pivotMotor.setPower(0);
+            robot.hexSlide.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            robot.pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.hexSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            //  sleep(250);   // optional pause after each move
+        }
+    }
+
+    /*
+     *  Method to perfmorm a relative move, based on encoder counts.
+     *  Encoders are not reset as the move is based on the current position.
+     *  Move will stop if any of three conditions occur:
+     *  1) Move gets to the desired position
+     *  2) Move runs out of time
+     *  3) Driver stops the opmode running.
+     */
+    public void encoderDrive(double speed, double leftInches, double rightInches, double timeoutS) {
+        int newFrontLeftTarget;
+        int newFrontRightTarget;
+        int newRearLeftTarget;
+        int newRearRightTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newFrontLeftTarget = robot.hexFrontLeft.getCurrentPosition() + (int)(leftInches);// * COUNTS_PER_INCH);
+            newFrontRightTarget = robot.hexFrontRight.getCurrentPosition() + (int)(rightInches);// * COUNTS_PER_INCH);
+            newRearLeftTarget = robot.hexFrontLeft.getCurrentPosition() + (int)(leftInches);// * COUNTS_PER_INCH);
+            newRearRightTarget = robot.hexFrontRight.getCurrentPosition() + (int)(rightInches);// * COUNTS_PER_INCH);
+            robot.hexFrontLeft.setTargetPosition(newFrontLeftTarget);
+            robot.hexFrontRight.setTargetPosition(newFrontRightTarget);
+            robot.hexRearLeft.setTargetPosition(newRearLeftTarget);
+            robot.hexRearRight.setTargetPosition(newRearRightTarget);
+
+            // Turn On RUN_TO_POSITION
+            robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.hexRearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            robot.hexFrontLeft.setPower(Math.abs(speed));
+            robot.hexFrontRight.setPower(Math.abs(speed));
+            robot.hexRearLeft.setPower(Math.abs(speed));
+            robot.hexRearRight.setPower(Math.abs(speed));
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (robot.hexFrontLeft.isBusy() && robot.hexFrontRight.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("yeet", robot.hexFrontLeft.getCurrentPosition());
+                telemetry.addData("Path1",  "Running to %7d :%7d", newFrontLeftTarget,  newFrontRightTarget);
+                telemetry.addData("Path2",  "Running at %7d :%7d",
+                        robot.hexFrontLeft.getCurrentPosition(),
+                        robot.hexFrontRight.getCurrentPosition());
                 telemetry.update();
             }
 
@@ -168,18 +243,16 @@ public class AutoServoTest extends LinearOpMode {
             robot.hexFrontRight.setPower(0);
             robot.hexRearLeft.setPower(0);
             robot.hexRearRight.setPower(0);
-            robot.pivotMotor.setPower(0);
-            robot.hexSlide.setPower(0);
 
             // Turn off RUN_TO_POSITION
             robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.hexSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             sleep(250);   // optional pause after each move
         }
     }
+
+
 }
