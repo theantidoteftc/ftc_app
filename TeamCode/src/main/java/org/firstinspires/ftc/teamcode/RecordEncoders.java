@@ -21,19 +21,16 @@ public class RecordEncoders extends LinearOpMode {
         waitForStart();
         // run until the end of the match (driver presses STOP)
 
-        /*robot.hexFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.hexFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.hexRearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.hexRearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);*/
+        robot.hexRearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.hexSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.pivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         while (opModeIsActive()) {
-            double throttle = gamepad1.left_stick_x;
-
-            robot.hexSlide.setPower(throttle);
             /*telemetry.addData("Live Left", robot.hexRearLeft.getCurrentPosition());
             telemetry.addData("Live Right", robot.hexRearRight.getCurrentPosition());*/
-            telemetry.addData("raw", throttle);
             telemetry.addData("Live Left", (robot.hexFrontLeft.getCurrentPosition() + (robot.hexRearLeft.getCurrentPosition()))/2);
             telemetry.addData("Live Right", (robot.hexFrontRight.getCurrentPosition() + (robot.hexRearRight.getCurrentPosition()))/2);
             telemetry.addData("Live Pivot", robot.pivotMotor.getCurrentPosition());
