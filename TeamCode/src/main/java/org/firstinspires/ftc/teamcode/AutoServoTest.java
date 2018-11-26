@@ -95,7 +95,9 @@ public class AutoServoTest extends LinearOpMode {
         robot.pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.hexSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        // Send telemetry message to indicate successful Encoder reset
+        robot.pivotMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        /* Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0",  "Starting at %7d :%7d :%7d :%7d :%7d :%7d ",
                 robot.hexFrontLeft.getCurrentPosition(),
                 robot.hexFrontRight.getCurrentPosition(),
@@ -103,20 +105,26 @@ public class AutoServoTest extends LinearOpMode {
                 robot.hexRearRight.getCurrentPosition(),
                 robot.pivotMotor.getCurrentPosition(),
                 robot.hexSlide.getCurrentPosition());
-        telemetry.update();
+        telemetry.update();*/
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        robot.latchLeft.setPosition(0.4);
-        robot.latchRight.setPosition(0.6);
-        sleep(1500);
+        robot.pivotMotor.setPower(0.025);
+
+        runtime.reset();
+        while (runtime.seconds() < 1) {
+            telemetry.addData("time", runtime.seconds());
+            telemetry.update();
+            robot.latchLeft.setPosition(0.3);
+            robot.latchRight.setPosition(0.7);
+        }
         robot.latchLeft.setPosition(0.5);
         robot.latchRight.setPosition(0.5);
 
-        encoderMove(0.2, 0, 5500,5);
+        encoderMove(0.025,-1600,0, 5);
         sleep(750);
-        encoderMove(0.05,1600,0, 5);
+        encoderMove(0.2, 0, 5500,5);
         /*telemetry.addData("meow", "meow");
         telemetry.update();
         robot.latchLeft.setPosition(0.7);

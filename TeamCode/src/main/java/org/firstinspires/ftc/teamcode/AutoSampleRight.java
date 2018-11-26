@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -72,7 +73,7 @@ import java.util.List;
  */
 
 @Autonomous(name="AutoSampleRight", group="RRAutos")
-//@Disabled
+@Disabled
 public class AutoSampleRight extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
@@ -103,15 +104,6 @@ public class AutoSampleRight extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
-        // first.
-        initVuforia();
-
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            initTfod();
-        } else {
-            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
-        }
 
         /*
          * Initialize the drive system variables.
@@ -145,8 +137,18 @@ public class AutoSampleRight extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        encoderDrive(0.2, 1250,1250, 3);
-        encoderDrive(0.1,-250,250,3);
+        // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
+        // first.
+        initVuforia();
+
+        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+            initTfod();
+        } else {
+            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+        }
+
+        encoderDrive(0.2, 1250,1250, 2);
+        encoderDrive(0.1,-250,250,2);
 
         /** Activate Tensor Flow Object Detection. */
         if (tfod != null) {
@@ -195,39 +197,129 @@ public class AutoSampleRight extends LinearOpMode {
             } else if (rot == 1) {
                 telemetry.addData("key", key);
                 telemetry.update();
-                sleep(1500);
+                sleep(750);
+
             }
         }
 
         if (tfod != null) {
             tfod.shutdown();
+            tfod.deactivate();
         }
 
         if (key == 1) {
-            encoderDrive(0.1, -145, 145, 2);
-            encoderDrive(0.2, 1400, 1400, 2);
-            runtime.reset();
-            while (runtime.seconds() < 1.875) {
-                robot.intake.setPosition(.85);
-            }
+            encoderDrive(0.1, -135, 135, 2);
+            robot.intake.setPosition(0.75);
+            encoderDrive(0.2, 1350, 1350, 2);
+            sleep(800);
             robot.intake.setPosition(0.5);
-            encoderDrive(0.15, -1200, -1200, 2);
-            encoderDrive(0.2,   -850, 850, 4);
-            encoderDrive(0.35, 4000, 4000, 3);
-            encoderDrive(0.2,   -385, 385, 4);
-            encoderDrive(0.35, 3000, 3000, 3);
+            encoderDrive(0.15, -925, -925, 2);
+            encoderDrive(0.2,   -825, 825, 4);
+            encoderDrive(0.35, 2350, 2350, 3);
+            encoderTurn(0.15,2100,2875);
+            encoderDrive(0.2, 1600, 1600, 3);
             runtime.reset();
             while (runtime.seconds() < 1.5) {
                 robot.intake.setPosition(0);
+                robot.marker.setPosition(0.75);
             }
             robot.intake.setPosition(0.5);
-            encoderDrive(0.6, -8000, -8000, 3);
+            robot.marker.setPosition(0.5);
+            sleep(2000);
+            encoderDrive(0.6, -6000, -6000, 3);
         } if (key == 2) {
 
         }
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
+    }
+
+    public void encoderTurn(double baseSpeed, double leftAmount, double rightAmount) {
+        int newFrontLeftTarget;
+        int newFrontRightTarget;
+        int newRearLeftTarget;
+        int newRearRightTarget;
+        int greater = 0;
+        double speedRatio = 0;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            if (rightAmount > leftAmount) {
+                greater = 1;
+            } else if (rightAmount < leftAmount) {
+                greater = -1;
+            }
+
+            if (greater == 1) {
+                speedRatio = rightAmount/leftAmount;
+            } else if (greater == -1) {
+                speedRatio = leftAmount/rightAmount;
+            }
+
+            // Determine new target position, and pass to motor controller
+            newFrontLeftTarget = robot.hexFrontLeft.getCurrentPosition() + (int)(leftAmount);// * COUNTS_PER_INCH);
+            newFrontRightTarget = robot.hexFrontRight.getCurrentPosition() + (int)(rightAmount);// * COUNTS_PER_INCH);
+            newRearLeftTarget = robot.hexFrontLeft.getCurrentPosition() + (int)(leftAmount);// * COUNTS_PER_INCH);
+            newRearRightTarget = robot.hexFrontRight.getCurrentPosition() + (int)(rightAmount);// * COUNTS_PER_INCH);
+            robot.hexFrontLeft.setTargetPosition(newFrontLeftTarget);
+            robot.hexFrontRight.setTargetPosition(newFrontRightTarget);
+            robot.hexRearLeft.setTargetPosition(newRearLeftTarget);
+            robot.hexRearRight.setTargetPosition(newRearRightTarget);
+
+            // Turn On RUN_TO_POSITION
+            robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.hexRearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            if (greater == 1) {
+                robot.hexFrontLeft.setPower(Math.abs(baseSpeed));
+                robot.hexFrontRight.setPower(Math.abs(baseSpeed) * speedRatio);
+                robot.hexRearLeft.setPower(Math.abs(baseSpeed));
+                robot.hexRearRight.setPower(Math.abs(baseSpeed) * speedRatio);
+            } else if (greater == -1) {
+                robot.hexFrontLeft.setPower(Math.abs(baseSpeed) * speedRatio);
+                robot.hexFrontRight.setPower(Math.abs(baseSpeed));
+                robot.hexRearLeft.setPower(Math.abs(baseSpeed) * speedRatio);
+                robot.hexRearRight.setPower(Math.abs(baseSpeed));
+            }
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (robot.hexFrontLeft.isBusy() && robot.hexFrontRight.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("yeet", robot.hexFrontLeft.getCurrentPosition());
+                telemetry.addData("Path1",  "Running to %7d :%7d", newFrontLeftTarget,  newFrontRightTarget);
+                telemetry.addData("Path2",  "Running at %7d :%7d",
+                        robot.hexFrontLeft.getCurrentPosition(),
+                        robot.hexFrontRight.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            robot.hexFrontLeft.setPower(0);
+            robot.hexFrontRight.setPower(0);
+            robot.hexRearLeft.setPower(0);
+            robot.hexRearRight.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            //  sleep(250);   // optional pause after each move
+        }
     }
 
     /*

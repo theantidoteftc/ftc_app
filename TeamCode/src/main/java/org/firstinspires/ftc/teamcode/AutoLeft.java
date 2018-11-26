@@ -117,16 +117,102 @@ public class AutoLeft extends LinearOpMode {
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        encoderDrive(DRIVE_SPEED,  1650,  1650, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-        encoderDrive(TURN_SPEED,   -800, 800, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED, 1950, 1950, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
+        encoderTurn(0.25, 1000, 1500);  // Inches with 4 Sec timeout
+        /*encoderDrive(DRIVE_SPEED, 1950, 1950, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
         encoderDrive(TURN_SPEED,   400, -400, 4.0);
         encoderDrive(DRIVE_SPEED, 1350, 1350, 4.0);
         encoderDrive(TURN_SPEED,   -800, 800, 4.0);
-        encoderDrive(DRIVE_SPEED, -1600, -1600, 4.0);
+        encoderDrive(DRIVE_SPEED, -1600, -1600, 4.0);*/
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
+    }
+
+    public void encoderTurn(double baseSpeed, double leftAmount, double rightAmount) {
+        int newFrontLeftTarget;
+        int newFrontRightTarget;
+        int newRearLeftTarget;
+        int newRearRightTarget;
+        int greater = 0;
+        double speedRatio = 0;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            if (rightAmount > leftAmount) {
+                greater = 1;
+            } else if (rightAmount < leftAmount) {
+                greater = -1;
+            }
+
+            if (greater == 1) {
+                speedRatio = rightAmount/leftAmount;
+            } else if (greater == -1) {
+                speedRatio = leftAmount/rightAmount;
+            }
+
+            // Determine new target position, and pass to motor controller
+            newFrontLeftTarget = robot.hexFrontLeft.getCurrentPosition() + (int)(leftAmount);// * COUNTS_PER_INCH);
+            newFrontRightTarget = robot.hexFrontRight.getCurrentPosition() + (int)(rightAmount);// * COUNTS_PER_INCH);
+            newRearLeftTarget = robot.hexFrontLeft.getCurrentPosition() + (int)(leftAmount);// * COUNTS_PER_INCH);
+            newRearRightTarget = robot.hexFrontRight.getCurrentPosition() + (int)(rightAmount);// * COUNTS_PER_INCH);
+            robot.hexFrontLeft.setTargetPosition(newFrontLeftTarget);
+            robot.hexFrontRight.setTargetPosition(newFrontRightTarget);
+            robot.hexRearLeft.setTargetPosition(newRearLeftTarget);
+            robot.hexRearRight.setTargetPosition(newRearRightTarget);
+
+            // Turn On RUN_TO_POSITION
+            robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.hexRearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            if (greater == 1) {
+                robot.hexFrontLeft.setPower(Math.abs(baseSpeed));
+                robot.hexFrontRight.setPower(Math.abs(baseSpeed) * speedRatio);
+                robot.hexRearLeft.setPower(Math.abs(baseSpeed));
+                robot.hexRearRight.setPower(Math.abs(baseSpeed) * speedRatio);
+            } else if (greater == -1) {
+                robot.hexFrontLeft.setPower(Math.abs(baseSpeed) * speedRatio);
+                robot.hexFrontRight.setPower(Math.abs(baseSpeed));
+                robot.hexRearLeft.setPower(Math.abs(baseSpeed) * speedRatio);
+                robot.hexRearRight.setPower(Math.abs(baseSpeed));
+            }
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (robot.hexFrontLeft.isBusy() && robot.hexFrontRight.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("yeet", robot.hexFrontLeft.getCurrentPosition());
+                telemetry.addData("Path1",  "Running to %7d :%7d", newFrontLeftTarget,  newFrontRightTarget);
+                telemetry.addData("Path2",  "Running at %7d :%7d",
+                        robot.hexFrontLeft.getCurrentPosition(),
+                        robot.hexFrontRight.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            robot.hexFrontLeft.setPower(0);
+            robot.hexFrontRight.setPower(0);
+            robot.hexRearLeft.setPower(0);
+            robot.hexRearRight.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            //  sleep(250);   // optional pause after each move
+        }
     }
 
     /*
