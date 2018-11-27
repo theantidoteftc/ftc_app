@@ -73,7 +73,7 @@ import java.util.List;
  */
 
 @Autonomous(name="AutoSampleRight", group="RRAutos")
-@Disabled
+//@Disabled
 public class AutoSampleRight extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
@@ -227,7 +227,17 @@ public class AutoSampleRight extends LinearOpMode {
             robot.marker.setPosition(0.5);
             sleep(2000);
             encoderDrive(0.6, -6000, -6000, 3);
-        } if (key == 2) {
+        } else if (key == 2) {
+            telemetry.addData("reeeeee", "hi");
+        } else if (key == 0) {
+            telemetry.addData("reeeeee", "h0ll0");
+            encoderDrive(0.2, -70, 200, 3);
+            robot.intake.setPosition(0.75);
+            encoderDrive(0.2, 3000, 3000, 2);
+            robot.intake.setPosition(0.5);
+            sleep(800);
+            encoderTurn(.15,600,2300);
+            runtime.reset();
 
         }
 
