@@ -72,6 +72,8 @@ public class AutoServoTest extends LinearOpMode {
     RoverRuckusHardware robot   = new RoverRuckusHardware();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
+    boolean alwaysTrue = true;
+
     @Override
     public void runOpMode() {
 
@@ -95,7 +97,7 @@ public class AutoServoTest extends LinearOpMode {
         robot.pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.hexSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        robot.pivotMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        //robot.pivotMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         /* Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0",  "Starting at %7d :%7d :%7d :%7d :%7d :%7d ",
@@ -110,10 +112,21 @@ public class AutoServoTest extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        robot.pivotMotor.setPower(0.025);
-
         runtime.reset();
-        while (runtime.seconds() < 1) {
+        robot.latchLeft.setPosition(0.3);
+        robot.latchRight.setPosition(0.7);
+        while (alwaysTrue) {
+            if (runtime.seconds() > 0.5) {
+                encoderMove(0.0625,1100,0, 10);
+            }            }
+
+        if (runtime.seconds() > 1) {
+                robot.latchLeft.setPosition(0.5);
+                robot.latchRight.setPosition(0.5);
+                alwaysTrue = false;
+        }
+
+        /*while (runtime.seconds() < 1) {
             telemetry.addData("time", runtime.seconds());
             telemetry.update();
             robot.latchLeft.setPosition(0.3);
@@ -122,9 +135,9 @@ public class AutoServoTest extends LinearOpMode {
         robot.latchLeft.setPosition(0.5);
         robot.latchRight.setPosition(0.5);
 
-        encoderMove(0.025,-1600,0, 5);
+        encoderMove(0.0625,1100,0, 10);
         sleep(750);
-        encoderMove(0.2, 0, 5500,5);
+        encoderMove(0.25, 0, 6000,10);
         /*telemetry.addData("meow", "meow");
         telemetry.update();
         robot.latchLeft.setPosition(0.7);
