@@ -1,3 +1,5 @@
+package org.firstinspires.ftc.teamcode;
+
 /* Copyright (c) 2017 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -26,8 +28,6 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -73,8 +73,8 @@ import java.util.List;
  */
 
 @Autonomous(name="AutoSampleRight", group="RRAutos")
-//@Disabled
-public class AutoSampleRight extends LinearOpMode {
+@Disabled
+public class AutoSampleBothRight extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
@@ -94,7 +94,7 @@ public class AutoSampleRight extends LinearOpMode {
     static final double     DRIVE_GEAR_REDUCTION    = 40 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-                                                      (WHEEL_DIAMETER_INCHES * 3.14159265);
+            (WHEEL_DIAMETER_INCHES * 3.14159265);
     static final double     DRIVE_SPEED             = 0.45;
     static final double     TURN_SPEED              = 0.25;
 
@@ -127,19 +127,19 @@ public class AutoSampleRight extends LinearOpMode {
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0",  "Starting at %7d :%7d",
-                          robot.hexFrontLeft.getCurrentPosition(),
-                          robot.hexFrontRight.getCurrentPosition(), robot.hexRearLeft.getCurrentPosition(), robot.hexRearRight.getCurrentPosition());
+                robot.hexFrontLeft.getCurrentPosition(),
+                robot.hexFrontRight.getCurrentPosition(), robot.hexRearLeft.getCurrentPosition(), robot.hexRearRight.getCurrentPosition());
         telemetry.update();
+
+        /** Wait for the game to begin */
+        telemetry.addData(">", "Press Play to start tracking");
+        telemetry.update();
+        // Wait for the game to start (driver presses PLAY)
+        waitForStart();
 
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         initVuforia();
-
-        /** Wait for the game to begin */
-        telemetry.addData(">", "Press Play to start tracking - U R GO");
-        telemetry.update();
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
@@ -215,9 +215,9 @@ public class AutoSampleRight extends LinearOpMode {
             robot.intake.setPosition(0.5);
             encoderDrive(0.15, -925, -925, 2);
             encoderDrive(0.2,   -825, 825, 4);
-            encoderDrive(0.35, 2250, 2250, 3);
-            encoderTurn(0.15,2050,2875);
-            encoderDrive(0.2, 1900, 1900, 3);
+            encoderDrive(0.35, 2350, 2350, 3);
+            encoderTurn(0.15,2100,2875);
+            encoderDrive(0.2, 1600, 1600, 3);
             runtime.reset();
             while (runtime.seconds() < 1.5) {
                 robot.intake.setPosition(0);
@@ -225,8 +225,8 @@ public class AutoSampleRight extends LinearOpMode {
             }
             robot.intake.setPosition(0.5);
             robot.marker.setPosition(0.5);
-            sleep(500);
-            encoderDrive(0.4, -5000, -5000, 3);
+            sleep(2000);
+            encoderDrive(0.6, -6000, -6000, 3);
         } else if (key == 2) {
             telemetry.addData("reeeeee", "hi");
             robot.intake.setPosition(0.75);
@@ -265,7 +265,7 @@ public class AutoSampleRight extends LinearOpMode {
             }
             robot.intake.setPosition(0.5);
             robot.marker.setPosition(0.5);
-            encoderDrive(0.3,-9200,-9200,5 );
+            encoderDrive(0.3,-9700,-9700,5 );
             runtime.reset();
 
         }
@@ -408,14 +408,14 @@ public class AutoSampleRight extends LinearOpMode {
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
-                   (runtime.seconds() < timeoutS) &&
-                   (robot.hexFrontLeft.isBusy() && robot.hexFrontRight.isBusy())) {
+                    (runtime.seconds() < timeoutS) &&
+                    (robot.hexFrontLeft.isBusy() && robot.hexFrontRight.isBusy())) {
 
                 // Display it for the driver.
                 telemetry.addData("Path1",  "Running to %7d :%7d", newFrontLeftTarget,  newFrontRightTarget);
                 telemetry.addData("Path2",  "Running at %7d :%7d",
-                                            robot.hexFrontLeft.getCurrentPosition(),
-                                            robot.hexFrontRight.getCurrentPosition());
+                        robot.hexFrontLeft.getCurrentPosition(),
+                        robot.hexFrontRight.getCurrentPosition());
                 telemetry.update();
             }
 
@@ -464,3 +464,4 @@ public class AutoSampleRight extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
 }
+

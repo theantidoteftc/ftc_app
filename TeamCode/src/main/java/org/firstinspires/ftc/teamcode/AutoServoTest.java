@@ -118,7 +118,8 @@ public class AutoServoTest extends LinearOpMode {
         while (alwaysTrue) {
             if (runtime.seconds() > 0.5) {
                 encoderMove(0.0625,1100,0, 10);
-            }            }
+            }
+        }
 
         if (runtime.seconds() > 1) {
                 robot.latchLeft.setPosition(0.5);

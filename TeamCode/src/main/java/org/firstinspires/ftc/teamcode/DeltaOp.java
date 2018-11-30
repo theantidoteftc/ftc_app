@@ -27,6 +27,8 @@ public class DeltaOp extends LinearOpMode {
         double wheel = 0;
         int trueFalse = 0;
         double setting;
+
+        boolean slowMode = false;
         while (opModeIsActive()) {
             /*powerRT = this.gamepad1.right_trigger;
             powerLT =  -this.gamepad1.left_trigger;
@@ -63,13 +65,41 @@ public class DeltaOp extends LinearOpMode {
             //gamepad 1 (xbox)
             double throttle = ((gamepad1.right_trigger) - (gamepad1.left_trigger));
             double steering = gamepad1.left_stick_x;
+            if (gamepad1.a) {
+                slowMode = true;
+            }
+            if (gamepad1.b) {
+                slowMode = false;
+            }
 
             //gamepad 2 (logitech)
             double intake = ((gamepad2.right_trigger) - (gamepad2.left_trigger)) + 0.5;
             double slide = -gamepad2.left_stick_y;
-            double pivot = gamepad2.right_stick_y;
+            double pivot = -gamepad2.right_stick_y;
             double rPower = throttle - steering;
             double lPower = throttle + steering;
+
+            if (gamepad2.a) {
+                robot.latchLeft.setPosition(0.7);
+                robot.latchRight.setPosition(0.3);
+                sleep(1000);
+                robot.latchLeft.setPosition(0.5);
+                robot.latchRight.setPosition(0.5);
+                sleep(100);
+                robot.latchLeft.setPosition(0.3);
+                robot.latchRight.setPosition(0.7);
+                sleep(200);
+                robot.latchLeft.setPosition(0.5);
+                robot.latchRight.setPosition(0.5);
+
+            }
+            if (gamepad2.b) {
+            }
+
+            if (slowMode == true) {
+                lPower /= 3;
+                rPower /= 3;
+            }
 
             //gamepad 1 (xbox) setPower
             robot.hexFrontLeft.setPower(lPower);
@@ -86,6 +116,7 @@ public class DeltaOp extends LinearOpMode {
             telemetry.addData("left", gamepad2.left_trigger);
             telemetry.addData("Live Intake", robot.intake.getPosition());
             telemetry.addData("Status", "Running");
+            telemetry.addData("slowmode", slowMode);
             telemetry.update();
         }
     }
