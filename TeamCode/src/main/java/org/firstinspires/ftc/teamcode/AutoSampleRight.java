@@ -226,7 +226,7 @@ public class AutoSampleRight extends LinearOpMode {
             robot.intake.setPosition(0.5);
             robot.marker.setPosition(0.5);
             sleep(500);
-            encoderDrive(0.4, -5000, -5000, 3);
+            encoderDrive(0.4, -5250, -5250, 3);
         } else if (key == 2) {
             telemetry.addData("reeeeee", "hi");
             robot.intake.setPosition(0.75);
@@ -257,7 +257,7 @@ public class AutoSampleRight extends LinearOpMode {
             robot.intake.setPosition(0.5);
             sleep(500);
             encoderTurn(.2,3222,4936);
-            encoderDrive(.2,9018,9018,4);
+            encoderDrive(.2,8000,8000,4);
             runtime.reset();
             while (runtime.seconds() < 1.5) {
                 robot.intake.setPosition(0);
@@ -265,7 +265,7 @@ public class AutoSampleRight extends LinearOpMode {
             }
             robot.intake.setPosition(0.5);
             robot.marker.setPosition(0.5);
-            encoderDrive(0.3,-9200,-9200,5 );
+            encoderDrive(0.3,-8200,-8200,5 );
             runtime.reset();
 
         }
