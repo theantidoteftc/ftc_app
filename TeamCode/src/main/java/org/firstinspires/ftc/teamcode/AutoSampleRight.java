@@ -249,10 +249,10 @@ public class AutoSampleRight extends LinearOpMode {
             sleep(2000);
         } else if (key == 0) {
             telemetry.addData("reeeeee", "h0ll0");
-            encoderDrive(0.2, -70, 200, 3);
-            robot.intake.setPosition(0.75);
-            encoderDrive(0.2, 2500, 2500, 2);
-            encoderDrive(0.3, -1900, -1900, 3);
+            encoderTurn(0.2, -70, 200);
+            robot.intake.setPosition(0.89);
+            encoderDrive(0.2, 2600, 2600, 2);
+            encoderDrive(0.3, -1700, -1700, 3);
             sleep(200);
             robot.intake.setPosition(0.5);
             sleep(500);

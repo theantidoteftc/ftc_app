@@ -254,7 +254,7 @@ public class AutoSampleLeft extends LinearOpMode {
             encoderTurn(0.2,3800,3100);
         } else if (key == 2) {
             robot.intake.setPosition(0.75);
-            encoderTurn(0.15,3100,5000);
+            encoderTurn(0.15,3100,5050);
             robot.intake.setPosition(0.5);
             runtime.reset();
             while (runtime.seconds() < 1.5) {
@@ -263,7 +263,7 @@ public class AutoSampleLeft extends LinearOpMode {
             }
             robot.intake.setPosition(0.5);
             robot.marker.setPosition(0.5);
-            encoderDrive(0.3,-5500,-5500,10);
+            encoderDrive(0.3,-6000,-6000,10);
         }
 
         telemetry.addData("Path", "Complete");
