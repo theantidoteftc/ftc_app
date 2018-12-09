@@ -154,7 +154,7 @@ public class AutoSampleLeft extends LinearOpMode {
             tfod.activate();
         }
 
-        while (rot == 0) {
+        while (rot == 0 && opModeIsActive()) {
             if (opModeIsActive()) {
                 runtime.reset();
                 while ((opModeIsActive() && inte == 0) && runtime.seconds() < 1) {
@@ -225,7 +225,7 @@ public class AutoSampleLeft extends LinearOpMode {
             encoderTurn(0.15,3200,1650);
             encoderDrive(0.15,300,300,2);
             runtime.reset();
-            while (runtime.seconds() < 1.5) {
+            while (runtime.seconds() < 1.5 && opModeIsActive()) {
                 robot.intake.setPosition(0);
                 robot.marker.setPosition(0.75);
             }
@@ -242,7 +242,7 @@ public class AutoSampleLeft extends LinearOpMode {
             encoderDrive(0.2, 3050, 3050, 4);
             robot.intake.setPosition(0.5);
             runtime.reset();
-            while (runtime.seconds() < 1.5) {
+            while (runtime.seconds() < 1.5 && opModeIsActive()) {
                 robot.intake.setPosition(0);
                 robot.marker.setPosition(0.75);
             }
@@ -257,7 +257,7 @@ public class AutoSampleLeft extends LinearOpMode {
             encoderTurn(0.15,3100,5050);
             robot.intake.setPosition(0.5);
             runtime.reset();
-            while (runtime.seconds() < 1.5) {
+            while (runtime.seconds() < 1.5 && opModeIsActive()) {
                 robot.intake.setPosition(0);
                 robot.marker.setPosition(0.75);
             }
