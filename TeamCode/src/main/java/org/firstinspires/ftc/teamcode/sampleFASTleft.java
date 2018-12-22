@@ -71,9 +71,9 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="AutoSampleLeft", group="RRAutos")
+@Autonomous(name="sampleFASTleft", group="newark")
 //@Disabled
-public class AutoSampleLeft extends LinearOpMode {
+public class sampleFASTleft extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
@@ -86,7 +86,7 @@ public class AutoSampleLeft extends LinearOpMode {
 
 
     /* Declare OpMode members. */
-    RoverRuckusHardware robot   = new RoverRuckusHardware();   // Use a Pushbot's hardware
+    BareBonesHardware robot   = new BareBonesHardware();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
     static final double     COUNTS_PER_MOTOR_REV    = 28 ;    // eg: TETRIX MotorC Encoder
@@ -146,8 +146,8 @@ public class AutoSampleLeft extends LinearOpMode {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
         }
 
-        encoderDrive(0.2, 1250,1250, 2);
-        encoderDrive(0.1,-250,250,2);
+        encoderDrive(0.3, 400,400, 2);
+        encoderDrive(0.25,-220,220,2);
 
         /** Activate Tensor Flow Object Detection. */
         if (tfod != null) {
@@ -156,8 +156,8 @@ public class AutoSampleLeft extends LinearOpMode {
 
         while (rot == 0 && opModeIsActive()) {
             if (opModeIsActive()) {
-                    runtime.reset();
-                while ((opModeIsActive() && inte == 0) && runtime.seconds() < 0.5) {
+                runtime.reset();
+                while ((opModeIsActive() && inte == 0) && runtime.seconds() < 1) {
                     if (tfod != null) {
 
                         // getUpdatedRecognitions() will return null if no new information is available since
@@ -170,7 +170,7 @@ public class AutoSampleLeft extends LinearOpMode {
                                 int silverMineral1X = -1;
                                 int silverMineral2X = -1;
                                 for (Recognition recognition : updatedRecognitions) {
-                                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL) && recognition.getWidth() > 85) {
                                         telemetry.addData("# Object Detected", updatedRecognitions.size());
                                         goldMineralX = (int) recognition.getLeft();
                                         telemetry.addData("Gold: ", "found");
@@ -193,12 +193,18 @@ public class AutoSampleLeft extends LinearOpMode {
             }
 
             if (rot == 0) {
-                encoderDrive(0.1,390,-390,3);
+                encoderDrive(0.175,330,-330,3);
                 key += 1;
+            } if (key == 2) {
+                telemetry.addData("Broken", "True");
+                break;
             } else if (rot == 1) {
                 telemetry.addData("key", key);
                 telemetry.update();
-                sleep(375);
+                sleep(750);
+
+            }
+            if (key == 1) {
 
             }
         }
@@ -215,55 +221,6 @@ public class AutoSampleLeft extends LinearOpMode {
             telemetry.addData("gold mineral", "center");
         } else if (key == 2) {
             telemetry.addData("gold mineral", "right");
-        }
-
-        if (key == 0) {
-            encoderDrive(0.1,-125,125, 2);
-            robot.intake.setPosition(0.75);
-            encoderDrive(0.2,1400,1400,4);
-            robot.intake.setPosition(0.5);
-            encoderTurn(0.15,3200,1650);
-            encoderDrive(0.15,300,300,2);
-            runtime.reset();
-            while (runtime.seconds() < 1.5 && opModeIsActive()) {
-                robot.intake.setPosition(0);
-                robot.marker.setPosition(0.75);
-            }
-            robot.intake.setPosition(0.5);
-            robot.marker.setPosition(0.5);
-            encoderDrive(0.2, -3500,-3500, 4);
-            encoderTurn(0.1,4000,1250);
-            encoderDrive(0.2,-975,975,3);
-            encoderDrive(0.3,2500,2500,4);
-            encoderTurn(0.35,4300,3500);
-        } else if (key == 1) {
-            encoderDrive(0.1, -135, 135, 2);
-            robot.intake.setPosition(0.75);
-            encoderDrive(0.2, 3050, 3050, 4);
-            robot.intake.setPosition(0.5);
-            runtime.reset();
-            while (runtime.seconds() < 1.5 && opModeIsActive()) {
-                robot.intake.setPosition(0);
-                robot.marker.setPosition(0.75);
-            }
-            robot.intake.setPosition(0.5);
-            robot.marker.setPosition(0.5);
-            encoderDrive(0.2, -2750, -2750, 4);
-            encoderDrive(0.15, 800, -800, 3);
-            encoderDrive(0.2, 1700, 1700, 4);
-            encoderTurn(0.2,3800,3100);
-        } else if (key == 2) {
-            robot.intake.setPosition(0.75);
-            encoderTurn(0.15,3100,5050);
-            robot.intake.setPosition(0.5);
-            runtime.reset();
-            while (runtime.seconds() < 1.5 && opModeIsActive()) {
-                robot.intake.setPosition(0);
-                robot.marker.setPosition(0.75);
-            }
-            robot.intake.setPosition(0.5);
-            robot.marker.setPosition(0.5);
-            encoderDrive(0.3,-6000,-6000,10);
         }
 
         telemetry.addData("Path", "Complete");
