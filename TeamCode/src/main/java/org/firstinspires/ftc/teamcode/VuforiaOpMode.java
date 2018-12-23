@@ -243,6 +243,8 @@ public class VuforiaOpMode extends LinearOpMode {
                         trackpic = 1;
                     } else if (track.equals("Red-Footprint")) {
                         trackpic = 2;
+                    } else if (track.equals("Back-Space")) {
+                        trackpic = 3;
                     }
                     targetVisible = true;
 
@@ -260,6 +262,7 @@ public class VuforiaOpMode extends LinearOpMode {
 
             // Provide feedback as to where the robot is located (if we know).
             if (targetVisible) {
+
                 float math = 0;
 
                 // express position (translation) of robot in inches.
@@ -275,51 +278,6 @@ public class VuforiaOpMode extends LinearOpMode {
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                 telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
 
-                /*if (str.equals("Back-Space") && runtime.seconds() < 75) {
-                    int destX = 1250;*/
-
-                //atman find mechanism
-                /*if (str.equals("Back-Space") && runtime.seconds() < 75) {
-                    //int destX = 1250;
-                    int destY = 200;
-                    double angleB = Math.atan(translation.get(0)/distance - destY);
-                    if (rotation.thirdAngle < (-angleB) && runtime.seconds() < 7.5) {
-                        leftPower = 0.25;
-                        rightPower = -0.25;
-                    } else if (rotation.thirdAngle > (-angleB) && runtime.seconds() < 7.5) {
-                        leftPower = -0.25;
-                        rightPower = 0.25;
-                    } else if (rotation.thirdAngle == angleB && runtime.seconds() == 7.5) {
-                        leftPower = 0;
-                        rightPower = 0;
-                    }
-                }*/
-
-                /*101418 new find mechanism
-                double absX = Math.abs(translation.get(0));
-                double absY = Math.abs(translation.get(1));
-                double destX = absX * 0.6;
-
-                double angX = (Math.atan(destX/absY));
-
-                final double redAngle = (90-(Math.toDegrees(angX)));
-
-                telemetry.addData("angle of black", (90-(Math.toDegrees(Math.atan(absX/absY)))));
-                telemetry.addData("angle of red", redAngle);
-
-                double imuAngle = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-                telemetry.addData("test app", imuAngle);
-
-                double reachAngle = imuAngle - redAngle;
-
-                if (redAngle >= 5 && runtime.seconds() < 5) {
-                    telemetry.addData("VOW YOU DID IT", "SO PROUD OF YOU");
-                    robot.hexRearRight.setPower(0.25);
-                    robot.hexFrontRight.setPower(0.25);
-                    robot.hexRearLeft.setPower(-0.25);
-                    robot.hexFrontLeft.setPower(-0.25);
-                }*/
-
                 //110518 new find mechanism
                 double absX = Math.abs(translation.get(0));
                 double absY = Math.abs(translation.get(1));
@@ -329,26 +287,38 @@ public class VuforiaOpMode extends LinearOpMode {
                     rot = Math.abs(rot);
                 }
 
+
+
                 double imuAngle = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
                 telemetry.addData("imuAngle", imuAngle);
                 telemetry.addData("rot", rot);
 
-                if (rot > 90) {
-                    rightPower = (0.125);
-                    leftPower = (-0.125);
-                } else {
-                    rightPower = 0;
-                    leftPower = 0;
-                }
 
 
             } else {
                 telemetry.addData("Visible Target", "none");
 
-                leftPower = 0;
-                rightPower = 0;
+                if (runtime.seconds() > 2 && runtime.seconds() < 3) {
+                    leftPower = .1;
+                    rightPower = -.1;
+                } else if (runtime.seconds() > 3 && runtime.seconds() < 6) {
+                    leftPower = 0;
+                    rightPower = 0;
+                } else if (runtime.seconds() > 6) {
+                    runtime.reset();
+                }
+
+                /*if (angles.firstAngle > -27.5) {
+                    rightPower = -.1;
+                    leftPower = .1;
+                } else if (angles.firstAngle < -27.5) {
+                    rightPower = -0.025;
+                    leftPower = .025;
+                }
+*/
             }
 
+            telemetry.addData("Angle", angles.firstAngle);
             telemetry.update();
             robot.hexFrontLeft.setPower(leftPower);
             robot.hexFrontRight.setPower(rightPower);
