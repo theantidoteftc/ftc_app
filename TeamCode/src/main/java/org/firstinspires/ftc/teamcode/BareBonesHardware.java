@@ -59,6 +59,8 @@ public class BareBonesHardware
     public DcMotor  hexFrontRight  = null;
     public DcMotor  hexRearLeft  = null;
     public DcMotor  hexRearRight  = null;;
+    public DcMotor  hexSlide  = null;
+    public DcMotor  pivotMotor  = null;;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -79,17 +81,23 @@ public class BareBonesHardware
         hexFrontRight = hwMap.get(DcMotor.class, "hexFrontRight");
         hexRearLeft  = hwMap.get(DcMotor.class, "hexRearLeft");
         hexRearRight = hwMap.get(DcMotor.class, "hexRearRight");
+        hexSlide  = hwMap.get(DcMotor.class, "hexSlide");
+        pivotMotor = hwMap.get(DcMotor.class, "pivotMotor");
 
         hexFrontLeft.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         hexFrontRight.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
         hexRearLeft.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         hexRearRight.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
+        hexSlide.setDirection(DcMotor.Direction.FORWARD);
+        pivotMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // Set all motors to zero power
         hexFrontLeft.setPower(0);
         hexFrontRight.setPower(0);
         hexRearLeft.setPower(0);
         hexRearRight.setPower(0);
+        hexSlide.setPower(0);
+        pivotMotor.setPower(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
@@ -97,11 +105,15 @@ public class BareBonesHardware
         hexFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hexRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hexSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         hexFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         hexFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         hexRearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         hexRearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hexSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        pivotMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
  }
 
