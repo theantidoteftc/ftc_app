@@ -29,6 +29,7 @@ public class BareBonesOp extends LinearOpMode {
             //gamepad 2 (logitech)
             double slide = gamepad2.left_stick_y;
             double pivot = gamepad2.right_stick_y;
+            double intake = ((gamepad2.right_trigger) - (gamepad2.left_trigger)) + 0.5;
 
             if (gamepad1.a) {
                 slowMode = true;
@@ -51,11 +52,13 @@ public class BareBonesOp extends LinearOpMode {
             robot.hexRearRight.setPower(rPower);
 
             //gamepad 2 (logitech) setPower
-            robot.hexSlide.setPower(slide/15);
-            robot.pivotMotor.setPower(pivot/15);
+            robot.hexSlide.setPower(slide/10);
+            robot.pivotMotor.setPower(pivot/10);
+            robot.take.setPosition(intake);
 
             telemetry.addData("slide", gamepad2.left_stick_y);
             telemetry.addData("pivot", gamepad2.right_stick_y);
+            telemetry.addData("intake", robot.take.getPosition());
             telemetry.addData("Status", "Running");
             telemetry.addData("slowmode", slowMode);
             telemetry.update();

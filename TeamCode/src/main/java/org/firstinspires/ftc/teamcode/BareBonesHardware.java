@@ -61,6 +61,7 @@ public class BareBonesHardware
     public DcMotor  hexRearRight  = null;;
     public DcMotor  hexSlide  = null;
     public DcMotor  pivotMotor  = null;;
+    public Servo take = null; //0 on the right
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -83,6 +84,9 @@ public class BareBonesHardware
         hexRearRight = hwMap.get(DcMotor.class, "hexRearRight");
         hexSlide  = hwMap.get(DcMotor.class, "hexSlide");
         pivotMotor = hwMap.get(DcMotor.class, "pivotMotor");
+
+        // Define and Initialize Servos
+        take = hwMap.get(Servo.class, "take");
 
         hexFrontLeft.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         hexFrontRight.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
