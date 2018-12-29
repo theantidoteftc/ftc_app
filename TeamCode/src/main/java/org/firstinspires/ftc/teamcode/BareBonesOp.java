@@ -26,11 +26,6 @@ public class BareBonesOp extends LinearOpMode {
             double throttle = ((gamepad1.right_trigger) - (gamepad1.left_trigger));
             double steering = gamepad1.left_stick_x;
 
-            //gamepad 2 (logitech)
-            double slide = gamepad2.left_stick_y;
-            double pivot = gamepad2.right_stick_y;
-            double intake = ((gamepad2.right_trigger) - (gamepad2.left_trigger)) + 0.5;
-
             if (gamepad1.a) {
                 slowMode = true;
             }
@@ -43,6 +38,19 @@ public class BareBonesOp extends LinearOpMode {
             if (slowMode == true) {
                 lPower /= 3;
                 rPower /= 3;
+            }
+
+            //gamepad 2 (logitech)
+            double slide = gamepad2.left_stick_y;
+            double pivot = gamepad2.right_stick_y;
+            double intake = ((gamepad2.right_trigger) - (gamepad2.left_trigger)) + 0.5;
+
+            if (gamepad2.a) {
+                robot.lonk.setPosition(0);
+            } else if (gamepad2.b) {
+                robot.lonk.setPosition(0.5);
+            } else if (gamepad2.y) {
+                robot.lonk.setPosition(1);
             }
 
             //gamepad 1 (xbox) setPower

@@ -204,9 +204,7 @@ public class sampleFASTleft extends LinearOpMode {
                 sleep(750);
 
             }
-            if (key == 1) {
 
-            }
         }
 
         if (tfod != null) {
