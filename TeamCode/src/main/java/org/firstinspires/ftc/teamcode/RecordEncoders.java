@@ -29,6 +29,17 @@ public class RecordEncoders extends LinearOpMode {
         robot.pivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         while (opModeIsActive()) {
+
+            //gamepad 2 (logitech)
+            double slide = gamepad2.left_stick_y;
+            double pivot = gamepad2.right_stick_y;
+            double intake = ((gamepad2.right_trigger) - (gamepad2.left_trigger)) + 0.5;
+
+            //gamepad 2 (logitech) setPower
+            robot.hexSlide.setPower(slide/2);
+            robot.pivotMotor.setPower(pivot/7);
+            robot.take.setPosition(intake);
+
             /*telemetry.addData("Live Left", robot.hexRearLeft.getCurrentPosition());
             telemetry.addData("Live Right", robot.hexRearRight.getCurrentPosition());*/
             telemetry.addData("Live Left", (robot.hexFrontLeft.getCurrentPosition() + (robot.hexRearLeft.getCurrentPosition()))/2);
