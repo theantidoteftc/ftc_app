@@ -71,9 +71,9 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="sampleFASTleft", group="newark")
+@Autonomous(name="sampleRight", group="newark")
 //@Disabled
-public class sampleFASTleft extends LinearOpMode {
+public class sampleRight extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
@@ -93,7 +93,7 @@ public class sampleFASTleft extends LinearOpMode {
     static final double     DRIVE_GEAR_REDUCTION    = 40 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-                                                      (WHEEL_DIAMETER_INCHES * 3.14159265);
+            (WHEEL_DIAMETER_INCHES * 3.14159265);
     static final double     DRIVE_SPEED             = 0.45;
     static final double     TURN_SPEED              = 0.25;
 
@@ -126,8 +126,8 @@ public class sampleFASTleft extends LinearOpMode {
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0",  "Starting at %7d :%7d",
-                          robot.hexFrontLeft.getCurrentPosition(),
-                          robot.hexFrontRight.getCurrentPosition(), robot.hexRearLeft.getCurrentPosition(), robot.hexRearRight.getCurrentPosition());
+                robot.hexFrontLeft.getCurrentPosition(),
+                robot.hexFrontRight.getCurrentPosition(), robot.hexRearLeft.getCurrentPosition(), robot.hexRearRight.getCurrentPosition());
         telemetry.update();
 
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
@@ -146,7 +146,7 @@ public class sampleFASTleft extends LinearOpMode {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
         }
 
-        encoderDrive(0.3, 800,800, 2);
+        encoderDrive(0.3, 250,250, 2);
         encoderDrive(0.25,-220,220,2);
 
         /** Activate Tensor Flow Object Detection. */
@@ -204,7 +204,9 @@ public class sampleFASTleft extends LinearOpMode {
                 sleep(750);
 
             }
+            if (key == 1) {
 
+            }
         }
 
         if (tfod != null) {
@@ -222,17 +224,16 @@ public class sampleFASTleft extends LinearOpMode {
         }
 
         if (key == 0) {
-            encoderDrive(0.1,-125,125, 2);
-//            robot.intake.setPosition(0.75);
-            encoderDrive(0.2,1400,1400,4);
+//            telemetry.addData("reeeeee", "h0ll0");
+            encoderTurn(0.2, -70, 200);
+//            robot.intake.setPosition(0.89);
+            encoderDrive(0.2, 2600, 2600, 2);
+            encoderDrive(0.3, -1700, -1700, 3);
+            sleep(200);
 //            robot.intake.setPosition(0.5);
-            encoderTurn(0.2,3100,1650);
-            encoderDrive(0.3,700,700,2);
-            encoderDrive(0.3,-4000,-4000,4);
-            encoderDrive(.3,328,-500,2);
-            encoderDrive(0.3,7000,7000,4);
-            encoderTurn(.2,2126,1400);
-            encoderDrive(0.4,1700,1700,2);
+//            sleep(500);
+            encoderTurn(.2,3222,4936);
+            encoderDrive(.2,8000,8000,4);
             runtime.reset();
 //            while (runtime.seconds() < 1.5 && opModeIsActive()) {
 //                robot.intake.setPosition(0);
@@ -240,17 +241,21 @@ public class sampleFASTleft extends LinearOpMode {
 //            }
 //            robot.intake.setPosition(0.5);
 //            robot.marker.setPosition(0.5);
-
-//            encoderDrive(0.2, -3500,-3500, 4);
-//            encoderTurn(0.1,4000,1250);
-//            encoderDrive(0.2,-975,975,3);
-//            encoderDrive(0.3,2500,2500,4);
-//            encoderTurn(0.35,4300,3500);
+            encoderDrive(0.3,-8200,-8200,5 );
+            runtime.reset();
         } else if (key == 1) {
             encoderDrive(0.2, -135, 135, 2);
 //            robot.intake.setPosition(0.75);
-            encoderDrive(0.25, 4050, 4050, 4);
+            encoderDrive(0.25, 1500, 1500, 2);
+            sleep(800);
 //            robot.intake.setPosition(0.5);
+            encoderDrive(0.15, -790, -790, 2);
+            encoderDrive(0.3,   -825, 825, 4);
+            encoderDrive(0.35, 2800, 2800, 3);
+            encoderTurn(0.2,2050,2825);
+            encoderDrive(.2,1000,1000,2);
+            sleep(1000);
+            encoderDrive(0.4, -5500, -5500, 3);
             runtime.reset();
 //            while (runtime.seconds() < 1.5 && opModeIsActive()) {
 //                robot.intake.setPosition(0);
@@ -258,29 +263,35 @@ public class sampleFASTleft extends LinearOpMode {
 //            }
 //            robot.intake.setPosition(0.5);
 //            robot.marker.setPosition(0.5);
-            encoderDrive(0.3, -3400, -3400, 4);
-            encoderDrive(0.2, 800, -800, 3);
-            encoderDrive(0.3, 1600, 1600, 4);
-            encoderTurn(0.4,3900,3100);
-            encoderDrive(0.4,1000,1000,2);
-        } else if (key == 2) {
+//            sleep(500);
+//            encoderDrive(0.4, -5250, -5250, 3);
+        } else if (key != 0 || key != 1 /*key == 2*/) {
+//            telemetry.addData("reeeeee", "hi");
 //            robot.intake.setPosition(0.75);
-//            encoderTurn(0.15,3061,5031);
+//            encoderTurn(0.2,1140,1763);
+//            sleep(1000);
 //            robot.intake.setPosition(0.5);
-            encoderDrive(0.3,1000,1000,2);
-            encoderTurn(.2, 2031,3746);
-            encoderDrive(0.4,1000,1000,2);
-            encoderDrive(.4,-100,100, 2);
-            encoderDrive(0.4,-7000,-7000,3);
-
-            runtime.reset();
+//            encoderDrive(0.2,-900,-900,2);
+//            encoderDrive(0.2,-1000,1000,2);
+//            encoderDrive(0.3,540,540,3);
+//            encoderTurn(.3,5765,6630);
+//            encoderDrive(0.3,800,800,3);
+//            runtime.reset();
 //            while (runtime.seconds() < 1.5 && opModeIsActive()) {
 //                robot.intake.setPosition(0);
 //                robot.marker.setPosition(0.75);
 //            }
 //            robot.intake.setPosition(0.5);
 //            robot.marker.setPosition(0.5);
-//            encoderDrive(0.3,-6000,-6000,10);
+//            encoderDrive(0.3,-6000,-6000,4);
+//            encoderDrive(.3,1161,1161,2);
+            encoderTurn(.2,1641,2341);
+            encoderDrive(.2,-500,-500,2);
+            encoderDrive(.2,-900,900,2);
+            encoderDrive(.3,2800,2800,2);
+            encoderTurn(.15,2036,2819);
+            encoderDrive(.3,2400,2400,2);
+            encoderDrive(.4,-7000,-7000,3);
         }
 
         telemetry.addData("Path", "Complete");
@@ -422,14 +433,14 @@ public class sampleFASTleft extends LinearOpMode {
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
-                   (runtime.seconds() < timeoutS) &&
-                   (robot.hexFrontLeft.isBusy() && robot.hexFrontRight.isBusy())) {
+                    (runtime.seconds() < timeoutS) &&
+                    (robot.hexFrontLeft.isBusy() && robot.hexFrontRight.isBusy())) {
 
                 // Display it for the driver.
                 telemetry.addData("Path1",  "Running to %7d :%7d", newFrontLeftTarget,  newFrontRightTarget);
                 telemetry.addData("Path2",  "Running at %7d :%7d",
-                                            robot.hexFrontLeft.getCurrentPosition(),
-                                            robot.hexFrontRight.getCurrentPosition());
+                        robot.hexFrontLeft.getCurrentPosition(),
+                        robot.hexFrontRight.getCurrentPosition());
                 telemetry.update();
             }
 
@@ -483,3 +494,4 @@ public class sampleFASTleft extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
 }
+
