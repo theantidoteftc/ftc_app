@@ -68,8 +68,12 @@ public class BareBonesHardware
     public Servo c = null;
 =======
     public Servo take = null; //1 on the right
+<<<<<<< HEAD
     public Servo mineralBlock = null; //2 on the right
 >>>>>>> cbc93a03e9430a6115e4b5afc1af1d15d9d48cbe
+=======
+    public Servo lonk = null; //2 on the right
+>>>>>>> 050af94b00d34aabc27f9d6d354d23848e2da788
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -101,8 +105,12 @@ public class BareBonesHardware
         c = hwMap.get(Servo.class, "c");
 =======
         take = hwMap.get(Servo.class, "take");
+<<<<<<< HEAD
         mineralBlock = hwMap.get(Servo.class, "mineralBlock");
 >>>>>>> cbc93a03e9430a6115e4b5afc1af1d15d9d48cbe
+=======
+        lonk = hwMap.get(Servo.class, "lonk");
+>>>>>>> 050af94b00d34aabc27f9d6d354d23848e2da788
 
         hexFrontLeft.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         hexFrontRight.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors

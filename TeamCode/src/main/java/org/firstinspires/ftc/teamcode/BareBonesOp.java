@@ -64,9 +64,9 @@ public class BareBonesOp extends LinearOpMode {
             }*/
 =======
             if (gamepad2.dpad_up) {
-                robot.mineralBlock.setPosition(1); //close
+                robot.lonk.setPosition(1); //close
             } else if (gamepad2.dpad_down) {
-                robot.mineralBlock.setPosition(0); //open
+                robot.lonk.setPosition(0); //open
             }
 >>>>>>> cbc93a03e9430a6115e4b5afc1af1d15d9d48cbe
 
@@ -120,9 +120,9 @@ public class BareBonesOp extends LinearOpMode {
                     }*/
 =======
                     if (gamepad2.dpad_up) {
-                        robot.mineralBlock.setPosition(1); //close
+                        robot.lonk.setPosition(1); //close
                     } else if (gamepad2.dpad_down) {
-                        robot.mineralBlock.setPosition(0); //open
+                        robot.lonk.setPosition(0); //open
                     }
 >>>>>>> cbc93a03e9430a6115e4b5afc1af1d15d9d48cbe
                     //gamepad 1 & 2 (xbox) setPower
