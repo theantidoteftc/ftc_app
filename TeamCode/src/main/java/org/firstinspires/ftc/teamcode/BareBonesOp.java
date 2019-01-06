@@ -56,19 +56,11 @@ public class BareBonesOp extends LinearOpMode {
             double pivot = gamepad2.right_stick_y;
             double intake = ((gamepad2.right_trigger) - (gamepad2.left_trigger)) + 0.5;
 
-<<<<<<< HEAD
             /*if (gamepad2.dpad_up) {
                 robot.lonk.setPosition(1); //close
             } else if (gamepad2.dpad_down) {
                 robot.lonk.setPosition(0); //open
             }*/
-=======
-            if (gamepad2.dpad_up) {
-                robot.lonk.setPosition(1); //close
-            } else if (gamepad2.dpad_down) {
-                robot.lonk.setPosition(0); //open
-            }
->>>>>>> cbc93a03e9430a6115e4b5afc1af1d15d9d48cbe
 
             /*if (gamepad2.left_stick_button && gamepad2.right_stick_button) {
                 robot.pivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -112,19 +104,13 @@ public class BareBonesOp extends LinearOpMode {
                     }
                     pivot = gamepad2.right_stick_y;
                     intake = ((gamepad2.right_trigger) - (gamepad2.left_trigger)) + 0.5;
-<<<<<<< HEAD
+
                     /*if (gamepad2.dpad_up) {
                         robot.lonk.setPosition(1); //close
                     } else if (gamepad2.dpad_down) {
                         robot.lonk.setPosition(0); //open
                     }*/
-=======
-                    if (gamepad2.dpad_up) {
-                        robot.lonk.setPosition(1); //close
-                    } else if (gamepad2.dpad_down) {
-                        robot.lonk.setPosition(0); //open
-                    }
->>>>>>> cbc93a03e9430a6115e4b5afc1af1d15d9d48cbe
+                    
                     //gamepad 1 & 2 (xbox) setPower
                     robot.hexFrontLeft.setPower(lPower/4);
                     robot.hexFrontRight.setPower(rPower/4);
