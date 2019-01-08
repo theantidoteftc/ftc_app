@@ -1,5 +1,3 @@
-package org.firstinspires.ftc.teamcode;
-
 /* Copyright (c) 2017 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -29,8 +27,9 @@ package org.firstinspires.ftc.teamcode;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package org.firstinspires.ftc.teamcode.Autos;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -40,6 +39,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.BareBonesHardware;
 
 import java.util.List;
 
@@ -72,9 +72,9 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Backup Auto Right", group="RRAutos")
+@Autonomous(name="autoRight", group="newark")
 //@Disabled
-public class WeAreScrewed extends LinearOpMode {
+public class autoRight extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
@@ -87,7 +87,7 @@ public class WeAreScrewed extends LinearOpMode {
 
 
     /* Declare OpMode members. */
-    RoverRuckusHardware robot   = new RoverRuckusHardware();   // Use a Pushbot's hardware
+    BareBonesHardware robot   = new BareBonesHardware();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
     static final double     COUNTS_PER_MOTOR_REV    = 28 ;    // eg: TETRIX MotorC Encoder
@@ -130,36 +130,175 @@ public class WeAreScrewed extends LinearOpMode {
                 robot.hexFrontLeft.getCurrentPosition(),
                 robot.hexFrontRight.getCurrentPosition(), robot.hexRearLeft.getCurrentPosition(), robot.hexRearRight.getCurrentPosition());
         telemetry.update();
+
+        // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
+        // first.
+        initVuforia(0);
+
+        /** Wait for the game to begin */
+        telemetry.addData(">", "Press Play to start tracking - U R GO, GOOD LUCK!");
+        telemetry.update();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        boolean done = false;
-        while (!done) {
-            telemetry.addData("ok:", "noooo");
-            robot.intake.setPosition(0.75);
-            encoderDrive(.3, 2518, 2518, 2);
-            sleep(800);
-            robot.intake.setPosition(0.5);
-            encoderDrive(0.15, -925, -925, 2);
-            encoderDrive(0.2,   -825, 825, 4);
-            encoderDrive(0.35, 2250, 2250, 3);
-            encoderTurn(0.15,2100,2900);
-            encoderDrive(0.2, 1600, 1600, 3);
-            runtime.reset();
-            while (runtime.seconds() < 1.5) {
-                telemetry.addData("HI", "HI");
-                robot.intake.setPosition(0);
-                robot.marker.setPosition(0.75);
-            }
-            robot.intake.setPosition(0.5);
-            robot.marker.setPosition(0.5);
-            sleep(2000);
-            encoderDrive(0.6, -5600, -5600, 3);
-            done = true;
+
+        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+            initTfod();
+        } else {
+            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
         }
 
+        encoderDrive(0.3, 250,250, 2);
+        encoderDrive(0.25,-220,220,2);
 
+        /** Activate Tensor Flow Object Detection. */
+        if (tfod != null) {
+            tfod.activate();
+        }
+
+        while (rot == 0 && opModeIsActive()) {
+            if (opModeIsActive()) {
+                runtime.reset();
+                while ((opModeIsActive() && inte == 0) && runtime.seconds() < 1) {
+                    if (tfod != null) {
+
+                        // getUpdatedRecognitions() will return null if no new information is available since
+                        // the last time that call was made.
+                        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                        if (updatedRecognitions != null) {
+                            telemetry.addData("Objects detected", "none");
+                            if (updatedRecognitions.size() >= 1) {
+                                int goldMineralX = -1;
+                                int silverMineral1X = -1;
+                                int silverMineral2X = -1;
+                                for (Recognition recognition : updatedRecognitions) {
+                                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL) && recognition.getWidth() > 85) {
+                                        telemetry.addData("# Object Detected", updatedRecognitions.size());
+                                        goldMineralX = (int) recognition.getLeft();
+                                        telemetry.addData("Gold: ", "found");
+                                        inte = 1;
+                                        rot = 1;
+                                        tfod.shutdown();
+                                        tfod.deactivate();
+                                    } else if (silverMineral1X == -1) {
+                                        silverMineral1X = (int) recognition.getLeft();
+                                    } else {
+                                        silverMineral2X = (int) recognition.getLeft();
+                                    }
+                                }
+                            }
+                            telemetry.addData("rot", rot);
+                            telemetry.update();
+                        }
+                    }
+                }
+            }
+
+            if (rot == 0) {
+                encoderDrive(0.175,330,-330,3);
+                key += 1;
+            } if (key == 2) {
+                telemetry.addData("Broken", "True");
+                break;
+            } else if (rot == 1) {
+                telemetry.addData("key", key);
+                telemetry.update();
+                sleep(750);
+
+            }
+            if (key == 1) {
+
+            }
+        }
+
+        if (tfod != null) {
+            tfod.shutdown();
+            tfod.deactivate();
+
+        }
+
+        if (key == 0) {
+            telemetry.addData("gold mineral", "left");
+        } else if (key == 1) {
+            telemetry.addData("gold mineral", "center");
+        } else if (key == 2) {
+            telemetry.addData("gold mineral", "right");
+        }
+
+        if (key == 0) {
+//            telemetry.addData("reeeeee", "h0ll0");
+            encoderTurn(0.2, -70, 200);
+//            robot.intake.setPosition(0.89);
+            encoderDrive(0.2, 2600, 2600, 2);
+            encoderDrive(0.3, -1700, -1700, 3);
+            sleep(200);
+//            robot.intake.setPosition(0.5);
+//            sleep(500);
+            encoderTurn(.2,3222,4936);
+            encoderDrive(.2,8000,8000,4);
+            runtime.reset();
+//            while (runtime.seconds() < 1.5 && opModeIsActive()) {
+//                robot.intake.setPosition(0);
+//                robot.marker.setPosition(0.75);
+//            }
+//            robot.intake.setPosition(0.5);
+//            robot.marker.setPosition(0.5);
+            encoderDrive(0.3,-8200,-8200,5 );
+            runtime.reset();
+        } else if (key == 1) {
+            encoderDrive(0.2, -135, 135, 2);
+//            robot.intake.setPosition(0.75);
+            encoderDrive(0.25, 1500, 1500, 2);
+            sleep(800);
+//            robot.intake.setPosition(0.5);
+            encoderDrive(0.15, -790, -790, 2);
+            encoderDrive(0.3,   -825, 825, 4);
+            encoderDrive(0.35, 2800, 2800, 3);
+            encoderTurn(0.2,2050,2825);
+            encoderDrive(.2,1000,1000,2);
+            sleep(1000);
+            encoderDrive(0.4, -5500, -5500, 3);
+            runtime.reset();
+//            while (runtime.seconds() < 1.5 && opModeIsActive()) {
+//                robot.intake.setPosition(0);
+//                robot.marker.setPosition(0.75);
+//            }
+//            robot.intake.setPosition(0.5);
+//            robot.marker.setPosition(0.5);
+//            sleep(500);
+//            encoderDrive(0.4, -5250, -5250, 3);
+        } else if (key != 0 || key != 1 /*key == 2*/) {
+//            telemetry.addData("reeeeee", "hi");
+//            robot.intake.setPosition(0.75);
+//            encoderTurn(0.2,1140,1763);
+//            sleep(1000);
+//            robot.intake.setPosition(0.5);
+//            encoderDrive(0.2,-900,-900,2);
+//            encoderDrive(0.2,-1000,1000,2);
+//            encoderDrive(0.3,540,540,3);
+//            encoderTurn(.3,5765,6630);
+//            encoderDrive(0.3,800,800,3);
+//            runtime.reset();
+//            while (runtime.seconds() < 1.5 && opModeIsActive()) {
+//                robot.intake.setPosition(0);
+//                robot.marker.setPosition(0.75);
+//            }
+//            robot.intake.setPosition(0.5);
+//            robot.marker.setPosition(0.5);
+//            encoderDrive(0.3,-6000,-6000,4);
+//            encoderDrive(.3,1161,1161,2);
+            encoderTurn(.2,1641,2341);
+            encoderDrive(.2,-500,-500,2);
+            encoderDrive(.2,-900,900,2);
+            encoderDrive(.3,2800,2800,2);
+            encoderTurn(.15,2036,2819);
+            encoderDrive(.3,2400,2400,2);
+            encoderDrive(.4,-7000,-7000,3);
+        }
+
+        telemetry.addData("Path", "Complete");
         telemetry.update();
     }
+
 
     public void encoderTurn(double baseSpeed, double leftAmount, double rightAmount) {
         int newFrontLeftTarget;
@@ -325,17 +464,22 @@ public class WeAreScrewed extends LinearOpMode {
     /**
      * Initialize the Vuforia localization engine.
      */
-    private void initVuforia() {
-        /*
-         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
-         */
+    private void initVuforia(double io) {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+        if (io == 0) {
+            /*
+             * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+             */
 
-        parameters.vuforiaLicenseKey = "AVF7OF7/////AAABmaKBSYRMHkclubr6nFb2TLcr3QzadzX163OzDe2NS0p2hQlEvibYh8W2xO78LrAUPInfApVZ1qzOxq7fnHZ9KQ0QiJM0E5WbwxdY7U+Gbrk8NuDgceoPw7eD8j2Sk7NuvuTcXYAAoA4wKwgDlw+iA19frB/9/WuUonCWiMAi+sxSoAGkudWAx8f1AO0AXBNyf6d0QHRGVeGRyMYtvkvsez3kU6U7LnMUwpDkX5RfQi+AMKq+BTLYtOo90waG5G84TV9LU1OSlDHtPh7sSG6YuVdn0Pmm/+k9nEtedozzDeDmwKfT1A5uL1m+RGmgCe4gA45H7qH6p9ymyKDbhvfDbTo/fVI0Y9g+Z8FEMByMnI6X";
-        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+            parameters.vuforiaLicenseKey = "AVF7OF7/////AAABmaKBSYRMHkclubr6nFb2TLcr3QzadzX163OzDe2NS0p2hQlEvibYh8W2xO78LrAUPInfApVZ1qzOxq7fnHZ9KQ0QiJM0E5WbwxdY7U+Gbrk8NuDgceoPw7eD8j2Sk7NuvuTcXYAAoA4wKwgDlw+iA19frB/9/WuUonCWiMAi+sxSoAGkudWAx8f1AO0AXBNyf6d0QHRGVeGRyMYtvkvsez3kU6U7LnMUwpDkX5RfQi+AMKq+BTLYtOo90waG5G84TV9LU1OSlDHtPh7sSG6YuVdn0Pmm/+k9nEtedozzDeDmwKfT1A5uL1m+RGmgCe4gA45H7qH6p9ymyKDbhvfDbTo/fVI0Y9g+Z8FEMByMnI6X";
+            parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
 
-        //  Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+            //  Instantiate the Vuforia engine
+            vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+        } else if (io == 1) {
+            parameters.camera.close();
+        }
 
         // Loading trackables is not necessary for the Tensor Flow Object Detection engine.
     }
@@ -351,4 +495,5 @@ public class WeAreScrewed extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
 }
+
 

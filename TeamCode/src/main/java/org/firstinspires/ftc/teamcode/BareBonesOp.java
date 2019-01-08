@@ -56,11 +56,11 @@ public class BareBonesOp extends LinearOpMode {
             double pivot = gamepad2.right_stick_y;
             double intake = ((gamepad2.right_trigger) - (gamepad2.left_trigger)) + 0.5;
 
-            /*if (gamepad2.dpad_up) {
-                robot.lonk.setPosition(1); //close
+            if (gamepad2.dpad_up) {
+                robot.mineralBlock.setPosition(1); //close
             } else if (gamepad2.dpad_down) {
-                robot.lonk.setPosition(0); //open
-            }*/
+                robot.mineralBlock.setPosition(0); //open
+            }
 
             /*if (gamepad2.left_stick_button && gamepad2.right_stick_button) {
                 robot.pivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -105,11 +105,11 @@ public class BareBonesOp extends LinearOpMode {
                     pivot = gamepad2.right_stick_y;
                     intake = ((gamepad2.right_trigger) - (gamepad2.left_trigger)) + 0.5;
 
-                    /*if (gamepad2.dpad_up) {
-                        robot.lonk.setPosition(1); //close
+                    if (gamepad2.dpad_up) {
+                        robot.mineralBlock.setPosition(1); //close
                     } else if (gamepad2.dpad_down) {
-                        robot.lonk.setPosition(0); //open
-                    }*/
+                        robot.mineralBlock.setPosition(0); //open
+                    }
                     
                     //gamepad 1 & 2 (xbox) setPower
                     robot.hexFrontLeft.setPower(lPower/4);
@@ -117,7 +117,7 @@ public class BareBonesOp extends LinearOpMode {
                     robot.hexRearLeft.setPower(lPower/4);
                     robot.hexRearRight.setPower(rPower/4);
                     robot.pivotMotor.setPower(pivot/4);
-                    //robot.take.setPosition(intake);
+                    robot.intakeServo.setPosition(intake);
 
                     telemetry.addData("Current Position", robot.hexSlide.getCurrentPosition()); //debugging
                     telemetry.addData("RunTime", runtime.seconds());
@@ -158,7 +158,7 @@ public class BareBonesOp extends LinearOpMode {
             //gamepad 2 (logitech) setPower
             robot.hexSlide.setPower(slide);
             robot.pivotMotor.setPower(pivot/4);
-            //robot.take.setPosition(intake);
+            robot.intakeServo.setPosition(intake);
 
             telemetry.addData("slide input", gamepad2.left_stick_y);
             telemetry.addData("pivot input", gamepad2.right_stick_y);
@@ -167,7 +167,7 @@ public class BareBonesOp extends LinearOpMode {
             telemetry.addData("FALL", fallDetected);
             telemetry.addData("fall point", startPosPivot);
             telemetry.addData("fall threshold", startPosPivot - robot.pivotMotor.getCurrentPosition());
-            //telemetry.addData("intake", robot.take.getPosition());
+            telemetry.addData("intake", robot.intakeServo.getPosition());
             telemetry.addData("Status", "Running");
             telemetry.addData("slowmode", slowMode);
             telemetry.update();

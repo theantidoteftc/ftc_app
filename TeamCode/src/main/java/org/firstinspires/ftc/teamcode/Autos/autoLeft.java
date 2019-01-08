@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autos;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -39,6 +39,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.BareBonesHardware;
 
 import java.util.List;
 
@@ -71,9 +72,9 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="sampleRight", group="newark")
+@Autonomous(name="autoLeft", group="newark")
 //@Disabled
-public class sampleRight extends LinearOpMode {
+public class autoLeft extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
@@ -118,11 +119,13 @@ public class sampleRight extends LinearOpMode {
         robot.hexFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.hexRearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.hexRearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0",  "Starting at %7d :%7d",
@@ -146,7 +149,9 @@ public class sampleRight extends LinearOpMode {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
         }
 
-        encoderDrive(0.3, 250,250, 2);
+        encoderAccessory(0.5, -1650, 0);
+        encoderAccessory(0.25, -500, 1);
+        encoderDrive(0.3, 450,450, 2);
         encoderDrive(0.25,-220,220,2);
 
         /** Activate Tensor Flow Object Detection. */
@@ -204,9 +209,7 @@ public class sampleRight extends LinearOpMode {
                 sleep(750);
 
             }
-            if (key == 1) {
 
-            }
         }
 
         if (tfod != null) {
@@ -224,74 +227,39 @@ public class sampleRight extends LinearOpMode {
         }
 
         if (key == 0) {
-//            telemetry.addData("reeeeee", "h0ll0");
-            encoderTurn(0.2, -70, 200);
-//            robot.intake.setPosition(0.89);
-            encoderDrive(0.2, 2600, 2600, 2);
-            encoderDrive(0.3, -1700, -1700, 3);
-            sleep(200);
+            encoderDrive(0.1,-125,125, 2);
+//            robot.intake.setPosition(0.75);
+            encoderDrive(0.2,1400,1400,4);
 //            robot.intake.setPosition(0.5);
-//            sleep(500);
-            encoderTurn(.2,3222,4936);
-            encoderDrive(.2,8000,8000,4);
-            runtime.reset();
-//            while (runtime.seconds() < 1.5 && opModeIsActive()) {
-//                robot.intake.setPosition(0);
-//                robot.marker.setPosition(0.75);
-//            }
-//            robot.intake.setPosition(0.5);
-//            robot.marker.setPosition(0.5);
-            encoderDrive(0.3,-8200,-8200,5 );
+            encoderTurn(0.2,3100,1650);
+            encoderDrive(0.3,700,700,2);
+            encoderDrive(0.3,-4000,-4000,4);
+            encoderDrive(.3,328,-500,2);
+            encoderDrive(0.3,7000,7000,4);
+            encoderTurn(.2,2126,1400);
+            encoderDrive(0.4,1700,1700,2);
             runtime.reset();
         } else if (key == 1) {
             encoderDrive(0.2, -135, 135, 2);
 //            robot.intake.setPosition(0.75);
-            encoderDrive(0.25, 1500, 1500, 2);
-            sleep(800);
+            encoderDrive(0.25, 4050, 4050, 4);
 //            robot.intake.setPosition(0.5);
-            encoderDrive(0.15, -790, -790, 2);
-            encoderDrive(0.3,   -825, 825, 4);
-            encoderDrive(0.35, 2800, 2800, 3);
-            encoderTurn(0.2,2050,2825);
-            encoderDrive(.2,1000,1000,2);
-            sleep(1000);
-            encoderDrive(0.4, -5500, -5500, 3);
             runtime.reset();
-//            while (runtime.seconds() < 1.5 && opModeIsActive()) {
-//                robot.intake.setPosition(0);
-//                robot.marker.setPosition(0.75);
-//            }
-//            robot.intake.setPosition(0.5);
-//            robot.marker.setPosition(0.5);
-//            sleep(500);
-//            encoderDrive(0.4, -5250, -5250, 3);
-        } else if (key != 0 || key != 1 /*key == 2*/) {
-//            telemetry.addData("reeeeee", "hi");
+            encoderDrive(0.3, -3400, -3400, 4);
+            encoderDrive(0.2, 800, -800, 3);
+            encoderDrive(0.3, 1600, 1600, 4);
+            encoderTurn(0.4,3900,3100);
+            encoderDrive(0.4,1000,1000,2);
+        } else if (key == 2) {
 //            robot.intake.setPosition(0.75);
-//            encoderTurn(0.2,1140,1763);
-//            sleep(1000);
+//            encoderTurn(0.15,3061,5031);
 //            robot.intake.setPosition(0.5);
-//            encoderDrive(0.2,-900,-900,2);
-//            encoderDrive(0.2,-1000,1000,2);
-//            encoderDrive(0.3,540,540,3);
-//            encoderTurn(.3,5765,6630);
-//            encoderDrive(0.3,800,800,3);
-//            runtime.reset();
-//            while (runtime.seconds() < 1.5 && opModeIsActive()) {
-//                robot.intake.setPosition(0);
-//                robot.marker.setPosition(0.75);
-//            }
-//            robot.intake.setPosition(0.5);
-//            robot.marker.setPosition(0.5);
-//            encoderDrive(0.3,-6000,-6000,4);
-//            encoderDrive(.3,1161,1161,2);
-            encoderTurn(.2,1641,2341);
-            encoderDrive(.2,-500,-500,2);
-            encoderDrive(.2,-900,900,2);
-            encoderDrive(.3,2800,2800,2);
-            encoderTurn(.15,2036,2819);
-            encoderDrive(.3,2400,2400,2);
-            encoderDrive(.4,-7000,-7000,3);
+            encoderDrive(0.3,1000,1000,2);
+            encoderTurn(.2, 2031,3746);
+            encoderDrive(0.4,1000,1000,2);
+            encoderDrive(.4,-100,100, 2);
+            encoderDrive(0.4,-7000,-7000,3);
+            runtime.reset();
         }
 
         telemetry.addData("Path", "Complete");
@@ -460,6 +428,62 @@ public class sampleRight extends LinearOpMode {
         }
     }
 
+    public void encoderAccessory(double speed, double encoderAmount, int port) {
+        int newSlideTarget;
+        int newPivotTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            if (port == 0) {
+                newSlideTarget = robot.hexSlide.getCurrentPosition() + (int)(encoderAmount);// * COUNTS_PER_INCH);
+                robot.hexSlide.setTargetPosition(newSlideTarget);
+            } else if (port == 1) {
+                newPivotTarget = robot.pivotMotor.getCurrentPosition() + (int)(encoderAmount);// * COUNTS_PER_INCH);
+                robot.pivotMotor.setTargetPosition(newPivotTarget);
+            }
+
+            // Turn On RUN_TO_POSITION
+            if (port == 0) {
+                robot.hexSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            } else if (port == 1) {
+                robot.pivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            if (port == 0) {
+                robot.hexSlide.setPower(Math.abs(speed));
+            } else if (port == 1) {
+                robot.pivotMotor.setPower(Math.abs(speed));
+            }
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() && (robot.hexSlide.isBusy() || robot.pivotMotor.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1",  "Running at %7d :%7d", robot.hexSlide.getCurrentPosition(), robot.pivotMotor.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            robot.hexSlide.setPower(0);
+            robot.pivotMotor.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            robot.hexSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            //  sleep(250);   // optional pause after each move
+        }
+    }
+
     /**
      * Initialize the Vuforia localization engine.
      */
@@ -494,4 +518,3 @@ public class sampleRight extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
 }
-
