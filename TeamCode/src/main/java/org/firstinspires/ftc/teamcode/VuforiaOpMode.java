@@ -65,8 +65,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 import java.lang.*;
 import java.util.Locale;
 
-import org.firstinspires.ftc.teamcode.BareBonesHardware;
-
 //DISABLED RIGHT NOW - not needed as of right now. DONT DELETE
 
 @TeleOp(name="Vuforia OpMode", group ="Vuforia")
@@ -82,7 +80,7 @@ public class VuforiaOpMode extends LinearOpMode {
 
     public String pitch;
 
-    BareBonesHardware robot = new BareBonesHardware();
+    NewarkHardware robot = new NewarkHardware();
     private ElapsedTime runtime = new ElapsedTime();
 
     private static final String VUFORIA_KEY = "AVF7OF7/////AAABmaKBSYRMHkclubr6nFb2TLcr3QzadzX163OzDe2NS0p2hQlEvibYh8W2xO78LrAUPInfApVZ1qzOxq7fnHZ9KQ0QiJM0E5WbwxdY7U+Gbrk8NuDgceoPw7eD8j2Sk7NuvuTcXYAAoA4wKwgDlw+iA19frB/9/WuUonCWiMAi+sxSoAGkudWAx8f1AO0AXBNyf6d0QHRGVeGRyMYtvkvsez3kU6U7LnMUwpDkX5RfQi+AMKq+BTLYtOo90waG5G84TV9LU1OSlDHtPh7sSG6YuVdn0Pmm/+k9nEtedozzDeDmwKfT1A5uL1m+RGmgCe4gA45H7qH6p9ymyKDbhvfDbTo/fVI0Y9g+Z8FEMByMnI6X";

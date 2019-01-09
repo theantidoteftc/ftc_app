@@ -39,7 +39,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.BareBonesHardware;
+import org.firstinspires.ftc.teamcode.NewarkHardware;
 
 import java.util.List;
 
@@ -87,7 +87,7 @@ public class autoLeftAltCrater extends LinearOpMode {
 
 
     /* Declare OpMode members. */
-    BareBonesHardware robot   = new BareBonesHardware();   // Use a Pushbot's hardware
+    NewarkHardware robot   = new NewarkHardware();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
     static final double     COUNTS_PER_MOTOR_REV    = 28 ;    // eg: TETRIX MotorC Encoder

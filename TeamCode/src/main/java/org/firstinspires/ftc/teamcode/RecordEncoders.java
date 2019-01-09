@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Gyroscope;
 @TeleOp
 public class RecordEncoders extends LinearOpMode {
 
-    BareBonesHardware robot = new BareBonesHardware();
+    NewarkHardware robot = new NewarkHardware();
     private Gyroscope imu;
     @Override
     public void runOpMode() {
