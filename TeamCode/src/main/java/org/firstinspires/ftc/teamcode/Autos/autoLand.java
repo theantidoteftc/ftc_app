@@ -126,23 +126,33 @@ public class autoLand extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        robot.leftBlock.setPosition(1); //unlatching procedure
+        /*robot.leftBlock.setPosition(1); //unlatching procedure
         robot.rightBlock.setPosition(0);
         sleep(1500);
         runtime.reset();
-        while (runtime.seconds() < 1.5 && opModeIsActive()) {
+        while (runtime.seconds() < 0.375 && opModeIsActive()) {
             robot.leftHook.setPosition(0.25);
             robot.rightHook.setPosition(0.75);
         }
         robot.leftHook.setPosition(0.5);
         robot.rightHook.setPosition(0.5);
-        sleep(500);
-        encoderAccessory(0.5,350,1);
+        sleep(1000);
+        encoderAccessory(0.5,150,1);
         encoderAccessory(0.75, 2500, 0);
-        encoderDrive(0.2,100,100,3);
+        encoderDrive(0.2,225,225,3);
         encoderAccessory(0.9,700,0);
         encoderDrive(0.25,300,300,3);
         encoderAccessory(0.5,-3000,0);
+        encoderAccessory(0.2,-900,1);
+        encoderDrive(0.25,-850,-850,4);*/
+
+        robot.intakeServo.setPosition(0);
+        runtime.reset();
+        while (opModeIsActive() && runtime.seconds() < 1.5) {
+            telemetry.addData("Depositing Mineral", true);
+            telemetry.update();
+        }
+        robot.intakeServo.setPosition(0.5);
 
         /*encoderAccessory(0.5, -1650, 0);
         encoderAccessory(0.25, -500, 1);

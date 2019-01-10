@@ -149,9 +149,25 @@ public class autoLeft extends LinearOpMode {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
         }
 
-        encoderAccessory(0.5, -1650, 0);
-        encoderAccessory(0.25, -500, 1);
-        encoderDrive(0.3, 450,450, 2);
+        robot.leftBlock.setPosition(1); //unlatching procedure
+        robot.rightBlock.setPosition(0);
+        sleep(1500);
+        runtime.reset();
+        while (runtime.seconds() < 0.375 && opModeIsActive()) {
+            robot.leftHook.setPosition(0.25);
+            robot.rightHook.setPosition(0.75);
+        }
+        robot.leftHook.setPosition(0.5);
+        robot.rightHook.setPosition(0.5);
+        sleep(1000);
+        encoderAccessory(0.5,150,1);
+        encoderAccessory(0.75, 2500, 0);
+        encoderDrive(0.2,225,225,3);
+        encoderAccessory(0.9,700,0);
+        encoderDrive(0.25,300,300,3);
+        encoderAccessory(0.5,-3000,0);
+        encoderAccessory(0.2,-900,1);
+        encoderDrive(0.25,-350,-350,4);
         encoderDrive(0.25,-220,220,2);
 
         /** Activate Tensor Flow Object Detection. */
@@ -226,7 +242,7 @@ public class autoLeft extends LinearOpMode {
             telemetry.addData("gold mineral", "right");
         }
 
-        if (key == 0) {
+        if (key == 0) { //left
             encoderDrive(0.1,-125,125, 2);
 //            robot.intake.setPosition(0.75);
             encoderDrive(0.2,1400,1400,4);
@@ -239,18 +255,21 @@ public class autoLeft extends LinearOpMode {
             encoderTurn(.2,2126,1400);
             encoderDrive(0.4,1700,1700,2);
             runtime.reset();
-        } else if (key == 1) {
+        } else if (key == 1) { //center
             encoderDrive(0.2, -135, 135, 2);
-//            robot.intake.setPosition(0.75);
-            encoderDrive(0.25, 4050, 4050, 4);
-//            robot.intake.setPosition(0.5);
+            encoderDrive(0.45, 4050, 4050, 4);
+            robot.intakeServo.setPosition(1);
             runtime.reset();
-            encoderDrive(0.3, -3400, -3400, 4);
+            while (opModeIsActive() && runtime.seconds() < .75) {
+                telemetry.addData("Depositing Mineral", true);
+                telemetry.update();
+            }
+            robot.intakeServo.setPosition(0.5);
+            encoderDrive(0.45, -3250, -3250, 4);
             encoderDrive(0.2, 800, -800, 3);
-            encoderDrive(0.3, 1600, 1600, 4);
-            encoderTurn(0.4,3900,3100);
-            encoderDrive(0.4,1000,1000,2);
-        } else if (key == 2) {
+            encoderDrive(0.3, 1750, 1750, 4);
+            //encoderTurn(0.4,00,1750);
+        } else if (key == 2) { //right
 //            robot.intake.setPosition(0.75);
 //            encoderTurn(0.15,3061,5031);
 //            robot.intake.setPosition(0.5);
