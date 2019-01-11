@@ -160,14 +160,15 @@ public class autoLeft extends LinearOpMode {
         robot.leftHook.setPosition(0.5);
         robot.rightHook.setPosition(0.5);
         sleep(1000);
-        encoderAccessory(0.5,150,1);
-        encoderAccessory(0.75, 1500, 0);
+        encoderAccessory(0.65,150,1);
+        encoderAccessory(0.875, 1500, 0);
         encoderDrive(0.2,325,325,3);
         encoderAccessory(0.9,1700,0);
         encoderDrive(0.25,300,300,3);
-        encoderAccessory(0.8,-3000,0);
-        encoderAccessory(0.2,-900,1);
-        encoderDrive(0.25,-450,-450,4);
+        sleep(500);
+        encoderAccessory(0.95,-3000,0);
+        encoderAccessory(0.3,-900,1);
+        encoderDrive(0.35,-450,-450,4);
         encoderDrive(0.25,-220,220,2);
 
         /** Activate Tensor Flow Object Detection. */
@@ -214,7 +215,7 @@ public class autoLeft extends LinearOpMode {
             }
 
             if (rot == 0) {
-                encoderDrive(0.175,330,-330,3);
+                encoderDrive(0.2,330,-330,3);
                 key += 1;
             } if (key == 2) {
                 telemetry.addData("Broken", "True");
@@ -277,18 +278,19 @@ public class autoLeft extends LinearOpMode {
             encoderTurn(0.4,3360,2400);
         } else if (key == 2) { //right
             encoderTurn(0.1,-100,100);
-            encoderDrive(0.3,1000,1000,4);
-            encoderTurn(0.15,2200,4200);
-            /*encoderTurn(0.35,2500,4710);
+            encoderDrive(0.3,1400,1400,4);
+            encoderTurn(0.2,1200,2500);
+            encoderDrive(0.25,1850,1850,7);
             robot.intakeServo.setPosition(1);
             runtime.reset();
-            while (opModeIsActive() && runtime.seconds() < .75) {
+            while (opModeIsActive() && runtime.seconds() < 2) {
                 telemetry.addData("Depositing Mineral", true);
                 telemetry.update();
             }
             robot.intakeServo.setPosition(0.5);
             sleep(500);
-            encoderDrive(0.4,-5450,-5400,5);*/
+            encoderDrive(0.25,-175,175,3);
+            encoderDrive(0.65,-6000,-6000,5);
         }
 
         telemetry.addData("Path", "Complete");
