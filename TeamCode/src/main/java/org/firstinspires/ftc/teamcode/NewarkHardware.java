@@ -68,7 +68,6 @@ public class NewarkHardware
     public Servo rightBlock = null; //1 on the right
     public Servo mineralBlock = null; //2 on the left
     public Servo intakeServo = null; //0 on the right
-    public Servo b = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;

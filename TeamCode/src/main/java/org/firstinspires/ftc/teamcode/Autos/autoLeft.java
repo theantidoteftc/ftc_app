@@ -161,13 +161,13 @@ public class autoLeft extends LinearOpMode {
         robot.rightHook.setPosition(0.5);
         sleep(1000);
         encoderAccessory(0.5,150,1);
-        encoderAccessory(0.75, 2500, 0);
-        encoderDrive(0.2,225,225,3);
-        encoderAccessory(0.9,700,0);
+        encoderAccessory(0.75, 1500, 0);
+        encoderDrive(0.2,325,325,3);
+        encoderAccessory(0.9,1700,0);
         encoderDrive(0.25,300,300,3);
-        encoderAccessory(0.5,-3000,0);
+        encoderAccessory(0.8,-3000,0);
         encoderAccessory(0.2,-900,1);
-        encoderDrive(0.25,-350,-350,4);
+        encoderDrive(0.25,-450,-450,4);
         encoderDrive(0.25,-220,220,2);
 
         /** Activate Tensor Flow Object Detection. */
@@ -249,11 +249,17 @@ public class autoLeft extends LinearOpMode {
 //            robot.intake.setPosition(0.5);
             encoderTurn(0.2,3100,1650);
             encoderDrive(0.3,700,700,2);
-            encoderDrive(0.3,-4000,-4000,4);
-            encoderDrive(.3,328,-500,2);
-            encoderDrive(0.3,7000,7000,4);
-            encoderTurn(.2,2126,1400);
-            encoderDrive(0.4,1700,1700,2);
+            robot.intakeServo.setPosition(1);
+            runtime.reset();
+            while (opModeIsActive() && runtime.seconds() < .75) {
+                telemetry.addData("Depositing Mineral", true);
+                telemetry.update();
+            }
+            robot.intakeServo.setPosition(0.5);
+            encoderDrive(0.3,-3800,-3800,4);
+            encoderDrive(.3,335,-500,2);
+            encoderDrive(0.6,5300,5300,4);
+            encoderTurn(0.45,3000,2150);
             runtime.reset();
         } else if (key == 1) { //center
             encoderDrive(0.2, -135, 135, 2);
@@ -268,17 +274,21 @@ public class autoLeft extends LinearOpMode {
             encoderDrive(0.45, -3250, -3250, 4);
             encoderDrive(0.2, 800, -800, 3);
             encoderDrive(0.3, 1750, 1750, 4);
-            //encoderTurn(0.4,00,1750);
+            encoderTurn(0.4,3360,2400);
         } else if (key == 2) { //right
-//            robot.intake.setPosition(0.75);
-//            encoderTurn(0.15,3061,5031);
-//            robot.intake.setPosition(0.5);
-            encoderDrive(0.3,1000,1000,2);
-            encoderTurn(.2, 2031,3746);
-            encoderDrive(0.4,1000,1000,2);
-            encoderDrive(.4,-100,100, 2);
-            encoderDrive(0.4,-7000,-7000,3);
+            encoderTurn(0.1,-100,100);
+            encoderDrive(0.3,1000,1000,4);
+            encoderTurn(0.15,2200,4200);
+            /*encoderTurn(0.35,2500,4710);
+            robot.intakeServo.setPosition(1);
             runtime.reset();
+            while (opModeIsActive() && runtime.seconds() < .75) {
+                telemetry.addData("Depositing Mineral", true);
+                telemetry.update();
+            }
+            robot.intakeServo.setPosition(0.5);
+            sleep(500);
+            encoderDrive(0.4,-5450,-5400,5);*/
         }
 
         telemetry.addData("Path", "Complete");
