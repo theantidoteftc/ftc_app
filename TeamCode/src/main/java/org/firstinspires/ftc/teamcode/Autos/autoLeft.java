@@ -149,7 +149,7 @@ public class autoLeft extends LinearOpMode {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
         }
 
-        robot.leftBlock.setPosition(1); //unlatching procedure
+        /*robot.leftBlock.setPosition(1); //unlatching procedure
         robot.rightBlock.setPosition(0);
         sleep(1500);
         runtime.reset();
@@ -162,13 +162,14 @@ public class autoLeft extends LinearOpMode {
         sleep(1000);
         encoderAccessory(0.65,150,1);
         encoderAccessory(0.875, 1500, 0);
-        encoderDrive(0.2,325,325,3);
-        encoderAccessory(0.9,1700,0);
+        encoderDrive(0.2,475,475,3);
+        encoderAccessory(0.9,1850,0);
         encoderDrive(0.25,300,300,3);
-        sleep(500);
-        encoderAccessory(0.95,-3000,0);
+        encoderAccessory(0.95,-3950,0);
         encoderAccessory(0.3,-900,1);
-        encoderDrive(0.35,-450,-450,4);
+        encoderDrive(0.35,-600,-600,4);*/
+        telemetry.addData("lol", "lol");
+        encoderDrive(0.2,750,750,3);
         encoderDrive(0.25,-220,220,2);
 
         /** Activate Tensor Flow Object Detection. */
@@ -215,7 +216,7 @@ public class autoLeft extends LinearOpMode {
             }
 
             if (rot == 0) {
-                encoderDrive(0.2,330,-330,3);
+                encoderDrive(0.15,330,-330,3);
                 key += 1;
             } if (key == 2) {
                 telemetry.addData("Broken", "True");
@@ -250,40 +251,41 @@ public class autoLeft extends LinearOpMode {
 //            robot.intake.setPosition(0.5);
             encoderTurn(0.2,3100,1650);
             encoderDrive(0.3,700,700,2);
-            robot.intakeServo.setPosition(1);
+            robot.intakeServo.setPosition(0);
             runtime.reset();
-            while (opModeIsActive() && runtime.seconds() < .75) {
+            while (opModeIsActive() && runtime.seconds() < 1.5) {
                 telemetry.addData("Depositing Mineral", true);
                 telemetry.update();
             }
+            robot.intakeServo.setPosition(0.5);
             robot.intakeServo.setPosition(0.5);
             encoderDrive(0.3,-3800,-3800,4);
             encoderDrive(.3,335,-500,2);
-            encoderDrive(0.6,5300,5300,4);
-            encoderTurn(0.45,3000,2150);
+            encoderDrive(0.6,4300,4300,4);
+            encoderTurn(0.45,3100,2150);
             runtime.reset();
         } else if (key == 1) { //center
-            encoderDrive(0.2, -135, 135, 2);
+            encoderDrive(0.2, -165, 165, 2);
             encoderDrive(0.45, 4050, 4050, 4);
-            robot.intakeServo.setPosition(1);
+            robot.intakeServo.setPosition(0);
             runtime.reset();
-            while (opModeIsActive() && runtime.seconds() < .75) {
+            while (opModeIsActive() && runtime.seconds() < 1.5) {
                 telemetry.addData("Depositing Mineral", true);
                 telemetry.update();
             }
             robot.intakeServo.setPosition(0.5);
-            encoderDrive(0.45, -3250, -3250, 4);
+            encoderDrive(0.45, -3100, -3100, 4);
             encoderDrive(0.2, 800, -800, 3);
             encoderDrive(0.3, 1750, 1750, 4);
-            encoderTurn(0.4,3360,2400);
+            encoderTurn(0.4,3400,2300);
         } else if (key == 2) { //right
             encoderTurn(0.1,-100,100);
             encoderDrive(0.3,1400,1400,4);
             encoderTurn(0.2,1200,2500);
             encoderDrive(0.25,1850,1850,7);
-            robot.intakeServo.setPosition(1);
+            robot.intakeServo.setPosition(0);
             runtime.reset();
-            while (opModeIsActive() && runtime.seconds() < 2) {
+            while (opModeIsActive() && runtime.seconds() < 1.5) {
                 telemetry.addData("Depositing Mineral", true);
                 telemetry.update();
             }

@@ -119,11 +119,13 @@ public class autoLeftAltCrater extends LinearOpMode {
         robot.hexFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.hexRearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.hexRearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0",  "Starting at %7d :%7d",
@@ -147,7 +149,27 @@ public class autoLeftAltCrater extends LinearOpMode {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
         }
 
-        encoderDrive(0.3, 800,800, 2);
+        /*robot.leftBlock.setPosition(1); //unlatching procedure
+        robot.rightBlock.setPosition(0);
+        sleep(1500);
+        runtime.reset();
+        while (runtime.seconds() < 0.375 && opModeIsActive()) {
+            robot.leftHook.setPosition(0.25);
+            robot.rightHook.setPosition(0.75);
+        }
+        robot.leftHook.setPosition(0.5);
+        robot.rightHook.setPosition(0.5);
+        sleep(1000);
+        encoderAccessory(0.65,150,1);
+        encoderAccessory(0.875, 1500, 0);
+        encoderDrive(0.2,475,475,3);
+        encoderAccessory(0.9,1850,0);
+        encoderDrive(0.25,300,300,3);
+        encoderAccessory(0.95,-3950,0);
+        encoderAccessory(0.3,-900,1);
+        encoderDrive(0.35,-600,-600,4);*/
+        telemetry.addData("lol", "lol");
+        encoderDrive(0.2,750,750,3);
         encoderDrive(0.25,-220,220,2);
 
         /** Activate Tensor Flow Object Detection. */
@@ -194,7 +216,7 @@ public class autoLeftAltCrater extends LinearOpMode {
             }
 
             if (rot == 0) {
-                encoderDrive(0.175,330,-330,3);
+                encoderDrive(0.15,330,-330,3);
                 key += 1;
             } if (key == 2) {
                 telemetry.addData("Broken", "True");
@@ -205,9 +227,7 @@ public class autoLeftAltCrater extends LinearOpMode {
                 sleep(750);
 
             }
-            if (key == 1) {
 
-            }
         }
 
         if (tfod != null) {
@@ -224,66 +244,57 @@ public class autoLeftAltCrater extends LinearOpMode {
             telemetry.addData("gold mineral", "right");
         }
 
-        if (key == 0) {
+        if (key == 0) { //left
             encoderDrive(0.1,-125,125, 2);
 //            robot.intake.setPosition(0.75);
             encoderDrive(0.2,1400,1400,4);
 //            robot.intake.setPosition(0.5);
             encoderTurn(0.2,3100,1650);
             encoderDrive(0.3,700,700,2);
-            encoderDrive(0.3,-4000,-4000,4);
-            encoderDrive(.25,400,-400,2);
-            encoderDrive(0.3,4100,4100,4);
-            encoderTurn(0.2,4097,2334);
-            encoderDrive(.3,3600,3600,4);
+            robot.intakeServo.setPosition(0);
             runtime.reset();
-//            while (runtime.seconds() < 1.5 && opModeIsActive()) {
-//                robot.intake.setPosition(0);
-//                robot.marker.setPosition(0.75);
-//            }
-//            robot.intake.setPosition(0.5);
-//            robot.marker.setPosition(0.5);
-
-//            encoderDrive(0.2, -3500,-3500, 4);
-//            encoderTurn(0.1,4000,1250);
-//            encoderDrive(0.2,-975,975,3);
-//            encoderDrive(0.3,2500,2500,4);
-//            encoderTurn(0.35,4300,3500);
-        } else if (key == 1) {
-            encoderDrive(0.2, -135, 135, 2);
-//            robot.intake.setPosition(0.75);
-            encoderDrive(0.25, 4050, 4050, 4);
-//            robot.intake.setPosition(0.5);
+            while (opModeIsActive() && runtime.seconds() < 1.5) {
+                telemetry.addData("Depositing Mineral", true);
+                telemetry.update();
+            }
+            robot.intakeServo.setPosition(0.5);
+            robot.intakeServo.setPosition(0.5);
+            encoderDrive(0.3,-3800,-3800,4);
+            encoderDrive(.3,335,-500,2);
+//            encoderDrive(0.6,4300,4300,4);
+//            encoderTurn(0.45,3100,2150);
             runtime.reset();
-//            while (runtime.seconds() < 1.5 && opModeIsActive()) {
-//                robot.intake.setPosition(0);
-//                robot.marker.setPosition(0.75);
-//            }
-//            robot.intake.setPosition(0.5);
-//            robot.marker.setPosition(0.5);
-            encoderDrive(0.3, -3400, -3400, 4);
+        } else if (key == 1) { //center
+            encoderDrive(0.2, -165, 165, 2);
+            encoderDrive(0.45, 4050, 4050, 4);
+            robot.intakeServo.setPosition(0);
+            runtime.reset();
+            while (opModeIsActive() && runtime.seconds() < 1.5) {
+                telemetry.addData("Depositing Mineral", true);
+                telemetry.update();
+            }
+            robot.intakeServo.setPosition(0.5);
+            encoderDrive(0.45, -3100, -3100, 4);
             encoderDrive(0.2, 800, -800, 3);
-            encoderDrive(0.3, 1600, 1600, 4);
-            encoderTurn(0.4,3900,3100);
-            encoderDrive(0.4,1000,1000,2);
-        } else if (key == 2) {
-//            robot.intake.setPosition(0.75);
-//            encoderTurn(0.15,3061,5031);
-//            robot.intake.setPosition(0.5);
-            encoderDrive(0.3,1000,1000,2);
-            encoderTurn(.2, 2031,3746);
-            encoderDrive(0.4,1000,1000,2);
-            encoderDrive(.4,-100,100, 2);
-            encoderDrive(0.4,-7000,-7000,3);
-
+            encoderDrive(0.3, 1750, 1750, 4);
+            encoderTurn(0.4,3400,2300);
+        } else if (key == 2) { //right
+            encoderTurn(0.1,-100,100);
+            encoderDrive(0.3,1400,1400,4);
+            encoderTurn(0.2,1200,2500);
+            encoderDrive(0.25,1850,1850,7);
+            robot.intakeServo.setPosition(0);
             runtime.reset();
-//            while (runtime.seconds() < 1.5 && opModeIsActive()) {
-//                robot.intake.setPosition(0);
-//                robot.marker.setPosition(0.75);
-//            }
-//            robot.intake.setPosition(0.5);
-//            robot.marker.setPosition(0.5);
-//            encoderDrive(0.3,-6000,-6000,10);
+            while (opModeIsActive() && runtime.seconds() < 1.5) {
+                telemetry.addData("Depositing Mineral", true);
+                telemetry.update();
+            }
+            robot.intakeServo.setPosition(0.5);
+            sleep(500);
+            encoderDrive(0.25,-105,105,3);
+            encoderDrive(0.65,-4000,-4000,5);
+            encoderDrive(.3, 1000, -1000, .4);
+            encoderDrive(.4,-4000,-4000,.4);
         }
 
         telemetry.addData("Path", "Complete");
@@ -447,6 +458,62 @@ public class autoLeftAltCrater extends LinearOpMode {
             robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            //  sleep(250);   // optional pause after each move
+        }
+    }
+
+    public void encoderAccessory(double speed, double encoderAmount, int port) {
+        int newSlideTarget;
+        int newPivotTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            if (port == 0) {
+                newSlideTarget = robot.hexSlide.getCurrentPosition() + (int)(encoderAmount);// * COUNTS_PER_INCH);
+                robot.hexSlide.setTargetPosition(newSlideTarget);
+            } else if (port == 1) {
+                newPivotTarget = robot.pivotMotor.getCurrentPosition() + (int)(encoderAmount);// * COUNTS_PER_INCH);
+                robot.pivotMotor.setTargetPosition(newPivotTarget);
+            }
+
+            // Turn On RUN_TO_POSITION
+            if (port == 0) {
+                robot.hexSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            } else if (port == 1) {
+                robot.pivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            if (port == 0) {
+                robot.hexSlide.setPower(Math.abs(speed));
+            } else if (port == 1) {
+                robot.pivotMotor.setPower(Math.abs(speed));
+            }
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() && (robot.hexSlide.isBusy() || robot.pivotMotor.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1",  "Running at %7d :%7d", robot.hexSlide.getCurrentPosition(), robot.pivotMotor.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            robot.hexSlide.setPower(0);
+            robot.pivotMotor.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            robot.hexSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             //  sleep(250);   // optional pause after each move
         }
