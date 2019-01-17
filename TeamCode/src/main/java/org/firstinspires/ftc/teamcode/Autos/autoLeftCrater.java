@@ -72,9 +72,9 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="autoLeftAltCrater", group="newark")
+@Autonomous(name="autoLeftCrater", group="newark")
 //@Disabled
-public class autoLeftAltCrater extends LinearOpMode {
+public class autoLeftCrater extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
@@ -149,7 +149,7 @@ public class autoLeftAltCrater extends LinearOpMode {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
         }
 
-        /*robot.leftBlock.setPosition(1); //unlatching procedure
+        robot.leftBlock.setPosition(1); //unlatching procedure
         robot.rightBlock.setPosition(0);
         sleep(1500);
         runtime.reset();
@@ -167,10 +167,8 @@ public class autoLeftAltCrater extends LinearOpMode {
         encoderDrive(0.25,300,300,3);
         encoderAccessory(0.95,-3950,0);
         encoderAccessory(0.3,-900,1);
-        encoderDrive(0.35,-600,-600,4);*/
-        telemetry.addData("lol", "lol");
-        encoderDrive(0.2,750,750,3);
-        encoderDrive(0.25,-220,220,2);
+        //encoderDrive(0.35,-250,-250,4);
+        encoderDrive(0.25,-200,200,2);
 
         /** Activate Tensor Flow Object Detection. */
         if (tfod != null) {
@@ -180,7 +178,7 @@ public class autoLeftAltCrater extends LinearOpMode {
         while (rot == 0 && opModeIsActive()) {
             if (opModeIsActive()) {
                 runtime.reset();
-                while ((opModeIsActive() && inte == 0) && runtime.seconds() < 1) {
+                while ((opModeIsActive() && inte == 0) && runtime.seconds() < 1.5) {
                     if (tfod != null) {
 
                         // getUpdatedRecognitions() will return null if no new information is available since
@@ -206,6 +204,8 @@ public class autoLeftAltCrater extends LinearOpMode {
                                     } else {
                                         silverMineral2X = (int) recognition.getLeft();
                                     }
+                                    telemetry.addData("Size", recognition.getWidth());
+                                    telemetry.update();
                                 }
                             }
                             telemetry.addData("rot", rot);
@@ -216,7 +216,7 @@ public class autoLeftAltCrater extends LinearOpMode {
             }
 
             if (rot == 0) {
-                encoderDrive(0.15,330,-330,3);
+                encoderDrive(0.15,320,-320,3);
                 key += 1;
             } if (key == 2) {
                 telemetry.addData("Broken", "True");
@@ -245,13 +245,11 @@ public class autoLeftAltCrater extends LinearOpMode {
         }
 
         if (key == 0) { //left
-            encoderDrive(0.1,-125,125, 2);
-//            robot.intake.setPosition(0.75);
+            encoderDrive(0.1,-150,150, 2);
             encoderDrive(0.2,1400,1400,4);
-//            robot.intake.setPosition(0.5);
-            encoderTurn(0.2,3100,1650);
+            encoderTurn(0.2,3050,1600);
             encoderDrive(0.3,700,700,2);
-            robot.intakeServo.setPosition(0);
+            robot.intakeServo.setPosition(1);
             runtime.reset();
             while (opModeIsActive() && runtime.seconds() < 1.5) {
                 telemetry.addData("Depositing Mineral", true);
@@ -259,15 +257,16 @@ public class autoLeftAltCrater extends LinearOpMode {
             }
             robot.intakeServo.setPosition(0.5);
             robot.intakeServo.setPosition(0.5);
-            encoderDrive(0.3,-3800,-3800,4);
-            encoderDrive(.3,335,-500,2);
-//            encoderDrive(0.6,4300,4300,4);
-//            encoderTurn(0.45,3100,2150);
+            encoderDrive(0.3,-4050,-4050,4);
+            encoderDrive(.3,325,-500,2);
+            encoderDrive(0.6,4150,4150,4);
+            encoderTurn(0.25,2900,1300);
+            encoderDrive(0.3,3100,3100,4);
             runtime.reset();
         } else if (key == 1) { //center
             encoderDrive(0.2, -165, 165, 2);
-            encoderDrive(0.45, 4050, 4050, 4);
-            robot.intakeServo.setPosition(0);
+            encoderDrive(0.25, 4050, 4050, 4);
+            robot.intakeServo.setPosition(1);
             runtime.reset();
             while (opModeIsActive() && runtime.seconds() < 1.5) {
                 telemetry.addData("Depositing Mineral", true);
@@ -277,13 +276,14 @@ public class autoLeftAltCrater extends LinearOpMode {
             encoderDrive(0.45, -3100, -3100, 4);
             encoderDrive(0.2, 800, -800, 3);
             encoderDrive(0.3, 1750, 1750, 4);
-            encoderTurn(0.4,3400,2300);
+            encoderTurn(0.4,3300,2300);
+            encoderDrive(0.25,500,500,3);
         } else if (key == 2) { //right
             encoderTurn(0.1,-100,100);
             encoderDrive(0.3,1400,1400,4);
             encoderTurn(0.2,1200,2500);
             encoderDrive(0.25,1850,1850,7);
-            robot.intakeServo.setPosition(0);
+            robot.intakeServo.setPosition(1);
             runtime.reset();
             while (opModeIsActive() && runtime.seconds() < 1.5) {
                 telemetry.addData("Depositing Mineral", true);
@@ -291,10 +291,8 @@ public class autoLeftAltCrater extends LinearOpMode {
             }
             robot.intakeServo.setPosition(0.5);
             sleep(500);
-            encoderDrive(0.25,-105,105,3);
-            encoderDrive(0.65,-4000,-4000,5);
-            encoderDrive(.3, 1000, -1000, .4);
-            encoderDrive(.4,-4000,-4000,.4);
+            encoderDrive(0.25,-177.5,177.5,3);
+            encoderDrive(0.65,-6000,-6000,5);
         }
 
         telemetry.addData("Path", "Complete");
