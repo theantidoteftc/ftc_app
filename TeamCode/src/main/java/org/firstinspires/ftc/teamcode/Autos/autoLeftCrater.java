@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.Autos;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -73,7 +74,7 @@ import java.util.List;
  */
 
 @Autonomous(name="autoLeftCrater", group="newark")
-//@Disabled
+@Disabled //DO NOT ENABLE UNLESS YOU HAVE ADI'S PERMISSION
 public class autoLeftCrater extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
@@ -163,9 +164,9 @@ public class autoLeftCrater extends LinearOpMode {
         encoderAccessory(0.65,150,1);
         encoderAccessory(0.875, 1500, 0);
         encoderDrive(0.2,475,475,3);
-        encoderAccessory(0.9,1850,0);
+        encoderAccessory(0.9,1550,0);
         encoderDrive(0.25,300,300,3);
-        encoderAccessory(0.95,-3950,0);
+        encoderAccessory(0.95,-3650,0);
         encoderAccessory(0.3,-900,1);
         //encoderDrive(0.35,-250,-250,4);
         encoderDrive(0.25,-200,200,2);
@@ -246,8 +247,8 @@ public class autoLeftCrater extends LinearOpMode {
 
         if (key == 0) { //left
             encoderDrive(0.1,-150,150, 2);
-            encoderDrive(0.2,1400,1400,4);
-            encoderTurn(0.2,3050,1600);
+            encoderDrive(0.25,1400,1400,4);
+            encoderTurn(0.225,3050,1600);
             encoderDrive(0.3,700,700,2);
             robot.intakeServo.setPosition(1);
             runtime.reset();
@@ -257,15 +258,19 @@ public class autoLeftCrater extends LinearOpMode {
             }
             robot.intakeServo.setPosition(0.5);
             robot.intakeServo.setPosition(0.5);
-            encoderDrive(0.3,-4050,-4050,4);
-            encoderDrive(.3,325,-500,2);
-            encoderDrive(0.6,4150,4150,4);
-            encoderTurn(0.25,2900,1300);
-            encoderDrive(0.3,3100,3100,4);
+            encoderDrive(0.45,-2750,-2750,4);
+            encoderDrive(0.35,800,-800,3);
+            encoderDrive(0.3,200,200,3);
+            encoderTurn(0.45,2100,3000);
+            encoderDrive(0.45,2800,2800,5); //cutoff after this
+            encoderDrive(0.375,865,-865,3);
+            encoderDrive(0.55,4100,4100,5);
+            encoderTurn(0.2,1300,3400);
+            encoderAccessory(0.5,750,0);
             runtime.reset();
         } else if (key == 1) { //center
-            encoderDrive(0.2, -165, 165, 2);
-            encoderDrive(0.25, 4050, 4050, 4);
+            encoderDrive(0.2, -120, 120, 2);
+            encoderDrive(0.45, 3650, 3650, 4);
             robot.intakeServo.setPosition(1);
             runtime.reset();
             while (opModeIsActive() && runtime.seconds() < 1.5) {
@@ -273,11 +278,13 @@ public class autoLeftCrater extends LinearOpMode {
                 telemetry.update();
             }
             robot.intakeServo.setPosition(0.5);
-            encoderDrive(0.45, -3100, -3100, 4);
-            encoderDrive(0.2, 800, -800, 3);
-            encoderDrive(0.3, 1750, 1750, 4);
-            encoderTurn(0.4,3300,2300);
-            encoderDrive(0.25,500,500,3);
+            encoderDrive(0.45, -2950, -2950, 4);
+            encoderDrive(0.2, 825, -825, 3);
+            encoderDrive(0.4, 3000, 3000, 4);
+            encoderDrive(0.2, 825, -825, 3);
+            encoderDrive(0.55,4100,4100,5);
+            encoderTurn(0.2,1300,3400);
+            encoderAccessory(0.5,750,0);
         } else if (key == 2) { //right
             encoderTurn(0.1,-100,100);
             encoderDrive(0.3,1400,1400,4);

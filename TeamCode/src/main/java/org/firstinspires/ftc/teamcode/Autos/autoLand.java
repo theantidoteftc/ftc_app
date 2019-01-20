@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.Autos;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -73,7 +74,7 @@ import java.util.List;
  */
 
 @Autonomous(name="autoLand", group="newark")
-//@Disabled
+@Disabled //DO NOT ENABLE UNLESS YOU HAVE ADI'S PERMISSION
 public class autoLand extends LinearOpMode {
 
 

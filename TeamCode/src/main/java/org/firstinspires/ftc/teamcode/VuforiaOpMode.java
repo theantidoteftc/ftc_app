@@ -33,6 +33,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -68,7 +69,7 @@ import java.util.Locale;
 //DISABLED RIGHT NOW - not needed as of right now. DONT DELETE
 
 @TeleOp(name="Vuforia OpMode", group ="Vuforia")
-//@Disabled
+@Disabled //DO NOT ENABLE UNLESS YOU HAVE ADI'S PERMISSION
 public class VuforiaOpMode extends LinearOpMode {
 
     // The IMU sensor object

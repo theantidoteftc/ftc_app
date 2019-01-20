@@ -62,7 +62,7 @@ Created by Aditya on 7/29/2018 on 4:27 PM
  * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
  */
 @TeleOp(name = "Sensor: BNO055 IMU", group = "Sensor")
-@Disabled                            // Comment this out to add to the opmode list
+@Disabled //DO NOT ENABLE UNLESS YOU HAVE ADI'S PERMISSION
 public class SensorBNO055IMU extends LinearOpMode
     {
     //----------------------------------------------------------------------------------------------
