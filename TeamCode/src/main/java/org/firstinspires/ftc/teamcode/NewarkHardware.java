@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -69,6 +70,8 @@ public class NewarkHardware
     public Servo mineralBlock = null; //2 on the left
     public Servo intakeServo = null; //0 on the right
 
+    public RevBlinkinLedDriver blinkin = null; //5 on the right
+
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
@@ -99,6 +102,8 @@ public class NewarkHardware
         rightBlock = hwMap.get(Servo.class, "rightBlock");
         mineralBlock = hwMap.get(Servo.class, "mineralBlock");
         intakeServo = hwMap.get(Servo.class, "intakeServo");
+
+        blinkin = hwMap.get(RevBlinkinLedDriver.class, "blinkin");
 
         hexFrontLeft.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         hexFrontRight.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors

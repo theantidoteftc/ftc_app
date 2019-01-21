@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.Autos;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -154,7 +155,7 @@ public class autoLeftCrater extends LinearOpMode {
         robot.rightBlock.setPosition(0);
         sleep(1500);
         runtime.reset();
-        while (runtime.seconds() < 0.375 && opModeIsActive()) {
+        while (runtime.seconds() < 0.40 && opModeIsActive()) {
             robot.leftHook.setPosition(0.25);
             robot.rightHook.setPosition(0.75);
         }
@@ -164,6 +165,7 @@ public class autoLeftCrater extends LinearOpMode {
         encoderAccessory(0.65,150,1);
         encoderAccessory(0.875, 1500, 0);
         encoderDrive(0.2,475,475,3);
+        robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
         encoderAccessory(0.9,1550,0);
         encoderDrive(0.25,300,300,3);
         encoderAccessory(0.95,-3650,0);
@@ -246,7 +248,7 @@ public class autoLeftCrater extends LinearOpMode {
         }
 
         if (key == 0) { //left
-            encoderDrive(0.1,-150,150, 2);
+            encoderDrive(0.1,-175,175, 2);
             encoderDrive(0.25,1400,1400,4);
             encoderTurn(0.225,3050,1600);
             encoderDrive(0.3,700,700,2);
@@ -269,7 +271,7 @@ public class autoLeftCrater extends LinearOpMode {
             encoderAccessory(0.5,750,0);
             runtime.reset();
         } else if (key == 1) { //center
-            encoderDrive(0.2, -120, 120, 2);
+            encoderDrive(0.2, -130, 130, 2);
             encoderDrive(0.45, 3650, 3650, 4);
             robot.intakeServo.setPosition(1);
             runtime.reset();
@@ -279,12 +281,12 @@ public class autoLeftCrater extends LinearOpMode {
             }
             robot.intakeServo.setPosition(0.5);
             encoderDrive(0.45, -2950, -2950, 4);
+            encoderDrive(0.2, 815, -815, 3);
+            encoderDrive(0.4, 2900, 2900, 4);
             encoderDrive(0.2, 825, -825, 3);
-            encoderDrive(0.4, 3000, 3000, 4);
-            encoderDrive(0.2, 825, -825, 3);
-            encoderDrive(0.55,4100,4100,5);
+            encoderDrive(0.55,3900,3900,5);
             encoderTurn(0.2,1300,3400);
-            encoderAccessory(0.5,750,0);
+            encoderAccessory(0.5,1750,0);
         } else if (key == 2) { //right
             encoderTurn(0.1,-100,100);
             encoderDrive(0.3,1400,1400,4);
