@@ -22,7 +22,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import java.util.Locale;
 
 @TeleOp
-@Disabled //DO NOT ENABLE UNLESS YOU HAVE ADI'S PERMISSION
+//@Disabled //DO NOT ENABLE UNLESS YOU HAVE ADI'S PERMISSION
 public class NewarkOp extends LinearOpMode {
 
     NewarkHardware robot = new NewarkHardware();
@@ -40,6 +40,8 @@ public class NewarkOp extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
+
+        robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_2_COLOR_WAVES);
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
@@ -75,10 +77,12 @@ public class NewarkOp extends LinearOpMode {
         boolean slowSlide = false;
         double startPosPivot = robot.pivotMotor.getCurrentPosition();
         boolean fallDetected = false;
+        double pivotStart = robot.pivotMotor.getCurrentPosition();
 
         robot.mineralBlock.setPosition(0); //close
 
         while (opModeIsActive()) {
+
             //gamepad 1 (xbox)
             double throttle = ((gamepad1.right_trigger) - (gamepad1.left_trigger));
             double steering = gamepad1.left_stick_x;
@@ -105,88 +109,13 @@ public class NewarkOp extends LinearOpMode {
             //gamepad 2 (logitech)
             double slide = -gamepad2.left_stick_y;
             double pivot = gamepad2.right_stick_y;
-            double intake = ((gamepad2.right_trigger) - (gamepad2.left_trigger)) + 0.5;
+            double intake = ((gamepad2.right_trigger/2.28) - (gamepad2.left_trigger/2.28)) + 0.5;
+
 
             if (gamepad2.dpad_up) {
-                robot.mineralBlock.setPosition(1); //close
+                robot.mineralBlock.setPosition(1); //open
             } else if (gamepad2.dpad_down) {
-                robot.mineralBlock.setPosition(0); //open
-            }
-
-            /*if (gamepad2.left_stick_button && gamepad2.right_stick_button) {
-                robot.pivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                robot.pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }*/
-
-            if (gamepad2.right_bumper) { //preset to make slide extend to full position
-                runtime.reset();
-                robot.hexSlide.setTargetPosition(5600); //full position
-                robot.hexSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.hexSlide.setPower(0.375);
-                while (opModeIsActive() && robot.hexSlide.isBusy()) {
-                    if ((gamepad2.right_bumper && runtime.seconds() > 1) || gamepad2.left_stick_y != 0) { //failsafe protection
-                        robot.hexSlide.setPower(0);
-                        break;
-                    }
-                    if (startPosPivot - robot.pivotMotor.getCurrentPosition() > 50) {
-                        fallDetected = true;
-                        robot.hexSlide.setTargetPosition(500); //full position
-                        robot.hexSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        robot.hexSlide.setPower(.875);
-                        while (opModeIsActive() && robot.hexSlide.isBusy()) {
-                        }
-                        robot.hexSlide.setPower(0);
-                        robot.hexSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    } else {
-                        fallDetected = false;
-                    }
-                    throttle = ((gamepad1.right_trigger) - (gamepad1.left_trigger)); //continuation of motor power commands
-                    steering = gamepad1.left_stick_x;
-                    rPower = throttle - steering;
-                    lPower = throttle + steering;
-                    if (slowMode == true) {
-                        if (steering != 0) {
-                            lPower /= 3;
-                            rPower /= 3;
-                        } else {
-                            lPower /= 2;
-                            rPower /= 2;
-                        }
-                    }
-                    pivot = gamepad2.right_stick_y;
-                    intake = ((gamepad2.right_trigger) - (gamepad2.left_trigger)) + 0.5;
-
-                    if (gamepad2.dpad_up) {
-                        robot.mineralBlock.setPosition(1); //open
-                    } else if (gamepad2.dpad_down) {
-                        robot.mineralBlock.setPosition(0); //close
-                    }
-                    
-                    //gamepad 1 & 2 (xbox) setPower
-                    robot.hexFrontLeft.setPower(lPower/4);
-                    robot.hexFrontRight.setPower(rPower/4);
-                    robot.hexRearLeft.setPower(lPower/4);
-                    robot.hexRearRight.setPower(rPower/4);
-                    robot.pivotMotor.setPower(pivot/4);
-                    robot.intakeServo.setPosition(intake);
-
-                    telemetry.addData("Current Position", robot.hexSlide.getCurrentPosition()); //debugging
-                    telemetry.addData("RunTime", runtime.seconds());
-                    telemetry.update();
-                }
-                robot.hexSlide.setPower(0);
-                robot.hexSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                sleep(250);
-            }
-            if (gamepad2.left_bumper) { //WIP
-                robot.hexSlide.setTargetPosition(1500);
-                robot.hexSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.hexSlide.setPower(0.25);
-                while (opModeIsActive() && robot.hexSlide.isBusy()) {
-                    telemetry.addData(">", runtime.seconds());
-                    telemetry.update();
-                }
-                sleep(1000);
+                robot.mineralBlock.setPosition(0); //close
             }
 
             if (gamepad2.a) {
@@ -199,6 +128,19 @@ public class NewarkOp extends LinearOpMode {
             if (slowSlide == true) {
                 slide /= 5;
             }
+
+            if (robot.mineralBlock.getPosition() == 1 && ((robot.pivotMotor.getCurrentPosition() - pivotStart)) > 500) {
+                robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.FIRE_LARGE);
+            } else if (robot.mineralBlock.getPosition() == 0) {
+                robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_2_COLOR_WAVES);
+            }
+
+            if (gamepad2.dpad_right) {
+                robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_2_COLOR_WAVES);
+            } else if (gamepad2.dpad_left) {
+                robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
+            }
+
 
             //gamepad 1 (xbox) setPower
             robot.hexFrontLeft.setPower(lPower);

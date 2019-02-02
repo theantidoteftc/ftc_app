@@ -45,8 +45,6 @@ import org.firstinspires.ftc.teamcode.NewarkHardware;
 
 import java.util.List;
 
-//NOT NEEDED - motors are identified within actual program
-
 /**
  * This file illustrates the concept of driving a path based on encoder counts.
  * It uses the common Pushbot hardware class to define the drive on the robot.
@@ -75,7 +73,7 @@ import java.util.List;
  */
 
 @Autonomous(name="autoLeftCrater", group="newark")
-@Disabled //DO NOT ENABLE UNLESS YOU HAVE ADI'S PERMISSION
+@Disabled
 public class autoLeftCrater extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
@@ -151,11 +149,11 @@ public class autoLeftCrater extends LinearOpMode {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
         }
 
-        robot.leftBlock.setPosition(1); //unlatching procedure
-        robot.rightBlock.setPosition(0);
+        robot.rightBlock.setPosition(0); //unlatching procedure
+        robot.leftBlock.setPosition(1);
         sleep(1500);
         runtime.reset();
-        while (runtime.seconds() < 0.40 && opModeIsActive()) {
+        while (runtime.seconds() < 0.45 && opModeIsActive()) {
             robot.leftHook.setPosition(0.25);
             robot.rightHook.setPosition(0.75);
         }
@@ -166,9 +164,9 @@ public class autoLeftCrater extends LinearOpMode {
         encoderAccessory(0.875, 1500, 0);
         encoderDrive(0.2,475,475,3);
         robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-        encoderAccessory(0.9,1550,0);
+        encoderAccessory(0.9,1350,0);
         encoderDrive(0.25,300,300,3);
-        encoderAccessory(0.95,-3650,0);
+        encoderAccessory(1,-3450,0);
         encoderAccessory(0.3,-900,1);
         //encoderDrive(0.35,-250,-250,4);
         encoderDrive(0.25,-200,200,2);
@@ -250,7 +248,7 @@ public class autoLeftCrater extends LinearOpMode {
         if (key == 0) { //left
             encoderDrive(0.1,-175,175, 2);
             encoderDrive(0.25,1400,1400,4);
-            encoderTurn(0.225,3050,1600);
+            encoderTurn(0.225,3125,1600);
             encoderDrive(0.3,700,700,2);
             robot.intakeServo.setPosition(1);
             runtime.reset();
@@ -264,11 +262,10 @@ public class autoLeftCrater extends LinearOpMode {
             encoderDrive(0.35,800,-800,3);
             encoderDrive(0.3,200,200,3);
             encoderTurn(0.45,2100,3000);
-            encoderDrive(0.45,2800,2800,5); //cutoff after this
-            encoderDrive(0.375,865,-865,3);
-            encoderDrive(0.55,4100,4100,5);
+            encoderDrive(0.45,2875,2875,5); //cutoff after this
+            encoderDrive(0.375,850,-850,3);
+            encoderDrive(0.55,4250,4250,5);
             encoderTurn(0.2,1300,3400);
-            encoderAccessory(0.5,750,0);
             runtime.reset();
         } else if (key == 1) { //center
             encoderDrive(0.2, -130, 130, 2);
@@ -286,12 +283,12 @@ public class autoLeftCrater extends LinearOpMode {
             encoderDrive(0.2, 825, -825, 3);
             encoderDrive(0.55,3900,3900,5);
             encoderTurn(0.2,1300,3400);
-            encoderAccessory(0.5,1750,0);
         } else if (key == 2) { //right
-            encoderTurn(0.1,-100,100);
-            encoderDrive(0.3,1400,1400,4);
-            encoderTurn(0.2,1200,2500);
-            encoderDrive(0.25,1850,1850,7);
+            sleep(500);
+            encoderTurn(0.15,-75,75);
+            encoderDrive(0.3,2000,2000,4);
+            encoderTurn(0.2,650,2300);
+            encoderDrive(0.35,1350,1350,5);
             robot.intakeServo.setPosition(1);
             runtime.reset();
             while (opModeIsActive() && runtime.seconds() < 1.5) {
@@ -300,8 +297,10 @@ public class autoLeftCrater extends LinearOpMode {
             }
             robot.intakeServo.setPosition(0.5);
             sleep(500);
-            encoderDrive(0.25,-177.5,177.5,3);
-            encoderDrive(0.65,-6000,-6000,5);
+            encoderDrive(0.45,-1975,-1975,5);
+            encoderTurn(0.4,-1850,-2825);
+            encoderDrive(0.4,-3600,-3600,5);
+            encoderTurn(0.5,-3400,-1300);
         }
 
         telemetry.addData("Path", "Complete");
