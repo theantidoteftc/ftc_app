@@ -169,7 +169,7 @@ public class autoLeft extends LinearOpMode {
         encoderAccessory(0.9,1850,0);
         encoderDrive(0.125,150,150,3);
         encoderAccessory(0.95,-3950,0);
-        encoderAccessory(0.3,-900,1);
+        encoderAccessory(0.3,-200,1);
         encoderDrive(0.125,-100,100,2);
 
         /** Activate Tensor Flow Object Detection. */
@@ -218,7 +218,7 @@ public class autoLeft extends LinearOpMode {
             }
 
             if (rot == 0) {
-                encoderDrive(0.1,165,-165,3);
+                encoderDrive(0.2,165,-165,3);
                 key += 1;
             } if (key == 2) {
                 telemetry.addData("Broken", "True");
@@ -249,6 +249,15 @@ public class autoLeft extends LinearOpMode {
         if (key == 0) { //left
             telemetry.addData("Left", true);
             telemetry.update();
+            encoderDrive(0.1,-155,155,3);
+            encoderDrive(0.15,290,290,3);
+            encoderTurn(0.1,1850,1000);
+            encoderDrive(0.15,200,200,3);
+            sleep(500);
+            encoderDrive(0.15,-200,-200,3);
+            encoderTurn(0.1,-1850,-1000);
+            encoderDrive(0.15,-290,-290,3);
+
             sleep(250);
             /*encoderDrive(0.1,-125,125, 2);
 //            robot.intake.setPosition(0.75);
@@ -274,25 +283,32 @@ public class autoLeft extends LinearOpMode {
             telemetry.addData("Center", true);
             telemetry.update();
             sleep(250);
-            encoderDrive(0.05,-135,135,3);
-            encoderDrive(0.25,1600,1600,4);
-            encoderDrive(0.25,-1450,-1450,4);
-            encoderDrive(0.15,350,-350,3);
-            encoderTurn(0.4,2600,2200);
-            /*encoderDrive(0.2, -165, 165, 2);
-            encoderDrive(0.25, 4050, 4050, 4);
-            robot.intakeServo.setPosition(1);
+            encoderDrive(0.1,-110,110,3);
+            encoderDrive(0.3,1600,1600,4);
+            sleep(375);
+            encoderDrive(0.125,-1510,-1510,4);
+            encoderAccessory(0.3,450,1);
+            encoderDrive(0.2,320,-320,3);
+            sleep(250);
+            encoderDrive(0.3,1275,1275,4);
+            encoderTurn(0.15,875,430);
+            encoderDrive(0.1,200,200,3);
+            encoderAccessory(0.3,650,1);
+            encoderAccessory(0.6,3500,0);
+            runtime.reset();
+            robot.intakeServo.setPosition(0.94);
+            while (opModeIsActive() && runtime.seconds() < 2) {
+                telemetry.addData("Intaking!", true);
+                telemetry.update();
+            }
+            robot.intakeServo.setPosition(0.5);
+            /*robot.intakeServo.setPosition(1);
             runtime.reset();
             while (opModeIsActive() && runtime.seconds() < 1.5) {
                 telemetry.addData("Depositing Mineral", true);
                 telemetry.update();
             }
-            robot.intakeServo.setPosition(0.5);
-            encoderDrive(0.45, -3100, -3100, 4);
-            encoderDrive(0.2, 800, -800, 3);
-            encoderDrive(0.3, 1750, 1750, 4);
-            encoderTurn(0.4,3300,2300);
-            encoderDrive(0.25,500,500,3);*/
+            robot.intakeServo.setPosition(0.5);*/
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
@@ -401,7 +417,7 @@ public class autoLeft extends LinearOpMode {
             robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            //  sleep(250);   // optional pause after each move
+            sleep(250);   // optional pause after each move
         }
     }
 
@@ -475,7 +491,7 @@ public class autoLeft extends LinearOpMode {
             robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            //  sleep(250);   // optional pause after each move
+            sleep(250);   // optional pause after each move
         }
     }
 

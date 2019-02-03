@@ -72,6 +72,9 @@ public class EncodersOp extends LinearOpMode {
         double rLStart = robot.hexRearLeft.getCurrentPosition();
         double rRStart = robot.hexRearRight.getCurrentPosition();
 
+        double sStart = robot.hexSlide.getCurrentPosition();
+        double pStart = robot.pivotMotor.getCurrentPosition();
+
         robot.mineralBlock.setPosition(0); //close
 
         while (opModeIsActive()) {
@@ -82,16 +85,27 @@ public class EncodersOp extends LinearOpMode {
 
             double rPower = throttle - steering;
             double lPower = throttle + steering;
+
             //gamepad 1 (xbox) setPower
             robot.hexFrontLeft.setPower(lPower/20);
             robot.hexFrontRight.setPower(rPower/20);
             robot.hexRearLeft.setPower(lPower/20);
             robot.hexRearRight.setPower(rPower/20);
 
+            //gamepad 2 (logitech)
+            double slide = -gamepad2.left_stick_y;
+            double pivot = gamepad2.right_stick_y;
+
+            //gamepad 2 (logitech) setPower
+            robot.hexSlide.setPower(slide);
+            robot.pivotMotor.setPower(pivot/4);
+
             telemetry.addData("Delta Front Left", robot.hexFrontLeft.getCurrentPosition() - fLStart);
             telemetry.addData("Delta Front Right", robot.hexFrontRight.getCurrentPosition() - fRStart);
             telemetry.addData("Delta Rear Left", robot.hexRearLeft.getCurrentPosition() - rLStart);
             telemetry.addData("Delta Rear Right", robot.hexRearRight.getCurrentPosition() - rRStart);
+            telemetry.addData("Delta Hex Slide", robot.hexSlide.getCurrentPosition() - sStart);
+            telemetry.addData("Delta Pivot Motor", robot.pivotMotor.getCurrentPosition() - pStart);
             telemetry.addData("Status", "Running");
             telemetry.update();
         }
