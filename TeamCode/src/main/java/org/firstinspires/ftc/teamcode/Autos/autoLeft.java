@@ -168,8 +168,8 @@ public class autoLeft extends LinearOpMode {
         robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
         encoderAccessory(0.9,1850,0);
         encoderDrive(0.125,150,150,3);
-        encoderAccessory(0.95,-3950,0);
-        encoderAccessory(0.3,-200,1);
+        encoderAccessory(0.95,-3850,0);
+        encoderAccessory(0.3,-450,1);
         encoderDrive(0.125,-100,100,2);
 
         /** Activate Tensor Flow Object Detection. */
@@ -249,14 +249,21 @@ public class autoLeft extends LinearOpMode {
         if (key == 0) { //left
             telemetry.addData("Left", true);
             telemetry.update();
-            encoderDrive(0.1,-155,155,3);
-            encoderDrive(0.15,290,290,3);
-            encoderTurn(0.1,1850,1000);
+            encoderAccessory(0.4,450,1);
+            encoderDrive(0.1,-150,150,3);
+            encoderAccessory(0.4,-600,1);
+            encoderDrive(0.175,200,200,3);
+            encoderTurn(0.2,1875,950);
             encoderDrive(0.15,200,200,3);
             sleep(500);
-            encoderDrive(0.15,-200,-200,3);
-            encoderTurn(0.1,-1850,-1000);
-            encoderDrive(0.15,-290,-290,3);
+            encoderAccessory(0.4,450,1);
+            encoderDrive(0.25,-200,-200,3);
+            encoderTurn(0.2,-1850,-1000);
+            //encoderDrive(0.15,-230,-230,3);
+            encoderAccessory(0.4,600,1);
+            encoderDrive(0.2,560,-560,4);
+            encoderDrive(0.25,1500,1500,4);
+            encoderTurn(0.2,1250,830);
 
             sleep(250);
             /*encoderDrive(0.1,-125,125, 2);
