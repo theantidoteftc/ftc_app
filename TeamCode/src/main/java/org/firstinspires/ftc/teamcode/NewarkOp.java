@@ -156,6 +156,7 @@ public class NewarkOp extends LinearOpMode {
             telemetry.addData("slide input", gamepad2.left_stick_y);
             telemetry.addData("slide LIVE", robot.hexSlide.getCurrentPosition());
             telemetry.addData("intake", robot.intakeServo.getPosition());
+            telemetry.addData("lpower", lPower);
             telemetry.addData("Status", "Running");
             telemetry.addData("slowmode", slowMode);
             telemetry.update();

@@ -27,25 +27,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.Autos;
+package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.NewarkHardware;
 
 import java.util.List;
-
-//NOT NEEDED - motors are identified within actual program
+import java.util.Locale;
 
 /**
  * This file illustrates the concept of driving a path based on encoder counts.
@@ -74,9 +79,9 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="autoLeft", group="newark")
+@Autonomous(name="IMUDevelopAuto", group="IMU Developing")
 //@Disabled
-public class autoLeft extends LinearOpMode {
+public class IMUDevelopAuto extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
@@ -100,12 +105,34 @@ public class autoLeft extends LinearOpMode {
     static final double     DRIVE_SPEED             = 0.45;
     static final double     TURN_SPEED              = 0.25;
 
-    int inte = 0;
-    int rot = 0;
-    int key = 0;
+    // The IMU sensor object
+    BNO055IMU imu;
+
+    // State used for updating telemetry
+    Orientation angles;
+    Acceleration gravity;
+
+    public String pitch;
 
     @Override
     public void runOpMode() {
+
+        // Set up the parameters with which we will use our IMU. Note that integration
+        // algorithm here just reports accelerations to the logcat log; it doesn't actually
+        // provide positional information.
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
 
         /*
          * Initialize the drive system variables.
@@ -139,210 +166,214 @@ public class autoLeft extends LinearOpMode {
         // first.
         initVuforia(0);
 
+        // Set up our telemetry dashboard
+        composeTelemetry();
+
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start tracking - U R GO, GOOD LUCK!");
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            initTfod();
-        } else {
-            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
-        }
+        rampDrive(0.5,-400);
 
-        robot.leftBlock.setPosition(1); //unlatching procedure
-        robot.rightBlock.setPosition(0);
-        sleep(1500);
-        runtime.reset();
-        while (runtime.seconds() < 0.325 && opModeIsActive()) {
-            robot.leftHook.setPosition(0);
-            robot.rightHook.setPosition(1);
-        }
-        robot.leftHook.setPosition(0.5);
-        robot.rightHook.setPosition(0.5);
-        encoderAccessory(0.75,1200,1);
-        encoderAccessory(0.95, 1500, 0);
-        encoderDrive(0.1,250,250,3);
-        robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-        encoderAccessory(0.9,1850,0);
-        encoderDrive(0.125,150,150,3);
-        encoderAccessory(0.95,-3850,0);
-        encoderAccessory(0.3,-450,1);
-        encoderDrive(0.125,-100,100,2);
-
-        /** Activate Tensor Flow Object Detection. */
-        if (tfod != null) {
-            tfod.activate();
-        }
-
-        while (rot == 0 && opModeIsActive()) {
-            if (opModeIsActive()) {
-                runtime.reset();
-                while ((opModeIsActive() && inte == 0) && runtime.seconds() < 1.5) {
-                    if (tfod != null) {
-
-                        // getUpdatedRecognitions() will return null if no new information is available since
-                        // the last time that call was made.
-                        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                        if (updatedRecognitions != null) {
-                            telemetry.addData("Objects detected", "none");
-                            if (updatedRecognitions.size() >= 1) {
-                                int goldMineralX = -1;
-                                int silverMineral1X = -1;
-                                int silverMineral2X = -1;
-                                for (Recognition recognition : updatedRecognitions) {
-                                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL) && recognition.getWidth() > 85) {
-                                        telemetry.addData("# Object Detected", updatedRecognitions.size());
-                                        goldMineralX = (int) recognition.getLeft();
-                                        telemetry.addData("Gold: ", "found");
-                                        inte = 1;
-                                        rot = 1;
-                                        tfod.shutdown();
-                                        tfod.deactivate();
-                                    } else if (silverMineral1X == -1) {
-                                        silverMineral1X = (int) recognition.getLeft();
-                                    } else {
-                                        silverMineral2X = (int) recognition.getLeft();
-                                    }
-                                    telemetry.addData("Size", recognition.getWidth());
-                                    telemetry.update();
-                                }
-                            }
-                            telemetry.addData("rot", rot);
-                            telemetry.update();
-                        }
-                    }
-                }
-            }
-
-            if (rot == 0) {
-                encoderDrive(0.2,165,-165,3);
-                key += 1;
-            } if (key == 2) {
-                telemetry.addData("Broken", "True");
-                break;
-            } else if (rot == 1) {
-                telemetry.addData("key", key);
-                telemetry.update();
-                sleep(750);
-
-            }
-
-        }
-
-        if (tfod != null) {
-            tfod.shutdown();
-            tfod.deactivate();
-
-        }
-
-        if (key == 0) {
-            telemetry.addData("gold mineral", "left");
-        } else if (key == 1) {
-            telemetry.addData("gold mineral", "center");
-        } else if (key == 2) {
-            telemetry.addData("gold mineral", "right");
-        }
-
-        if (key == 0) { //left
-            telemetry.addData("Left", true);
-            telemetry.update();
-            encoderDrive(0.05,-150,150,3);
-            encoderAccessory(0.95,200,0);
-            encoderAccessory(0.6,-600,1);
-            encoderDrive(0.175,850,850,3);
-            encoderDrive(0.1,-800,-800,4);
-            encoderAccessory(0.95,-300,0);
-            encoderDrive(0.15,560,-560,3);
-            encoderDrive(0.3,925,925,4);
-            encoderDrive(0.2,-225,225,3);
-            encoderDrive(0.2,725,725,3);
-
-            //encoderDrive(0.3,2000,2000,5);
-            /*encoderDrive(0.25,-200,-200,3);
-            encoderTurn(0.2,-1850,-1000);
-            //encoderDrive(0.15,-230,-230,3);
-            encoderAccessory(0.4,600,1);
-            encoderDrive(0.2,560,-560,4);
-            encoderDrive(0.25,1500,1500,4);
-            encoderTurn(0.2,1250,830);*/
-
-            sleep(250);
-            /*encoderDrive(0.1,-125,125, 2);
-//            robot.intake.setPosition(0.75);
-            encoderDrive(0.2,1400,1400,4);
-//            robot.intake.setPosition(0.5);
-            encoderTurn(0.2,3100,1650);
-            encoderDrive(0.3,700,700,2);
-            robot.intakeServo.setPosition(1);
-            runtime.reset();
-            while (opModeIsActive() && runtime.seconds() < 1.5) {
-                telemetry.addData("Depositing Mineral", true);
-                telemetry.update();
-            }
-            robot.intakeServo.setPosition(0.5);
-            robot.intakeServo.setPosition(0.5);
-            encoderDrive(0.3,-4050,-4050,4);
-            encoderDrive(.3,335,-500,2);
-            encoderDrive(0.6,4750,4750,4);
-            encoderTurn(0.45,3000,2150);
-            encoderDrive(0.2,750,750,3);
-            runtime.reset();*/
-        } else if (key == 1) { //center
-            telemetry.addData("Center", true);
-            telemetry.update();
-            sleep(250);
-            encoderDrive(0.1,-110,110,3);
-            encoderDrive(0.3,1600,1600,4);
-            sleep(375);
-            encoderDrive(0.125,-1510,-1510,4);
-            encoderAccessory(0.3,450,1);
-            encoderDrive(0.2,320,-320,3);
-            sleep(250);
-            encoderDrive(0.3,1275,1275,4);
-            encoderTurn(0.15,875,430);
-            encoderDrive(0.1,200,200,3);
-            encoderAccessory(0.3,650,1);
-            encoderAccessory(0.6,3500,0);
-            runtime.reset();
-            robot.intakeServo.setPosition(0.94);
-            while (opModeIsActive() && runtime.seconds() < 2) {
-                telemetry.addData("Intaking!", true);
-                telemetry.update();
-            }
-            robot.intakeServo.setPosition(0.5);
-            /*robot.intakeServo.setPosition(1);
-            runtime.reset();
-            while (opModeIsActive() && runtime.seconds() < 1.5) {
-                telemetry.addData("Depositing Mineral", true);
-                telemetry.update();
-            }
-            robot.intakeServo.setPosition(0.5);*/
-        } else if (key == 2) { //right
-            telemetry.addData("Right", true);
-            telemetry.update();
-            sleep(250);
-            /*encoderTurn(0.1,-100,100);
-            encoderDrive(0.3,1400,1400,4);
-            encoderTurn(0.2,1200,2500);
-            encoderDrive(0.25,1850,1850,7);
-            robot.intakeServo.setPosition(1);
-            runtime.reset();
-            while (opModeIsActive() && runtime.seconds() < 1.5) {
-                telemetry.addData("Depositing Mineral", true);
-                telemetry.update();
-            }
-            robot.intakeServo.setPosition(0.5);
-            sleep(500);
-            encoderDrive(0.25,-177.5,177.5,3);
-            encoderDrive(0.65,-6000,-6000,5);*/
-        }
+        telemetry.addData("Current Heading", angles.firstAngle);
+        telemetry.update();
+        sleep(5000);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
 
+    void composeTelemetry() {
+
+        // At the beginning of each telemetry update, grab a bunch of data
+        // from the IMU that we will then display in separate lines.
+        telemetry.addAction(new Runnable() { @Override public void run()
+        {
+            // Acquiring the angles is relatively expensive; we don't want
+            // to do that in each of the three items that need that info, as that's
+            // three times the necessary expense.
+            angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            gravity  = imu.getGravity();
+        }
+        });
+
+        telemetry.addLine()
+                .addData("status", new Func<String>() {
+                    @Override public String value() {
+                        return imu.getSystemStatus().toShortString();
+                    }
+                })
+                .addData("calib", new Func<String>() {
+                    @Override public String value() {
+                        return imu.getCalibrationStatus().toString();
+                    }
+                });
+
+        telemetry.addLine()
+                .addData("heading", new Func<String>() {
+                    @Override public String value() {
+                        return formatAngle(angles.angleUnit, angles.firstAngle);
+                    }
+                })
+                .addData("roll", new Func<String>() {
+                    @Override public String value() {
+                        return formatAngle(angles.angleUnit, angles.secondAngle);
+                    }
+                })
+                .addData("pitch", new Func<String>() {
+                    @Override public String value() {
+                        pitch = formatAngle(angles.angleUnit, angles.thirdAngle);
+                        return formatAngle(angles.angleUnit, angles.thirdAngle);
+                    }
+                });
+
+        telemetry.addLine()
+                .addData("grvty", new Func<String>() {
+                    @Override public String value() {
+                        return gravity.toString();
+                    }
+                })
+                .addData("mag", new Func<String>() {
+                    @Override public String value() {
+                        return String.format(Locale.getDefault(), "%.3f",
+                                Math.sqrt(gravity.xAccel*gravity.xAccel
+                                        + gravity.yAccel*gravity.yAccel
+                                        + gravity.zAccel*gravity.zAccel));
+                    }
+                });
+
+        telemetry.addLine()
+                .addData("Debugging: ", new Func<String>() {
+                    @Override public String value() {
+                        return formatAngle(angles.angleUnit, angles.thirdAngle);
+                    }
+                });
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // Formatting
+    //----------------------------------------------------------------------------------------------
+
+    String formatAngle(AngleUnit angleUnit, double angle) {
+        return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
+    }
+
+    String formatDegrees(double degrees){
+        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
+    }
+
+
+    /**
+     * @param baseSpeed
+     *          the original speed at which the motors are
+     * @param heading
+     *          the target angle at which the robot must turn to from base 0
+     */
+    public void imuTurn(double baseSpeed, double heading, double gain, double wiggleRoom) {
+
+        // Turn On RUN_USING_ENCODER
+        robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        double deltaHeading = (heading - angles.firstAngle);
+
+        while (opModeIsActive() && Math.abs(deltaHeading) > wiggleRoom) {
+            deltaHeading = (heading - angles.firstAngle);
+            double lPower = -(baseSpeed * deltaHeading * gain);
+            double rPower = baseSpeed * deltaHeading * gain;
+
+
+            robot.hexFrontLeft.setPower(lPower);
+            robot.hexRearLeft.setPower(lPower);
+            robot.hexFrontRight.setPower(rPower);
+            robot.hexRearRight.setPower(rPower);
+            telemetry.addData("Current Heading", angles.firstAngle);
+            telemetry.addData("baseSpeed", baseSpeed);
+            telemetry.addData("deltaHeading", deltaHeading);
+            telemetry.addData("gain", gain);
+            telemetry.addData("Current Left Power", lPower);
+            telemetry.addData("Current Right Power", rPower);
+            telemetry.update();
+        }
+
+        robot.hexFrontLeft.setPower(0);
+        robot.hexRearLeft.setPower(0);
+        robot.hexFrontRight.setPower(0);
+        robot.hexRearRight.setPower(0);
+    }
+
+    public void rampDrive(double speed, double encoderTravel) {
+        int newFrontLeftTarget;
+        int newFrontRightTarget;
+        int newRearLeftTarget;
+        int newRearRightTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newFrontLeftTarget = robot.hexFrontLeft.getCurrentPosition() + (int)(encoderTravel);// * COUNTS_PER_INCH);
+            newFrontRightTarget = robot.hexFrontRight.getCurrentPosition() + (int)(encoderTravel);// * COUNTS_PER_INCH);
+            newRearLeftTarget = robot.hexFrontLeft.getCurrentPosition() + (int)(encoderTravel);// * COUNTS_PER_INCH);
+            newRearRightTarget = robot.hexFrontRight.getCurrentPosition() + (int)(encoderTravel);// * COUNTS_PER_INCH);
+            robot.hexFrontLeft.setTargetPosition(newFrontLeftTarget);
+            robot.hexFrontRight.setTargetPosition(newFrontRightTarget);
+            robot.hexRearLeft.setTargetPosition(newRearLeftTarget);
+            robot.hexRearRight.setTargetPosition(newRearRightTarget);
+
+            double delta = newFrontLeftTarget - robot.hexFrontLeft.getCurrentPosition();
+
+            // Turn On RUN_TO_POSITION
+            robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.hexRearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            if (encoderTravel > 0) {
+                while (opModeIsActive() && robot.hexFrontLeft.getCurrentPosition() < newFrontLeftTarget) {
+                    delta = newFrontLeftTarget - robot.hexFrontLeft.getCurrentPosition();
+
+                    robot.hexFrontLeft.setPower(Math.abs(speed) * delta * (1/encoderTravel));
+                    robot.hexFrontRight.setPower(Math.abs(speed) * delta * (1/encoderTravel));
+                    robot.hexRearLeft.setPower(Math.abs(speed) * delta * (1/encoderTravel));
+                    robot.hexRearRight.setPower(Math.abs(speed) * delta * (1/encoderTravel));
+
+                    telemetry.addData("Delta", delta);
+                    telemetry.update();
+                }
+            } else if (encoderTravel < 0) {
+                while (opModeIsActive() && robot.hexFrontLeft.getCurrentPosition() > newFrontLeftTarget) {
+                    delta = newFrontLeftTarget - robot.hexFrontLeft.getCurrentPosition();
+
+                    robot.hexFrontLeft.setPower(Math.abs(speed) * delta * (1/encoderTravel));
+                    robot.hexFrontRight.setPower(Math.abs(speed) * delta * (1/encoderTravel));
+                    robot.hexRearLeft.setPower(Math.abs(speed) * delta * (1/encoderTravel));
+                    robot.hexRearRight.setPower(Math.abs(speed) * delta * (1/encoderTravel));
+
+                    telemetry.addData("Delta", delta);
+                    telemetry.update();
+                }
+            }
+
+            // Stop all motion;
+            robot.hexFrontLeft.setPower(0);
+            robot.hexFrontRight.setPower(0);
+            robot.hexRearLeft.setPower(0);
+            robot.hexRearRight.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            sleep(250);   // optional pause after each move
+        }
+    }
 
     public void encoderTurn(double baseSpeed, double leftAmount, double rightAmount) {
         int newFrontLeftTarget;
