@@ -254,9 +254,17 @@ public class autoRight extends LinearOpMode {
             telemetry.addData("Right", true);
             telemetry.update();
             encoderDrive(0.2,-75,75,1);
-            encoderDrive(0.2,700,700,2);
-            encoderDrive(0.2,-600,-600,2);
-            encoderDrive(0.2,-650,650,2);
+            encoderAccessory(0.5,-350,1);
+            encoderDrive(0.3,700,700,2);
+            encoderDrive(0.3,-480,-480,2);
+            encoderDrive(0.2,-580,580,1);
+            encoderDrive(0.4,1625,1625,2);
+            encoderDrive(0.2,-225,225,1);
+            encoderAccessory(0.5,200,0);
+            encoderDrive(0.35,1550,1550,1.75);
+            sleep(375);
+            encoderDrive(0.2,-30,30,1);
+            encoderDrive(0.3,-2400,-2400,4);
         }
 
         telemetry.addData("Path", "Complete");
