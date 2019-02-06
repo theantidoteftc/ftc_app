@@ -74,7 +74,7 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="autoLeft", group="newark")
+@Autonomous(name="autoLeft", group="newarkautos")
 //@Disabled
 public class autoLeft extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
@@ -217,7 +217,7 @@ public class autoLeft extends LinearOpMode {
             }
 
             if (rot == 0) {
-                encoderDrive(0.2,165,-165,3);
+                encoderDrive(0.2,165,-165,1);
                 key += 1;
             } if (key == 2) {
                 telemetry.addData("Broken", "True");
@@ -248,61 +248,39 @@ public class autoLeft extends LinearOpMode {
         if (key == 0) { //left
             telemetry.addData("Left", true);
             telemetry.update();
-            encoderDrive(0.05,-150,150,3);
+            encoderDrive(0.1,-105,105,1);
             encoderAccessory(0.95,200,0);
-            encoderAccessory(0.6,-600,1);
-            encoderDrive(0.175,850,850,3);
-            encoderDrive(0.1,-800,-800,4);
+            encoderAccessory(0.5,-570,1);
+            encoderDrive(0.275,1200,1200,1.5);
+            encoderAccessory(1,-530,0);
+            encoderDrive(0.3,-350,-350,1.25);
+            encoderDrive(0.3,285,-285,1.25);
+            encoderDrive(0.4,1120,1120,2);
+            sleep(250);
+            encoderDrive(0.35,-1400,-1400,2.25);
+            encoderDrive(0.25,250,-250,1.5);
+            encoderDrive(0.3,-1425,-1425,3);
+            /*encoderDrive(0.1,-800,-800,4);
             encoderAccessory(0.95,-300,0);
             encoderDrive(0.15,560,-560,3);
             encoderDrive(0.3,925,925,4);
             encoderDrive(0.2,-225,225,3);
-            encoderDrive(0.2,725,725,3);
-
-            //encoderDrive(0.3,2000,2000,5);
-            /*encoderDrive(0.25,-200,-200,3);
-            encoderTurn(0.2,-1850,-1000);
-            //encoderDrive(0.15,-230,-230,3);
-            encoderAccessory(0.4,600,1);
-            encoderDrive(0.2,560,-560,4);
-            encoderDrive(0.25,1500,1500,4);
-            encoderTurn(0.2,1250,830);*/
-
-            sleep(250);
-            /*encoderDrive(0.1,-125,125, 2);
-//            robot.intake.setPosition(0.75);
-            encoderDrive(0.2,1400,1400,4);
-//            robot.intake.setPosition(0.5);
-            encoderTurn(0.2,3100,1650);
-            encoderDrive(0.3,700,700,2);
-            robot.intakeServo.setPosition(1);
-            runtime.reset();
-            while (opModeIsActive() && runtime.seconds() < 1.5) {
-                telemetry.addData("Depositing Mineral", true);
-                telemetry.update();
-            }
-            robot.intakeServo.setPosition(0.5);
-            robot.intakeServo.setPosition(0.5);
-            encoderDrive(0.3,-4050,-4050,4);
-            encoderDrive(.3,335,-500,2);
-            encoderDrive(0.6,4750,4750,4);
-            encoderTurn(0.45,3000,2150);
-            encoderDrive(0.2,750,750,3);
-            runtime.reset();*/
+            encoderDrive(0.2,725,725,3);*/
         } else if (key == 1) { //center
             telemetry.addData("Center", true);
             telemetry.update();
             sleep(250);
+            encoderAccessory(0.5,-570,1);
             encoderDrive(0.1,-110,110,3);
-            encoderDrive(0.3,1600,1600,4);
+            encoderDrive(0.35,1300,1300,4);
             sleep(375);
-            encoderDrive(0.125,-1510,-1510,4);
+            encoderDrive(0.25,-1210,-1210,4);
             encoderAccessory(0.3,450,1);
             encoderDrive(0.2,320,-320,3);
             sleep(250);
             encoderDrive(0.3,1275,1275,4);
             encoderTurn(0.15,875,430);
-            encoderDrive(0.1,200,200,3);
+            encoderDrive(0.2,200,200,3);
             encoderAccessory(0.3,650,1);
             encoderAccessory(0.6,3500,0);
             runtime.reset();
@@ -322,7 +300,13 @@ public class autoLeft extends LinearOpMode {
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
+            encoderDrive(0.2,-75,75,1);
+            encoderDrive(0.2,1300,1300,3);
+            encoderDrive(0.2,-365,365,1.5);
+            encoderDrive(0.25,1050,1050,2);
+            encoderDrive(0.2,-38,38,1.5);
             sleep(250);
+            encoderDrive(0.3,-2650,-2650,3);
             /*encoderTurn(0.1,-100,100);
             encoderDrive(0.3,1400,1400,4);
             encoderTurn(0.2,1200,2500);
@@ -404,7 +388,7 @@ public class autoLeft extends LinearOpMode {
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
-                    (robot.hexFrontLeft.isBusy() && robot.hexFrontRight.isBusy())) {
+                    (robot.hexFrontLeft.isBusy() || robot.hexFrontRight.isBusy())) {
 
                 // Display it for the driver.
                 telemetry.addData("yeet", robot.hexFrontLeft.getCurrentPosition());
@@ -479,7 +463,7 @@ public class autoLeft extends LinearOpMode {
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
-                    (robot.hexFrontLeft.isBusy() && robot.hexFrontRight.isBusy())) {
+                    (robot.hexFrontLeft.isBusy() || robot.hexFrontRight.isBusy())) {
 
                 // Display it for the driver.
                 telemetry.addData("Path1",  "Running to %7d :%7d", newFrontLeftTarget,  newFrontRightTarget);
