@@ -168,7 +168,7 @@ public class autoLeft extends LinearOpMode {
         encoderAccessory(0.9,1850,0);
         encoderDrive(0.125,150,150,3);
         encoderAccessory(0.95,-3850,0);
-        encoderAccessory(0.3,-450,1);
+        encoderAccessory(0.3,-550,1);
         encoderDrive(0.125,-100,100,2);
 
         /** Activate Tensor Flow Object Detection. */
@@ -179,7 +179,7 @@ public class autoLeft extends LinearOpMode {
         while (rot == 0 && opModeIsActive()) {
             if (opModeIsActive()) {
                 runtime.reset();
-                while ((opModeIsActive() && inte == 0) && runtime.seconds() < 1.5) {
+                while ((opModeIsActive() && inte == 0) && runtime.seconds() < 1) {
                     if (tfod != null) {
 
                         // getUpdatedRecognitions() will return null if no new information is available since
@@ -258,7 +258,7 @@ public class autoLeft extends LinearOpMode {
             encoderDrive(0.4,1120,1120,2);
             sleep(250);
             encoderDrive(0.35,-1400,-1400,2.25);
-            encoderDrive(0.25,250,-250,1.5);
+            encoderDrive(0.25,225,-225,2.5);
             encoderDrive(0.3,-1425,-1425,3);
             /*encoderDrive(0.1,-800,-800,4);
             encoderAccessory(0.95,-300,0);
@@ -271,16 +271,16 @@ public class autoLeft extends LinearOpMode {
             telemetry.update();
             sleep(250);
             encoderAccessory(0.5,-570,1);
-            encoderDrive(0.1,-110,110,3);
-            encoderDrive(0.35,1300,1300,4);
-            sleep(375);
-            encoderDrive(0.25,-1210,-1210,4);
+            encoderDrive(0.1,-75,75,3);
+            encoderDrive(0.35,1475,1475,3);
+            sleep(1000);
+            encoderDrive(0.3,-1350,-1350,3);
             encoderAccessory(0.3,450,1);
-            encoderDrive(0.2,320,-320,3);
+            encoderDrive(0.2,350,-350,2);
             sleep(250);
-            encoderDrive(0.3,1275,1275,4);
+            encoderDrive(0.35,1275,1275,2.25);
             encoderTurn(0.15,875,430);
-            encoderDrive(0.2,200,200,3);
+            encoderDrive(0.2,200,200,1.1);
             encoderAccessory(0.3,650,1);
             encoderAccessory(0.6,3500,0);
             runtime.reset();
@@ -306,7 +306,7 @@ public class autoLeft extends LinearOpMode {
             encoderDrive(0.25,1050,1050,2);
             encoderDrive(0.2,-38,38,1.5);
             sleep(250);
-            encoderDrive(0.3,-2650,-2650,3);
+            encoderDrive(0.3,-2850,-2850,3.5);
             /*encoderTurn(0.1,-100,100);
             encoderDrive(0.3,1400,1400,4);
             encoderTurn(0.2,1200,2500);

@@ -162,13 +162,14 @@ public class autoRight extends LinearOpMode {
         robot.rightHook.setPosition(0.5);
         encoderAccessory(0.75,1200,1);
         encoderAccessory(0.95, 1500, 0);
-        encoderDrive(0.1,250,250,3);
+        encoderDrive(0.15,350,350,3);
         robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
         encoderAccessory(0.9,1850,0);
         encoderDrive(0.125,150,150,3);
         encoderAccessory(0.95,-3850,0);
         encoderAccessory(0.3,-450,1);
-        encoderDrive(0.125,-100,100,2);
+        sleep(100);
+        encoderDrive(0.125,-85,85,2);
 
         /** Activate Tensor Flow Object Detection. */
         if (tfod != null) {
@@ -253,18 +254,21 @@ public class autoRight extends LinearOpMode {
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
-            encoderDrive(0.2,-75,75,1);
+            encoderDrive(0.2,-95,95,1);
             encoderAccessory(0.5,-350,1);
             encoderDrive(0.3,700,700,2);
-            encoderDrive(0.3,-480,-480,2);
-            encoderDrive(0.2,-580,580,1);
-            encoderDrive(0.4,1625,1625,2);
-            encoderDrive(0.2,-225,225,1);
+            encoderDrive(0.3,-430,-430,2.5);
+            sleep(100);
+            encoderDrive(0.15,-580,580,2);
+            encoderDrive(0.4,1350,1350,2.5);
+            encoderTurn(0.15,430,860);
+            encoderDrive(0.25,1500,1500,3);
+            /*encoderDrive(0.2,-225,225,1);
             encoderAccessory(0.5,200,0);
             encoderDrive(0.35,1550,1550,1.75);
             sleep(375);
             encoderDrive(0.2,-30,30,1);
-            encoderDrive(0.3,-2400,-2400,4);
+            encoderDrive(0.3,-2400,-2400,4);*/
         }
 
         telemetry.addData("Path", "Complete");
