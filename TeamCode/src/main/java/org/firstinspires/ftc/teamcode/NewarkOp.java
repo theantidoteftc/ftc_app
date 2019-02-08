@@ -98,18 +98,18 @@ public class NewarkOp extends LinearOpMode {
 
             if (slowMode == true) {
                 if (steering != 0) {
-                    lPower /= 4;
-                    rPower /= 4;
+                    lPower /= 2.5;
+                    rPower /= 2.5;
                 } else {
-                    lPower /= 3;
-                    rPower /= 3;
+                    lPower /= 2;
+                    rPower /= 2;
                 }
             }
 
             //gamepad 2 (logitech)
             double slide = -gamepad2.left_stick_y;
             double pivot = gamepad2.right_stick_y;
-            double intake = ((gamepad2.right_trigger/2.28) - (gamepad2.left_trigger/2.28)) + 0.5;
+            double intake = ((gamepad2.left_trigger/2.28) - (gamepad2.right_trigger/2.28)) + 0.5;
 
 
             if (gamepad2.dpad_up) {
@@ -143,10 +143,10 @@ public class NewarkOp extends LinearOpMode {
 
 
             //gamepad 1 (xbox) setPower
-            robot.hexFrontLeft.setPower(lPower);
-            robot.hexFrontRight.setPower(rPower);
-            robot.hexRearLeft.setPower(lPower);
-            robot.hexRearRight.setPower(rPower);
+            robot.hexFrontLeft.setPower(lPower/4);
+            robot.hexFrontRight.setPower(rPower/4);
+            robot.hexRearLeft.setPower(lPower/4);
+            robot.hexRearRight.setPower(rPower/4);
 
             //gamepad 2 (logitech) setPower
             robot.hexSlide.setPower(slide);
