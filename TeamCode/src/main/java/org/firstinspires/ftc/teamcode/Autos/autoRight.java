@@ -161,15 +161,16 @@ public class autoRight extends LinearOpMode {
         robot.leftHook.setPosition(0.5);
         robot.rightHook.setPosition(0.5);
         encoderAccessory(0.75,1200,1);
-        encoderAccessory(0.5, 750, 0);
-        encoderDrive(0.15,350,350,3);
+        encoderAccessoryTimeout(0.7, 600, 0,1);
+        encoderDrive(0.15,100,100,2);
         robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-        encoderAccessory(0.5,925,0);
-        encoderDrive(0.125,150,150,3);
-        encoderAccessoryTimeout(0.5,-1925,0,3);
-        encoderAccessory(0.3,-450,1);
+        encoderAccessoryTimeout(0.5,925,0,2.5);
+        encoderAccessory(0.3,-125,1);
+        encoderAccessoryTimeout(0.4,-1925,0,3);
+        encoderAccessory(0.3,-250,1);
+        encoderDrive(0.125,250,250,3);
         sleep(100);
-        encoderDrive(0.125,-85,85,2);
+        encoderDrive(0.125,-115,115,2);
 
         /** Activate Tensor Flow Object Detection. */
         if (tfod != null) {
@@ -217,7 +218,7 @@ public class autoRight extends LinearOpMode {
             }
 
             if (rot == 0) {
-                encoderDrive(0.3,165,-165,.75);
+                encoderDrive(0.3,185,-185,1);
                 key += 1;
             } if (key == 2) {
                 telemetry.addData("Broken", "True");
@@ -248,34 +249,50 @@ public class autoRight extends LinearOpMode {
         if (key == 0) { //left
             telemetry.addData("Left", true);
             telemetry.update();
-        } else if (key == 1) { //center
-            telemetry.addData("Center", true);
-            telemetry.update();
-        } else if (key == 2) { //right
-            telemetry.addData("Right", true);
-            telemetry.update();
-            encoderDrive(0.2,-75,75,1);
-            encoderAccessory(0.5,-350,1);
-            encoderDrive(0.3,700,700,2);
-            encoderAccessoryTimeout(1,-530,0,1.2);
-            encoderDrive(0.25,-340,-340,2);
-            encoderDrive(0.25,-550,550,1.5);
-            encoderDrive(0.6,1200,1200,1.5);
-            encoderTurn(0.2,430,860);
-            encoderDrive(0.6,1500,1500,2);
+            encoderAccessoryTimeout(0.3,-450,0,1.5);
+            encoderDrive(0.2,-85,85,1.5);
+            encoderDrive(0.3,750,750,1.5);
+            encoderDrive(0.2,150,-150,1.5);
+            encoderAccessory(0.3,650,1);
+            encoderAccessory(0.6,2200,0);
             runtime.reset();
-            robot.intakeServo.setPosition(0.06);
-            while (opModeIsActive() && runtime.seconds() < 1.25) {
-                telemetry.addData("Dropping Marker!", true);
+            robot.intakeServo.setPosition(0.94);
+            while (opModeIsActive() && runtime.seconds() < 5) {
+                telemetry.addData("Intaking!", true);
                 telemetry.update();
             }
             robot.intakeServo.setPosition(0.5);
-            /*encoderDrive(0.2,-225,225,1);
-            encoderAccessory(0.5,200,0);
-            encoderDrive(0.35,1550,1550,1.75);
-            sleep(375);
-            encoderDrive(0.2,-30,30,1);
-            encoderDrive(0.3,-2400,-2400,4);*/
+        } else if (key == 1) { //center
+            telemetry.addData("Center", true);
+            telemetry.update();
+            encoderAccessoryTimeout(0.3,-450,0,1.5);
+            encoderDrive(0.2,-75,75,1);
+            encoderDrive(0.3,750,750,1.5);
+            encoderAccessory(0.3,650,1);
+            encoderAccessory(0.6,2200,0);
+            runtime.reset();
+            robot.intakeServo.setPosition(0.94);
+            while (opModeIsActive() && runtime.seconds() < 5) {
+                telemetry.addData("Intaking!", true);
+                telemetry.update();
+            }
+            robot.intakeServo.setPosition(0.5);
+        } else if (key == 2) { //right
+            telemetry.addData("Right", true);
+            telemetry.update();
+            encoderAccessoryTimeout(0.3,-450,0,1.5);
+            encoderDrive(0.2,-85,85,1.5);
+            encoderDrive(0.3,1000,1000,2.5);
+            encoderDrive(0.2,-300,300,1.5);
+            encoderAccessory(0.3,650,1);
+            encoderAccessory(0.6,2200,0);
+            runtime.reset();
+            robot.intakeServo.setPosition(0.94);
+            while (opModeIsActive() && runtime.seconds() < 5) {
+                telemetry.addData("Intaking!", true);
+                telemetry.update();
+            }
+            robot.intakeServo.setPosition(0.5);
         }
 
         telemetry.addData("Path", "Complete");

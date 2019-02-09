@@ -274,25 +274,24 @@ public class autoLeft extends LinearOpMode {
             telemetry.addData("Center", true);
             telemetry.update();
             sleep(250);
-            encoderAccessory(0.5,-570,1);
-            encoderDrive(0.1,-75,75,3);
-            encoderDrive(0.35,1475,1475,3);
+            encoderAccessoryTimeout(0.5,-450,0,1);
+            encoderDrive(0.1,-75,75,2);
+            encoderDrive(0.35,1475,1475,2.25);
             runtime.reset();
             robot.intakeServo.setPosition(0.06);
-            while (opModeIsActive() && runtime.seconds() < 1.25) {
+            while (opModeIsActive() && runtime.seconds() < 1) {
                 telemetry.addData("Dropping Marker!", true);
                 telemetry.update();
             }
             robot.intakeServo.setPosition(0.5);
-            encoderDrive(0.3,-1325,-1325,3);
-            encoderAccessory(0.3,450,1);
-            encoderDrive(0.2,350,-350,2);
-            sleep(250);
-            encoderDrive(0.35,1275,1275,2.25);
+            encoderDrive(0.35,-1375,-1375,2.25);
+            encoderAccessoryTimeout(0.5,-450,0,0.6);
+            encoderDrive(0.2,335,-335,1.5);
+            encoderDrive(0.45,1275,1275,2.25);
             encoderTurn(0.15,875,430);
             encoderDrive(0.2,200,200,1.1);
             encoderAccessory(0.3,650,1);
-            encoderAccessory(0.6,3500,0);
+            encoderAccessory(0.6,1700,0);
             runtime.reset();
             robot.intakeServo.setPosition(0.94);
             while (opModeIsActive() && runtime.seconds() < 2) {
