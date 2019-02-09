@@ -162,14 +162,15 @@ public class autoLeft extends LinearOpMode {
         robot.leftHook.setPosition(0.5);
         robot.rightHook.setPosition(0.5);
         encoderAccessory(0.75,1200,1);
-        encoderAccessory(0.95, 1500, 0);
-        encoderDrive(0.1,250,250,3);
+        encoderAccessoryTimeout(0.7, 600, 0,1);
+        encoderDrive(0.15,100,100,2);
         robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-        encoderAccessory(0.9,1850,0);
-        encoderDrive(0.125,150,150,3);
-        encoderAccessory(0.95,-3850,0);
+        encoderAccessoryTimeout(0.5,925,0,2.5);
+        encoderAccessoryTimeout(0.5,-1925,0,3);
         encoderAccessory(0.3,-550,1);
-        encoderDrive(0.125,-100,100,2);
+        encoderDrive(0.125,250,250,3);
+        sleep(100);
+        encoderDrive(0.125,-115,115,2);
 
         /** Activate Tensor Flow Object Detection. */
         if (tfod != null) {
@@ -248,24 +249,27 @@ public class autoLeft extends LinearOpMode {
         if (key == 0) { //left
             telemetry.addData("Left", true);
             telemetry.update();
-            encoderDrive(0.1,-105,105,1);
-            encoderAccessory(0.95,200,0);
-            encoderAccessory(0.5,-570,1);
+            encoderDrive(0.1,-90,90,1);
+            encoderAccessory(0.95,150,0);
+            encoderAccessory(0.6,-750,1);
             encoderDrive(0.275,1200,1200,1.5);
-            encoderAccessory(1,-530,0);
-            encoderDrive(0.3,-350,-350,1.25);
-            encoderDrive(0.3,285,-285,1.25);
-            encoderDrive(0.4,1120,1120,2);
-            sleep(250);
-            encoderDrive(0.35,-1400,-1400,2.25);
-            encoderDrive(0.25,225,-225,2.5);
-            encoderDrive(0.3,-1425,-1425,3);
-            /*encoderDrive(0.1,-800,-800,4);
-            encoderAccessory(0.95,-300,0);
-            encoderDrive(0.15,560,-560,3);
-            encoderDrive(0.3,925,925,4);
-            encoderDrive(0.2,-225,225,3);
-            encoderDrive(0.2,725,725,3);*/
+            encoderAccessoryTimeout(1,-530,0,1.2);
+            encoderDrive(0.3,-200,-200,1.25);
+            sleep(100);
+            encoderDrive(0.3,290,-290,1.25);
+            encoderDrive(0.4,1020,1020,2);
+            runtime.reset();
+            robot.intakeServo.setPosition(0.06);
+            while (opModeIsActive() && runtime.seconds() < 1.25) {
+                telemetry.addData("Dropping Marker!", true);
+                telemetry.update();
+            }
+            robot.intakeServo.setPosition(0.5);
+            encoderDrive(0.15,-250,-250,2);
+            /*encoderDrive(0.4,-1400,-1400,2); //0.1,-250 original ERR after here
+            encoderDrive(0.2,245,-245,1.2);
+            encoderDrive(0.6,1800,1800,3);
+            encoderTurn(0.15,875,430);*/
         } else if (key == 1) { //center
             telemetry.addData("Center", true);
             telemetry.update();
@@ -273,8 +277,14 @@ public class autoLeft extends LinearOpMode {
             encoderAccessory(0.5,-570,1);
             encoderDrive(0.1,-75,75,3);
             encoderDrive(0.35,1475,1475,3);
-            sleep(1000);
-            encoderDrive(0.3,-1350,-1350,3);
+            runtime.reset();
+            robot.intakeServo.setPosition(0.06);
+            while (opModeIsActive() && runtime.seconds() < 1.25) {
+                telemetry.addData("Dropping Marker!", true);
+                telemetry.update();
+            }
+            robot.intakeServo.setPosition(0.5);
+            encoderDrive(0.3,-1325,-1325,3);
             encoderAccessory(0.3,450,1);
             encoderDrive(0.2,350,-350,2);
             sleep(250);
@@ -290,13 +300,6 @@ public class autoLeft extends LinearOpMode {
                 telemetry.update();
             }
             robot.intakeServo.setPosition(0.5);
-            /*robot.intakeServo.setPosition(1);
-            runtime.reset();
-            while (opModeIsActive() && runtime.seconds() < 1.5) {
-                telemetry.addData("Depositing Mineral", true);
-                telemetry.update();
-            }
-            robot.intakeServo.setPosition(0.5);*/
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
@@ -304,6 +307,13 @@ public class autoLeft extends LinearOpMode {
             encoderDrive(0.2,1300,1300,3);
             encoderDrive(0.2,-365,365,1.5);
             encoderDrive(0.25,1050,1050,2);
+            runtime.reset();
+            robot.intakeServo.setPosition(0.06);
+            while (opModeIsActive() && runtime.seconds() < 1.25) {
+                telemetry.addData("Dropping Marker!", true);
+                telemetry.update();
+            }
+            robot.intakeServo.setPosition(0.5);
             encoderDrive(0.2,-38,38,1.5);
             sleep(250);
             encoderDrive(0.3,-2850,-2850,3.5);
@@ -527,6 +537,62 @@ public class autoLeft extends LinearOpMode {
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() && (robot.hexSlide.isBusy() || robot.pivotMotor.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1",  "Running at %7d :%7d", robot.hexSlide.getCurrentPosition(), robot.pivotMotor.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            robot.hexSlide.setPower(0);
+            robot.pivotMotor.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            robot.hexSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            //  sleep(250);   // optional pause after each move
+        }
+    }
+
+    public void encoderAccessoryTimeout(double speed, double encoderAmount, int port, double timeoutS) {
+        int newSlideTarget;
+        int newPivotTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            if (port == 0) {
+                newSlideTarget = robot.hexSlide.getCurrentPosition() + (int)(encoderAmount);// * COUNTS_PER_INCH);
+                robot.hexSlide.setTargetPosition(newSlideTarget);
+            } else if (port == 1) {
+                newPivotTarget = robot.pivotMotor.getCurrentPosition() + (int)(encoderAmount);// * COUNTS_PER_INCH);
+                robot.pivotMotor.setTargetPosition(newPivotTarget);
+            }
+
+            // Turn On RUN_TO_POSITION
+            if (port == 0) {
+                robot.hexSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            } else if (port == 1) {
+                robot.pivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            if (port == 0) {
+                robot.hexSlide.setPower(Math.abs(speed));
+            } else if (port == 1) {
+                robot.pivotMotor.setPower(Math.abs(speed));
+            }
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() && (runtime.seconds() < timeoutS) && (robot.hexSlide.isBusy() || robot.pivotMotor.isBusy())) {
 
                 // Display it for the driver.
                 telemetry.addData("Path1",  "Running at %7d :%7d", robot.hexSlide.getCurrentPosition(), robot.pivotMotor.getCurrentPosition());

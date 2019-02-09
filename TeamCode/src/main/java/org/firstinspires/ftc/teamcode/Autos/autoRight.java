@@ -161,12 +161,12 @@ public class autoRight extends LinearOpMode {
         robot.leftHook.setPosition(0.5);
         robot.rightHook.setPosition(0.5);
         encoderAccessory(0.75,1200,1);
-        encoderAccessory(0.95, 1500, 0);
+        encoderAccessory(0.5, 750, 0);
         encoderDrive(0.15,350,350,3);
         robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-        encoderAccessory(0.9,1850,0);
+        encoderAccessory(0.5,925,0);
         encoderDrive(0.125,150,150,3);
-        encoderAccessory(0.95,-3850,0);
+        encoderAccessoryTimeout(0.5,-1925,0,3);
         encoderAccessory(0.3,-450,1);
         sleep(100);
         encoderDrive(0.125,-85,85,2);
@@ -217,7 +217,7 @@ public class autoRight extends LinearOpMode {
             }
 
             if (rot == 0) {
-                encoderDrive(0.2,165,-165,1);
+                encoderDrive(0.3,165,-165,.75);
                 key += 1;
             } if (key == 2) {
                 telemetry.addData("Broken", "True");
@@ -254,15 +254,22 @@ public class autoRight extends LinearOpMode {
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
-            encoderDrive(0.2,-95,95,1);
+            encoderDrive(0.2,-75,75,1);
             encoderAccessory(0.5,-350,1);
             encoderDrive(0.3,700,700,2);
-            encoderDrive(0.3,-430,-430,2.5);
-            sleep(100);
-            encoderDrive(0.15,-580,580,2);
-            encoderDrive(0.4,1350,1350,2.5);
-            encoderTurn(0.15,430,860);
-            encoderDrive(0.25,1500,1500,3);
+            encoderAccessoryTimeout(1,-530,0,1.2);
+            encoderDrive(0.25,-340,-340,2);
+            encoderDrive(0.25,-550,550,1.5);
+            encoderDrive(0.6,1200,1200,1.5);
+            encoderTurn(0.2,430,860);
+            encoderDrive(0.6,1500,1500,2);
+            runtime.reset();
+            robot.intakeServo.setPosition(0.06);
+            while (opModeIsActive() && runtime.seconds() < 1.25) {
+                telemetry.addData("Dropping Marker!", true);
+                telemetry.update();
+            }
+            robot.intakeServo.setPosition(0.5);
             /*encoderDrive(0.2,-225,225,1);
             encoderAccessory(0.5,200,0);
             encoderDrive(0.35,1550,1550,1.75);
@@ -475,6 +482,62 @@ public class autoRight extends LinearOpMode {
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() && (robot.hexSlide.isBusy() || robot.pivotMotor.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1",  "Running at %7d :%7d", robot.hexSlide.getCurrentPosition(), robot.pivotMotor.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            robot.hexSlide.setPower(0);
+            robot.pivotMotor.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            robot.hexSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            //  sleep(250);   // optional pause after each move
+        }
+    }
+
+    public void encoderAccessoryTimeout(double speed, double encoderAmount, int port, double timeoutS) {
+        int newSlideTarget;
+        int newPivotTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            if (port == 0) {
+                newSlideTarget = robot.hexSlide.getCurrentPosition() + (int)(encoderAmount);// * COUNTS_PER_INCH);
+                robot.hexSlide.setTargetPosition(newSlideTarget);
+            } else if (port == 1) {
+                newPivotTarget = robot.pivotMotor.getCurrentPosition() + (int)(encoderAmount);// * COUNTS_PER_INCH);
+                robot.pivotMotor.setTargetPosition(newPivotTarget);
+            }
+
+            // Turn On RUN_TO_POSITION
+            if (port == 0) {
+                robot.hexSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            } else if (port == 1) {
+                robot.pivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            if (port == 0) {
+                robot.hexSlide.setPower(Math.abs(speed));
+            } else if (port == 1) {
+                robot.pivotMotor.setPower(Math.abs(speed));
+            }
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() && (runtime.seconds() < timeoutS) && (robot.hexSlide.isBusy() || robot.pivotMotor.isBusy())) {
 
                 // Display it for the driver.
                 telemetry.addData("Path1",  "Running at %7d :%7d", robot.hexSlide.getCurrentPosition(), robot.pivotMotor.getCurrentPosition());

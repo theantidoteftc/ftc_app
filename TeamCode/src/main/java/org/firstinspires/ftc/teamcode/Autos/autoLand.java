@@ -29,8 +29,8 @@
 
 package org.firstinspires.ftc.teamcode.Autos;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -73,9 +73,18 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="autoLand", group="newark")
-@Disabled //DO NOT ENABLE UNLESS YOU HAVE ADI'S PERMISSION
+@Autonomous(name="autoLand", group="newarkautos")
+//@Disabled
 public class autoLand extends LinearOpMode {
+    private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
+    private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
+    private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
+
+    private static final String VUFORIA_KEY = "AVF7OF7/////AAABmaKBSYRMHkclubr6nFb2TLcr3QzadzX163OzDe2NS0p2hQlEvibYh8W2xO78LrAUPInfApVZ1qzOxq7fnHZ9KQ0QiJM0E5WbwxdY7U+Gbrk8NuDgceoPw7eD8j2Sk7NuvuTcXYAAoA4wKwgDlw+iA19frB/9/WuUonCWiMAi+sxSoAGkudWAx8f1AO0AXBNyf6d0QHRGVeGRyMYtvkvsez3kU6U7LnMUwpDkX5RfQi+AMKq+BTLYtOo90waG5G84TV9LU1OSlDHtPh7sSG6YuVdn0Pmm/+k9nEtedozzDeDmwKfT1A5uL1m+RGmgCe4gA45H7qH6p9ymyKDbhvfDbTo/fVI0Y9g+Z8FEMByMnI6X";
+
+    private VuforiaLocalizer vuforia;
+
+    private TFObjectDetector tfod;
 
 
     /* Declare OpMode members. */
@@ -89,6 +98,10 @@ public class autoLand extends LinearOpMode {
             (WHEEL_DIAMETER_INCHES * 3.14159265);
     static final double     DRIVE_SPEED             = 0.45;
     static final double     TURN_SPEED              = 0.25;
+
+    int inte = 0;
+    int rot = 0;
+    int key = 0;
 
     @Override
     public void runOpMode() {
@@ -121,57 +134,47 @@ public class autoLand extends LinearOpMode {
                 robot.hexFrontRight.getCurrentPosition(), robot.hexRearLeft.getCurrentPosition(), robot.hexRearRight.getCurrentPosition());
         telemetry.update();
 
+        // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
+        // first.
+        initVuforia(0);
+
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start tracking - U R GO, GOOD LUCK!");
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        /*robot.leftBlock.setPosition(1); //unlatching procedure
+        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+            initTfod();
+        } else {
+            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+        }
+
+        robot.leftBlock.setPosition(1); //unlatching procedure
         robot.rightBlock.setPosition(0);
         sleep(1500);
         runtime.reset();
-        while (runtime.seconds() < 0.375 && opModeIsActive()) {
-            robot.leftHook.setPosition(0.25);
-            robot.rightHook.setPosition(0.75);
+        while (runtime.seconds() < 0.325 && opModeIsActive()) {
+            robot.leftHook.setPosition(0);
+            robot.rightHook.setPosition(1);
         }
         robot.leftHook.setPosition(0.5);
         robot.rightHook.setPosition(0.5);
-        sleep(1000);
-        encoderAccessory(0.5,150,1);
-        encoderAccessory(0.75, 2500, 0);
-        encoderDrive(0.2,225,225,3);
-        encoderAccessory(0.9,700,0);
-        encoderDrive(0.25,300,300,3);
-        encoderAccessory(0.5,-3000,0);
-        encoderAccessory(0.2,-900,1);
-        encoderDrive(0.25,-850,-850,4);*/
-
-        robot.intakeServo.setPosition(0);
-        runtime.reset();
-        while (opModeIsActive() && runtime.seconds() < 1.5) {
-            telemetry.addData("Depositing Mineral", true);
-            telemetry.update();
-        }
-        robot.intakeServo.setPosition(0.5);
-
-        /*encoderAccessory(0.5, -1650, 0);
-        encoderAccessory(0.25, -500, 1);
-        encoderDrive(0.3, 450,450, 2);
-        encoderDrive(0.25,-220,220,2);*/
+        encoderAccessory(0.75,1200,1);
+        encoderAccessory(0.5, 750, 0);
+        encoderDrive(0.15,350,350,3);
+        robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+        encoderAccessory(0.5,925,0);
+        encoderDrive(0.125,150,150,3);
+        encoderAccessoryTimeout(0.5,-1925,0,3);
+        encoderAccessory(0.3,-450,1);
+        sleep(100);
+        encoderDrive(0.125,-85,85,2);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
 
-    /*
-     *  Method to perfmorm a relative move, based on encoder counts.
-     *  Encoders are not reset as the move is based on the current position.
-     *  Move will stop if any of three conditions occur:
-     *  1) Move gets to the desired position
-     *  2) Move runs out of time
-     *  3) Driver stops the opmode running.
-     */
 
     public void encoderTurn(double baseSpeed, double leftAmount, double rightAmount) {
         int newFrontLeftTarget;
@@ -233,7 +236,7 @@ public class autoLand extends LinearOpMode {
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
-                    (robot.hexFrontLeft.isBusy() && robot.hexFrontRight.isBusy())) {
+                    (robot.hexFrontLeft.isBusy() || robot.hexFrontRight.isBusy())) {
 
                 // Display it for the driver.
                 telemetry.addData("yeet", robot.hexFrontLeft.getCurrentPosition());
@@ -256,10 +259,18 @@ public class autoLand extends LinearOpMode {
             robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            //  sleep(250);   // optional pause after each move
+            sleep(250);   // optional pause after each move
         }
     }
 
+    /*
+     *  Method to perfmorm a relative move, based on encoder counts.
+     *  Encoders are not reset as the move is based on the current position.
+     *  Move will stop if any of three conditions occur:
+     *  1) Move gets to the desired position
+     *  2) Move runs out of time
+     *  3) Driver stops the opmode running.
+     */
     public void encoderDrive(double speed, double leftEncoder, double rightEncoder, double timeoutS) {
         int newFrontLeftTarget;
         int newFrontRightTarget;
@@ -300,7 +311,7 @@ public class autoLand extends LinearOpMode {
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
-                    (robot.hexFrontLeft.isBusy() && robot.hexFrontRight.isBusy())) {
+                    (robot.hexFrontLeft.isBusy() || robot.hexFrontRight.isBusy())) {
 
                 // Display it for the driver.
                 telemetry.addData("Path1",  "Running to %7d :%7d", newFrontLeftTarget,  newFrontRightTarget);
@@ -322,7 +333,7 @@ public class autoLand extends LinearOpMode {
             robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            //  sleep(250);   // optional pause after each move
+            sleep(250);   // optional pause after each move
         }
     }
 
@@ -380,5 +391,95 @@ public class autoLand extends LinearOpMode {
 
             //  sleep(250);   // optional pause after each move
         }
+    }
+
+    public void encoderAccessoryTimeout(double speed, double encoderAmount, int port, double timeoutS) {
+        int newSlideTarget;
+        int newPivotTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            if (port == 0) {
+                newSlideTarget = robot.hexSlide.getCurrentPosition() + (int)(encoderAmount);// * COUNTS_PER_INCH);
+                robot.hexSlide.setTargetPosition(newSlideTarget);
+            } else if (port == 1) {
+                newPivotTarget = robot.pivotMotor.getCurrentPosition() + (int)(encoderAmount);// * COUNTS_PER_INCH);
+                robot.pivotMotor.setTargetPosition(newPivotTarget);
+            }
+
+            // Turn On RUN_TO_POSITION
+            if (port == 0) {
+                robot.hexSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            } else if (port == 1) {
+                robot.pivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            if (port == 0) {
+                robot.hexSlide.setPower(Math.abs(speed));
+            } else if (port == 1) {
+                robot.pivotMotor.setPower(Math.abs(speed));
+            }
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() && (runtime.seconds() < timeoutS) && (robot.hexSlide.isBusy() || robot.pivotMotor.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1",  "Running at %7d :%7d", robot.hexSlide.getCurrentPosition(), robot.pivotMotor.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            robot.hexSlide.setPower(0);
+            robot.pivotMotor.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            robot.hexSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            //  sleep(250);   // optional pause after each move
+        }
+    }
+
+    /**
+     * Initialize the Vuforia localization engine.
+     */
+    private void initVuforia(double io) {
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+        if (io == 0) {
+            /*
+             * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+             */
+
+            parameters.vuforiaLicenseKey = "AVF7OF7/////AAABmaKBSYRMHkclubr6nFb2TLcr3QzadzX163OzDe2NS0p2hQlEvibYh8W2xO78LrAUPInfApVZ1qzOxq7fnHZ9KQ0QiJM0E5WbwxdY7U+Gbrk8NuDgceoPw7eD8j2Sk7NuvuTcXYAAoA4wKwgDlw+iA19frB/9/WuUonCWiMAi+sxSoAGkudWAx8f1AO0AXBNyf6d0QHRGVeGRyMYtvkvsez3kU6U7LnMUwpDkX5RfQi+AMKq+BTLYtOo90waG5G84TV9LU1OSlDHtPh7sSG6YuVdn0Pmm/+k9nEtedozzDeDmwKfT1A5uL1m+RGmgCe4gA45H7qH6p9ymyKDbhvfDbTo/fVI0Y9g+Z8FEMByMnI6X";
+            parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+
+            //  Instantiate the Vuforia engine
+            vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+        } else if (io == 1) {
+            parameters.camera.close();
+        }
+
+        // Loading trackables is not necessary for the Tensor Flow Object Detection engine.
+    }
+
+    /**
+     * Initialize the Tensor Flow Object Detection engine.
+     */
+    private void initTfod() {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
 }
