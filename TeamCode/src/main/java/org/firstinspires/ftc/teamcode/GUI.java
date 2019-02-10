@@ -49,6 +49,7 @@ import java.util.List;
 
 @Autonomous(name="autoLeft", group="newarkautos")
 //@Disabled
+//test
 public class GUI extends LinearOpMode {
 
     /* Declare OpMode members. */
