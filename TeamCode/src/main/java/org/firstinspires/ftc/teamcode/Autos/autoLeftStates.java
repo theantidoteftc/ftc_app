@@ -92,6 +92,9 @@ public class autoLeftStates extends LinearOpMode {
     private ElapsedTime     runtime = new ElapsedTime();
 
     int key = 4;
+    int gMineralX = -1;
+    int sMineral1X = -1;
+    int sMineral2X = -1;
 
     @Override
     public void runOpMode() {
@@ -146,14 +149,15 @@ public class autoLeftStates extends LinearOpMode {
         }
 
         runtime.reset(); //TensorFlow Timer Wait
-        while (opModeIsActive() && runtime.seconds() < 3.5) {
+        while (opModeIsActive() && runtime.seconds() < 3) {
             if (tfod != null) {
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 if (updatedRecognitions != null) {
                     telemetry.addData("# Object Detected", updatedRecognitions.size());
-                    if (updatedRecognitions.size() == 3) {
+
+                    if (updatedRecognitions.size() == 3) { //if 3 minerals detected, use TF mandated algorithm
                         int goldMineralX = -1;
                         int silverMineral1X = -1;
                         int silverMineral2X = -1;
@@ -178,8 +182,69 @@ public class autoLeftStates extends LinearOpMode {
                                 key = 1;
                             }
                         }
+                        gMineralX = goldMineralX;
+                        sMineral1X = silverMineral1X;
+                        sMineral2X = silverMineral2X;
+                    }
+
+                    //if 2 minerals detected, split into (not) see gold ifs
+                    if (updatedRecognitions.size() == 2) {
+                        int goldMineralX = -1;
+                        int silverMineral1X = -1;
+                        int silverMineral2X = -1;
+                        //populates coordinate values
+                        for (Recognition recognition : updatedRecognitions) {
+                            if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                goldMineralX = (int) recognition.getLeft();
+                            } else if (silverMineral1X == -1) {
+                                silverMineral1X = (int) recognition.getLeft();
+                            } else {
+                                silverMineral2X = (int) recognition.getLeft();
+                            }
+                        }
+
+                        //combination of 1 gold and 1 silver
+
+                        if (goldMineralX != -1 && (silverMineral1X != -1 || silverMineral2X != -1)) {
+                            if (goldMineralX < silverMineral1X && goldMineralX < 150) {
+                                telemetry.addData("Gold Mineral Position", "Left (GS)");
+                                key = 0;
+                            } else if (goldMineralX > silverMineral1X && goldMineralX > 350) {
+                                telemetry.addData("Gold Mineral Position", "Right (GS)");
+                                key = 2;
+                            } else {
+                                telemetry.addData("Gold Mineral Position", "Center (GS)");
+                                key = 1;
+                            }
+                            // combination of 2 silvers
+                        } else if (silverMineral1X != -1 && silverMineral2X != -1) {
+                            if ((200 < silverMineral1X) && (silverMineral1X < 300) && (350 < silverMineral2X)) {
+                                telemetry.addData("Gold Mineral Position", "Left (SS1)");
+                                key = 0;
+                            } else if ((200 < silverMineral2X) && (silverMineral2X < 300) && (350 < silverMineral1X)) {
+                                telemetry.addData("Gold Mineral Position", "Left (SS2)");
+                                key = 0;
+                            } else if ((150 > silverMineral1X) && ((200 < silverMineral2X) && (silverMineral2X < 300))) {
+                                telemetry.addData("Gold Mineral Position", "Right (SS3)");
+                                key = 2;
+                            } else if ((150 > silverMineral2X) && ((200 < silverMineral1X) && (silverMineral1X < 300))) {
+                                telemetry.addData("Gold Mineral Position", "Right (SS4)");
+                                key = 2;
+                            } else {
+                                telemetry.addData("Gold Mineral Position", "Center (SS5)");
+                                key = 1;
+                            }
+                        }
+
+                        gMineralX = goldMineralX;
+                        sMineral1X = silverMineral1X;
+                        sMineral2X = silverMineral2X;
                     }
                     telemetry.addData("Key", key);
+                    telemetry.addData("goldMineralX", gMineralX);
+                    telemetry.addData("silverMineral1X", sMineral1X);
+                    telemetry.addData("silverMineral2X", sMineral2X);
+                    telemetry.update();
                     telemetry.update();
                 }
             }
@@ -198,9 +263,28 @@ public class autoLeftStates extends LinearOpMode {
         } else if (key == 2) {
             telemetry.addData("gold mineral", "right");
         }
-
         telemetry.update();
-        sleep(5000);
+
+        robot.leftBlock.setPosition(1); //unlatching procedure
+        robot.rightBlock.setPosition(0);
+        sleep(1500);
+        runtime.reset();
+        while (runtime.seconds() < 0.325 && opModeIsActive()) {
+            robot.leftHook.setPosition(0);
+            robot.rightHook.setPosition(1);
+        }
+        robot.leftHook.setPosition(0.5);
+        robot.rightHook.setPosition(0.5);
+        encoderAccessory(0.75,1200,1);
+        encoderAccessoryTimeout(0.7, 600, 0,1);
+        encoderDrive(0.15,100,100,2);
+        robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+        encoderAccessoryTimeout(0.5,925,0,2.5);
+        encoderAccessoryTimeout(0.5,-1925,0,3);
+        encoderAccessory(0.3,-550,1);
+        encoderDrive(0.125,250,250,3);
+        sleep(100);
+        encoderDrive(0.125,-115,115,2);
 
         /*if (key == 0) { //left
             telemetry.addData("Left", true);
