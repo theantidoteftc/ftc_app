@@ -47,7 +47,7 @@ import java.lang.Math.*;
 
 import java.util.List;
 
-@Autonomous(name="autoLeft", group="newarkautos")
+@Autonomous(name="GUIdance", group="newarkautos")
 //@Disabled
 //test
 public class GUI extends LinearOpMode {
@@ -85,6 +85,7 @@ public class GUI extends LinearOpMode {
         } else if (left != right) {
 
             encoderTurn(speed, left, right);
+//            encoderTurn(.4, java.lang.Math.abs(robot.hexFrontLeft.getCurrentPosition()) + java.lang.Math.abs(robot.hexRearLeft.getCurrentPosition()), );
 
         }
 

@@ -44,38 +44,9 @@ import org.firstinspires.ftc.teamcode.NewarkHardware;
 
 import java.util.List;
 
-//NOT NEEDED - motors are identified within actual program
-
-/**
- * This file illustrates the concept of driving a path based on encoder counts.
- * It uses the common Pushbot hardware class to define the drive on the robot.
- * The code is structured as a LinearOpMode
- *
- * The code REQUIRES that you DO have encoders on the wheels,
- *   otherwise you would use: PushbotAutoDriveByTime;
- *
- *  This code ALSO requires that the drive Motors have been configured such that a positive
- *  power command moves them forwards, and causes the encoders to count UP.
- *
- *   The desired path in this example is:
- *   - Drive forward for 48 inches
- *   - Spin right for 12 Inches
- *   - Drive Backwards for 24 inches
- *   - Stop and close the claw.
- *
- *  The code is written using a method called: encoderDrive(speed, leftInches, rightInches, timeoutS)
- *  that performs the actual movement.
- *  This methods assumes that each movement is relative to the last stopping place.
- *  There are other ways to perform encoder based moves, but this method is probably the simplest.
- *  This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
-
-@Autonomous(name="autoLeftStates", group="statesautos")
+@Autonomous(name="autoRightStates", group="statesautos")
 //@Disabled
-public class autoLeftStates extends LinearOpMode {
+public class autoRightStates extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
@@ -289,13 +260,37 @@ public class autoLeftStates extends LinearOpMode {
         if (key == 0) { //left
             telemetry.addData("Left", true);
             telemetry.update();
+            encoderDrive(.2,617.175,617.175,4);
+            encoderDrive(0.05,-90,90,1);
+            encoderDrive(.2, 1834.35,1834.35, 4);
+            encoderDrive(.2, -1834.35,-1834.35, 4);
+            encoderDrive(.15, -710, 710, 4);
+            encoderDrive(.2,2096.4,2096.4,4);
+            encoderTurn(.15,2100,3000);
+            encoderDrive(.2,2620.5,2620.5,4);
+            encoderDrive(.4,-6000,-6000,4);
         } else if (key == 1) { //center
             telemetry.addData("Center", true);
             telemetry.update();
+            encoderDrive(.2,1411.5, 1411.5, 4);
+            encoderDrive(.2,-1160.25,-1160.25,4);
+            encoderDrive(.1,800,-800,4);
+            encoderDrive(.2,2096.4,2096.4,4);
+            encoderTurn(.15,2100,3000);
+            encoderDrive(.2,2620.5,2620.5,4);
+            encoderDrive(.4,-6000,-6000,4);
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
-
+            encoderDrive(.2,617.175,617.175,4);
+            encoderDrive(.05,90,-90,4);
+            encoderDrive(.2, 1834.35,1834.35, 4);
+            encoderDrive(.2, -1834.35,-1834.35, 4);
+            encoderDrive(.1,-890,890,4);
+            encoderDrive(.2,2096.4,2096.4,4);
+            encoderTurn(.15,2100,3000);
+            encoderDrive(.2,2620.5,2620.5,4);
+            encoderDrive(.4,-6000,-6000,4);
         }
 
         telemetry.addData("Path", "Complete");
