@@ -149,7 +149,7 @@ public class autoLeftStates extends LinearOpMode {
         }
 
         runtime.reset(); //TensorFlow Timer Wait
-        while (opModeIsActive() && runtime.seconds() < 3) {
+        while (opModeIsActive() && runtime.seconds() < 2) {
             if (tfod != null) {
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
@@ -276,22 +276,47 @@ public class autoLeftStates extends LinearOpMode {
         robot.leftHook.setPosition(0.5);
         robot.rightHook.setPosition(0.5);
         encoderAccessory(0.75,1200,1);
-        encoderAccessoryTimeout(0.7, 600, 0,1);
+        encoderAccessoryTimeout(0.7, 400, 0,1);
         encoderDrive(0.15,100,100,2);
         robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
         encoderAccessoryTimeout(0.5,925,0,2.5);
-        encoderAccessoryTimeout(0.5,-1925,0,3);
-        encoderAccessory(0.3,-550,1);
-        encoderDrive(0.125,250,250,3);
+        encoderAccessory(0.2,-200,1);
+        encoderAccessoryTimeout(0.5,-1700,0,3);
+        encoderAccessory(0.3,-800,1);
         sleep(100);
-        encoderDrive(0.125,-115,115,2);
 
         if (key == 0) { //left
             telemetry.addData("Left", true);
             telemetry.update();
+            encoderDrive(.225,300, 300,2);
+            encoderDrive(.2,-195,195,1.2);
+            encoderDrive(.15,1150,1150,1.5);
+            encoderDrive(.125,-250,-250,1);
+            encoderDrive(.175,280,-280,1);
+            encoderDrive(.225,950,950,1.5);
+            encoderDrive(.275,-1360,-1360,2);
+            encoderAccessory(.45,300,1);
+            encoderAccessoryTimeout(.8,-200,0,0.75);
+            encoderDrive(.15,285,-285,1.5);
+            encoderDrive(.4,2250,2250,2);
+            encoderDrive(.3,120,-120,1);
+            encoderAccessory(0.3,650,1);
+            encoderAccessory(0.6,2300,0);
         } else if (key == 1) { //center
             telemetry.addData("Center", true);
             telemetry.update();
+            encoderDrive(0.2,30,-30,2);
+            encoderDrive(.2,1750,1750,2);
+            encoderDrive(.2,-1375,-1375,2);
+            sleep(100);
+            encoderAccessory(.2,300,1);
+            encoderAccessoryTimeout(.5,-200,0,1.5);
+            encoderDrive(.15,345,-345,2.5);
+            encoderDrive(.2,1650,1650,3.5);
+            encoderDrive(.15,120,-120,2);
+            encoderAccessory(0.3,650,1);
+            encoderAccessory(0.6,2000,0);
+            //encoderDrive(0.3,1600,1600,3);
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
