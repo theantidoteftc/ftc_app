@@ -288,11 +288,11 @@
             if (key == 0) { //left
                 telemetry.addData("Left", true);
                 telemetry.update();
-                encoderDrive(.225,270, 270,2);
+                encoderDrive(.225,180, 180,2);
                 encoderDrive(.2,-220,220,1.2);
-                encoderDrive(.15,1225,1225,1.5);
-                encoderDrive(.125,-325,-325,1);
-                encoderDrive(.175,295,-295,1);
+                encoderDrive(.15,1725,1725,1.5);
+                encoderDrive(.1,-325,-325,1);
+                encoderDrive(.175,235,-235,1);
                 encoderDrive(.225,950,950,1.5);
                 runtime.reset();
                 robot.intakeServo.setPosition(0.06);
@@ -301,14 +301,14 @@
                     telemetry.update();
                 }
                 robot.intakeServo.setPosition(0.5);
-                encoderDrive(.275,-1360,-1360,2);
+                encoderDrive(.275,-1275,-1275,2);
                 encoderAccessory(.45,300,1);
                 encoderAccessoryTimeout(.8,-400,0,1.5);
-                encoderDrive(.15,275,-275,1.5);
-                encoderDrive(.4,1900,1900,2);
+                encoderDrive(.15,298,-298,1.5);
+                /*encoderDrive(.4,1900,1900,2);
                 encoderDrive(.3,120,-120,1);
                 encoderAccessory(0.3,650,1);
-                encoderAccessory(0.6,2300,0);
+                encoderAccessory(0.6,2300,0);*/
             } else if (key == 1) { //center
                 telemetry.addData("Center", true);
                 telemetry.update();
@@ -326,11 +326,10 @@
                 encoderAccessory(.2,400,1);
                 encoderAccessoryTimeout(.5,-200,0,1.5);
                 encoderDrive(.15,360,-360,2);
-    //            encoderDrive(.2,1650,1650,3.5);
-    //            encoderDrive(.15,120,-120,2);
-    //            encoderAccessory(0.3,650,1);
-    //            encoderAccessory(0.6,2000,0);
-                //encoderDrive(0.3,1600,1600,3);
+                encoderDrive(.2,1650,1650,3.5);
+                encoderDrive(.15,120,-120,2);
+                encoderAccessory(0.3,650,1);
+                encoderAccessory(0.6,2000,0);
             } else if (key == 2) { //right
                 telemetry.addData("Right", true);
                 telemetry.update();
@@ -346,7 +345,7 @@
                     telemetry.update();
                 }
                 robot.intakeServo.setPosition(0.5);
-                encoderDrive(0.2,-2800,-2800,4);
+                encoderDrive(0.4,-3000,-3000,5);
             }
 
             telemetry.addData("Path", "Complete");
