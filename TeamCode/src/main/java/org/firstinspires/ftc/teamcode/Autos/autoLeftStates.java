@@ -294,6 +294,13 @@ public class autoLeftStates extends LinearOpMode {
             encoderDrive(.125,-250,-250,1);
             encoderDrive(.175,280,-280,1);
             encoderDrive(.225,950,950,1.5);
+            runtime.reset();
+            robot.intakeServo.setPosition(0.06);
+            while (opModeIsActive() && runtime.seconds() < 1) {
+                telemetry.addData("Dropping Marker!", true);
+                telemetry.update();
+            }
+            robot.intakeServo.setPosition(0.5);
             encoderDrive(.275,-1360,-1360,2);
             encoderAccessory(.45,300,1);
             encoderAccessoryTimeout(.8,-200,0,0.75);
@@ -307,6 +314,13 @@ public class autoLeftStates extends LinearOpMode {
             telemetry.update();
             encoderDrive(0.2,30,-30,2);
             encoderDrive(.2,1750,1750,2);
+            runtime.reset();
+            robot.intakeServo.setPosition(0.06);
+            while (opModeIsActive() && runtime.seconds() < 1) {
+                telemetry.addData("Dropping Marker!", true);
+                telemetry.update();
+            }
+            robot.intakeServo.setPosition(0.5);
             encoderDrive(.2,-1375,-1375,2);
             sleep(100);
             encoderAccessory(.2,300,1);
@@ -320,7 +334,19 @@ public class autoLeftStates extends LinearOpMode {
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
-
+            encoderDrive(0.2,180,-180,1.5);
+            encoderDrive(0.25,1425,1425,3);
+            encoderDrive(0.15,-400,400,2);
+            encoderDrive(0.2,1050,1050,2);
+            encoderDrive(0.15,-50,50,1.5);
+            runtime.reset();
+            robot.intakeServo.setPosition(0.06);
+            while (opModeIsActive() && runtime.seconds() < 1) {
+                telemetry.addData("Dropping Marker!", true);
+                telemetry.update();
+            }
+            robot.intakeServo.setPosition(0.5);
+            encoderDrive(0.2,-2800,-2800,4);
         }
 
         telemetry.addData("Path", "Complete");
