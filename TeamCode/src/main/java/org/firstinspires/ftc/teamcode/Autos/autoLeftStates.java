@@ -280,8 +280,8 @@
             encoderDrive(0.15,100,100,2);
             robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
             encoderAccessoryTimeout(0.5,925,0,2.5);
-            encoderAccessory(0.2,-200,1);
-            encoderAccessoryTimeout(0.5,-1725,0,3);
+            encoderAccessory(0.2,-300,1);
+            encoderAccessoryTimeout(0.5,-1800,0,3);
             encoderAccessory(0.3,-800,1);
             sleep(100);
 
@@ -292,7 +292,7 @@
                 encoderDrive(.2,-220,220,1.2);
                 encoderDrive(.15,1725,1725,1.5);
                 encoderDrive(.1,-325,-325,1);
-                encoderDrive(.175,235,-235,1);
+                encoderDrive(.175,255,-255,1);
                 encoderDrive(.225,950,950,1.5);
                 runtime.reset();
                 robot.intakeServo.setPosition(0.06);
@@ -304,7 +304,7 @@
                 encoderDrive(.275,-1275,-1275,2);
                 encoderAccessory(.45,300,1);
                 encoderAccessoryTimeout(.8,-400,0,1.5);
-                encoderDrive(.15,298,-298,1.5);
+                encoderDrive(.15,315,-315,1.5);
                 /*encoderDrive(.4,1900,1900,2);
                 encoderDrive(.3,120,-120,1);
                 encoderAccessory(0.3,650,1);
@@ -333,11 +333,15 @@
             } else if (key == 2) { //right
                 telemetry.addData("Right", true);
                 telemetry.update();
-                encoderDrive(0.2,180,-180,1.5);
-                encoderDrive(0.25,1425,1425,3);
-                encoderDrive(0.15,-400,400,2);
-                encoderDrive(0.2,1050,1050,2);
-                encoderDrive(0.15,-50,50,1.5);
+                encoderDrive(0.25,-50,-50,2);
+                encoderAccessory(0.2,600,1);
+                encoderDrive(0.25,170,-170,2);
+                encoderAccessory(0.2,-500,1);
+                encoderDrive(0.17,1450,1450,2);
+                encoderAccessory(0.3,800,1);
+                encoderDrive(0.2,-380,380,1.5);
+                encoderDrive(0.25,975,975,1.5);
+                encoderDrive(0.15,65,-65,1.5);
                 runtime.reset();
                 robot.intakeServo.setPosition(0.06);
                 while (opModeIsActive() && runtime.seconds() < 1) {
@@ -345,7 +349,11 @@
                     telemetry.update();
                 }
                 robot.intakeServo.setPosition(0.5);
-                encoderDrive(0.4,-3000,-3000,5);
+                encoderDrive(0.275,-1100,-1100,3);
+                encoderDrive(0.15,-900,900,2);
+                encoderDrive(0.5,725,725,2.5);
+                encoderAccessory(0.355,650,1);
+                encoderAccessory(0.625,2000,0);
             }
 
             telemetry.addData("Path", "Complete");
