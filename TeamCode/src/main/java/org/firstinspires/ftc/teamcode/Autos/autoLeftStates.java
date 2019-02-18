@@ -289,26 +289,25 @@
                 telemetry.addData("Left", true);
                 telemetry.update();
                 encoderDrive(.225,180, 180,2);
-                encoderDrive(.2,-220,220,1.2);
+                encoderDrive(.2,-220,220,1.5);
                 encoderDrive(.15,1725,1725,1.5);
                 encoderDrive(.1,-325,-325,1);
-                encoderDrive(.175,255,-255,1);
-                encoderDrive(.225,950,950,1.5);
+                encoderDrive(.25,270,-270,2);
+                encoderDrive(.225,1200,1200,1.5);
                 runtime.reset();
                 robot.intakeServo.setPosition(0.06);
-                while (opModeIsActive() && runtime.seconds() < 1) {
+                while (opModeIsActive() && runtime.seconds() < 2) {
                     telemetry.addData("Dropping Marker!", true);
                     telemetry.update();
                 }
                 robot.intakeServo.setPosition(0.5);
-                encoderDrive(.275,-1275,-1275,2);
+                encoderDrive(.2,-1350,-1350,2);
                 encoderAccessory(.45,300,1);
-                encoderAccessoryTimeout(.8,-400,0,1.5);
-                encoderDrive(.15,315,-315,1.5);
-                /*encoderDrive(.4,1900,1900,2);
-                encoderDrive(.3,120,-120,1);
-                encoderAccessory(0.3,650,1);
-                encoderAccessory(0.6,2300,0);*/
+                encoderAccessoryTimeout(.8,-400,0,1);
+                encoderDrive(.15,300,-300,1.5);
+                encoderDrive(.95,2125,2125,2.75);
+                encoderAccessory(0.5,650,1);
+                encoderAccessory(0.9,2300,0);
             } else if (key == 1) { //center
                 telemetry.addData("Center", true);
                 telemetry.update();
@@ -325,7 +324,7 @@
                 sleep(100);
                 encoderAccessory(.2,400,1);
                 encoderAccessoryTimeout(.5,-200,0,1.5);
-                encoderDrive(.15,360,-360,2);
+                encoderDrive(.15,355,-355,2);
                 encoderDrive(.2,1650,1650,3.5);
                 encoderDrive(.15,120,-120,2);
                 encoderAccessory(0.3,650,1);
@@ -351,7 +350,7 @@
                 robot.intakeServo.setPosition(0.5);
                 encoderDrive(0.275,-1100,-1100,3);
                 encoderDrive(0.15,-900,900,2);
-                encoderDrive(0.5,725,725,2.5);
+                encoderDrive(0.5,825,825,2.5);
                 encoderAccessory(0.355,650,1);
                 encoderAccessory(0.625,2000,0);
             }
