@@ -280,51 +280,54 @@
             encoderDrive(0.15,100,100,2);
             robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
             encoderAccessoryTimeout(0.5,925,0,2.5);
-            encoderAccessory(0.2,-300,1);
-            encoderAccessoryTimeout(0.5,-1800,0,3);
-            encoderAccessory(0.3,-800,1);
+            encoderAccessory(0.2,-200,1);
+            encoderAccessoryTimeout(0.8,-1800,0,2.5);
+            encoderAccessory(0.3,-1000,1);
             sleep(100);
 
             if (key == 0) { //left
                 telemetry.addData("Left", true);
                 telemetry.update();
                 encoderDrive(.225,180, 180,2);
-                encoderDrive(.2,-220,220,1.5);
-                encoderDrive(.15,1725,1725,1.5);
-                encoderDrive(.1,-325,-325,1);
-                encoderDrive(.25,270,-270,2);
-                encoderDrive(.225,1200,1200,1.5);
+                encoderDrive(.2,-197,197,1.5);
+                encoderDrive(.175,1950,1950,1.75);
+                encoderDrive(.1,-385,-385,1);
+                encoderDrive(.25,320,-320,2);
+                encoderDrive(.225,1150,1150,1.5);
+                encoderAccessory(0.5,400,1);
                 runtime.reset();
                 robot.intakeServo.setPosition(0.06);
-                while (opModeIsActive() && runtime.seconds() < 2) {
+                while (opModeIsActive() && runtime.seconds() < .75) {
                     telemetry.addData("Dropping Marker!", true);
                     telemetry.update();
                 }
                 robot.intakeServo.setPosition(0.5);
-                encoderDrive(.2,-1350,-1350,2);
+                encoderDrive(.2,-1510,-1510,2);
                 encoderAccessory(.45,300,1);
                 encoderAccessoryTimeout(.8,-400,0,1);
-                encoderDrive(.15,300,-300,1.5);
-                encoderDrive(.95,2125,2125,2.75);
+                encoderDrive(.15,280,-280,1.5);
+                encoderDrive(.5,2000,2000,2.75);
+                encoderTurn(0.2, 750,500);/*
                 encoderAccessory(0.5,650,1);
-                encoderAccessory(0.9,2300,0);
+                encoderAccessory(0.9,2300,0);*/
             } else if (key == 1) { //center
                 telemetry.addData("Center", true);
                 telemetry.update();
                 encoderDrive(0.2,30,-30,2);
                 encoderDrive(.2,1750,1750,2);
+                encoderAccessory(0.5,400,1);
                 runtime.reset();
                 robot.intakeServo.setPosition(0.06);
-                while (opModeIsActive() && runtime.seconds() < 1.5) {
+                while (opModeIsActive() && runtime.seconds() < .75) {
                     telemetry.addData("Dropping Marker!", true);
                     telemetry.update();
                 }
                 robot.intakeServo.setPosition(0.5);
-                encoderDrive(.2,-1375,-1375,2);
+                encoderDrive(.2,-1350,-1350,2);
                 sleep(100);
                 encoderAccessory(.2,400,1);
                 encoderAccessoryTimeout(.5,-200,0,1.5);
-                encoderDrive(.15,355,-355,2);
+                encoderDrive(.15,345,-345,2);
                 encoderDrive(.2,1650,1650,3.5);
                 encoderDrive(.15,120,-120,2);
                 encoderAccessory(0.3,650,1);
@@ -339,11 +342,13 @@
                 encoderDrive(0.17,1450,1450,2);
                 encoderAccessory(0.3,800,1);
                 encoderDrive(0.2,-380,380,1.5);
+                encoderAccessory(0.3,-400,1);
                 encoderDrive(0.25,975,975,1.5);
                 encoderDrive(0.15,65,-65,1.5);
+                encoderAccessory(0.5,400,1);
                 runtime.reset();
                 robot.intakeServo.setPosition(0.06);
-                while (opModeIsActive() && runtime.seconds() < 1) {
+                while (opModeIsActive() && runtime.seconds() < .75) {
                     telemetry.addData("Dropping Marker!", true);
                     telemetry.update();
                 }
