@@ -292,9 +292,9 @@
                         encoderDrive(.2,-187,187,1.5);
                         encoderDrive(.2,850,850,2);
                         encoderDrive(.15,-610,-610,2);
-                        encoderDrive(.125,-215,215,2);
-                        encoderDrive(.2,1560,1560,2);
-                        encoderDrive(.15,-200,200,2);
+                        encoderDrive(.125,-225,225,2);
+                        encoderDrive(.2,1425,1425,2);
+                        encoderDrive(.15,-195,195,2);
                         encoderDrive(.175,1550,1550,2);
                         encoderAccessory(0.5,500,1);
                         runtime.reset();
@@ -304,7 +304,7 @@
                             telemetry.update();
                         }
                         robot.intakeServo.setPosition(0.5);
-                        encoderDrive(.1,15,-15,1);
+                        encoderDrive(.1,5,-5,1);
                         encoderDrive(.3,-2550,-2550,3);
                     } else if (key == 1) { //center
                         telemetry.addData("Center", true);
@@ -312,9 +312,20 @@
                         encoderDrive(.2,872,872,2);
                         encoderDrive(.15,-375,-375,2);
                         encoderDrive(.15,-455,280,2);
-                        encoderDrive(.2,1650,1650,2);
+                        encoderDrive(.2,1570,1570,2);
                         encoderDrive(.15,-240,240,2);
-                    } else if (key == 2) { //right3
+                        encoderDrive(.25,1800,1800,2);
+                        encoderAccessory(0.5,500,1);
+                        runtime.reset();
+                        robot.intakeServo.setPosition(0.06);
+                        while (opModeIsActive() && runtime.seconds() < .75) {
+                            telemetry.addData("Dropping Marker!", true);
+                            telemetry.update();
+                        }
+                        robot.intakeServo.setPosition(0.5);
+                        encoderDrive(.1,-15,15,2);
+                        encoderDrive(.3,-2700,-2700,3);
+                    } else if (key == 2) { //right
                         telemetry.addData("Right", true);
                         telemetry.update();
                     }
