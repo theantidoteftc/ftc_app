@@ -170,7 +170,6 @@ public class autoRightStates extends LinearOpMode {
                                 silverMineral2X = (int) recognition.getLeft();
                             }
                         }
-<<<<<<< HEAD
                         if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
                             if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
                                 telemetry.addData("Gold Mineral Position", "Left");
@@ -186,88 +185,6 @@ public class autoRightStates extends LinearOpMode {
                         gMineralX = goldMineralX;
                         sMineral1X = silverMineral1X;
                         sMineral2X = silverMineral2X;
-=======
-                    }
-
-                    if (tfod != null) {
-                        tfod.shutdown();
-                        tfod.deactivate();
-
-                    }
-
-                    if (key == 0) {
-                        telemetry.addData("gold mineral", "left");
-                    } else if (key == 1) {
-                        telemetry.addData("gold mineral", "center");
-                    } else if (key == 2) {
-                        telemetry.addData("gold mineral", "right");
-                    }
-                    telemetry.update();
-
-                    robot.leftBlock.setPosition(1); //unlatching procedure
-                    robot.rightBlock.setPosition(0);
-                    sleep(1500);
-                    runtime.reset();
-                    while (runtime.seconds() < 0.325 && opModeIsActive()) {
-                        robot.leftHook.setPosition(0);
-                        robot.rightHook.setPosition(1);
-                    }
-                    robot.leftHook.setPosition(0.5);
-                    robot.rightHook.setPosition(0.5);
-                    encoderAccessory(0.75,1200,1);
-                    encoderAccessoryTimeout(0.7, 400, 0,1);
-                    encoderDrive(0.15,100,100,2);
-                    robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-                    encoderAccessoryTimeout(0.5,925,0,2.5);
-                    encoderAccessory(0.2,-300,1);
-                    encoderAccessoryTimeout(0.8,-1800,0,2.5);
-                    encoderAccessory(0.3,-1000,1);
-                    sleep(100);
-
-                    if (key == 0) { //left
-                        telemetry.addData("Left", true);
-                        telemetry.update();
-                        encoderDrive(.225,180, 180,2);
-                        encoderDrive(.2,-187,187,1.5);
-                        encoderDrive(.2,850,850,2);
-                        encoderDrive(.15,-610,-610,2);
-                        encoderDrive(.125,-225,225,2);
-                        encoderDrive(.2,1425,1425,2);
-                        encoderDrive(.15,-195,195,2);
-                        encoderDrive(.175,1550,1550,2);
-                        encoderAccessory(0.5,500,1);
-                        runtime.reset();
-                        robot.intakeServo.setPosition(0.06);
-                        while (opModeIsActive() && runtime.seconds() < .75) {
-                            telemetry.addData("Dropping Marker!", true);
-                            telemetry.update();
-                        }
-                        robot.intakeServo.setPosition(0.5);
-                        encoderDrive(.1,5,-5,1);
-                        encoderDrive(.3,-2550,-2550,3);
-                    } else if (key == 1) { //center
-                        telemetry.addData("Center", true);
-                        telemetry.update();
-                        encoderDrive(.2,872,872,2);
-                        encoderDrive(.15,-375,-375,2);
-                        encoderDrive(.15,-455,280,2);
-                        encoderDrive(.2,1570,1570,2);
-                        encoderDrive(.15,-240,240,2);
-                        encoderDrive(.25,1800,1800,2);
-                        encoderAccessory(0.5,500,1);
-                        runtime.reset();
-                        robot.intakeServo.setPosition(0.06);
-                        while (opModeIsActive() && runtime.seconds() < .75) {
-                            telemetry.addData("Dropping Marker!", true);
-                            telemetry.update();
-                        }
-                        robot.intakeServo.setPosition(0.5);
-                        encoderDrive(.1,-15,15,2);
-                        encoderDrive(.3,-2700,-2700,3);
-                    } else if (key == 2) { //right
-                        telemetry.addData("Right", true);
-                        telemetry.update();
->>>>>>> 7b5e142d3719c843e2499b613c5246004f69f761
                     }
 
                     //if 2 minerals detected, split into (not) see gold ifs
