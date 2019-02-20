@@ -280,7 +280,7 @@ public class autoRightStates extends LinearOpMode {
         encoderDrive(0.15,100,100,2);
         robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
         encoderAccessoryTimeout(0.5,925,0,2.5);
-        encoderAccessory(0.2,-150,1);
+        encoderAccessory(0.2,-275,1);
         encoderAccessoryTimeout(0.95,-1800,0,2.5);
         encoderAccessory(0.3,-1000,1);
         sleep(100);

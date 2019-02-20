@@ -280,7 +280,7 @@ public class autoLeftStates extends LinearOpMode {
         encoderDrive(0.15,100,100,2);
         robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
         encoderAccessoryTimeout(0.5,925,0,2.5);
-        encoderAccessory(0.2,-150,1);
+        encoderAccessory(0.2,-315,1);
         encoderAccessoryTimeout(0.95,-1800,0,2.5);
         encoderAccessory(0.3,-1000,1);
         sleep(100);
@@ -291,9 +291,9 @@ public class autoLeftStates extends LinearOpMode {
             encoderDrive(.225,180, 180,2);
             encoderDrive(.2,-197,197,1.5);
             encoderDrive(.175,1950,1950,1.75);
-            encoderDrive(.1,-385,-385,1);
-            encoderDrive(.25,320,-320,2);
-            encoderDrive(.225,1150,1150,1.5);
+            encoderDrive(.08,-385,-385,1);
+            encoderDrive(.15,310,-310,2);
+            encoderDrive(.25,1150,1150,1.5);
             encoderAccessory(0.5,400,1);
             runtime.reset();
             robot.intakeServo.setPosition(0.06);
@@ -302,14 +302,13 @@ public class autoLeftStates extends LinearOpMode {
                 telemetry.update();
             }
             robot.intakeServo.setPosition(0.5);
-            encoderDrive(.2,-1510,-1510,2);
+            encoderDrive(.25,-1580,-1580,2);
             encoderAccessory(.45,300,1);
-            encoderAccessoryTimeout(.8,-400,0,1);
-            encoderDrive(.15,280,-280,1.5);
-            encoderDrive(.5,2000,2000,2.75);
-            encoderTurn(0.2, 750,500);/*
+            encoderAccessoryTimeout(.8,-400,0,0.7);
+            encoderDrive(.1,255,-255,2);
+            encoderDrive(0.2,2500,2500,5);
             encoderAccessory(0.5,650,1);
-            encoderAccessory(0.9,2300,0);*/
+            encoderAccessory(0.95,2000,0);
         } else if (key == 1) { //center
             telemetry.addData("Center", true);
             telemetry.update();
