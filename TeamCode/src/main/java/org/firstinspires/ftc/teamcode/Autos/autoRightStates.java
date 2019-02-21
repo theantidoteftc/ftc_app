@@ -280,23 +280,24 @@ public class autoRightStates extends LinearOpMode {
         encoderDrive(0.15,100,100,2);
         robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
         encoderAccessoryTimeout(0.5,925,0,2.5);
-        encoderAccessory(0.2,-275,1);
-        encoderAccessoryTimeout(0.95,-1800,0,2.5);
+        encoderDrive(0.1,-75,-75,1);
+        encoderAccessory(0.4,-500,1);
+        encoderAccessoryTimeout(0.95,-1725,0,2.5);
         encoderAccessory(0.3,-1000,1);
         sleep(100);
 
         if (key == 0) { //left
             telemetry.addData("Left", true);
             telemetry.update();
-            encoderDrive(.225,180, 180,2);
-            encoderDrive(.2,-185,185,1.5);
-            encoderDrive(.2,850,850,2);
-            encoderDrive(.15,-530,-530,2);
-            encoderDrive(.1,-192,192,2);
-            encoderDrive(.125,1425,1425,5);
-            encoderDrive(.15,-167,167,2);
+            encoderDrive(.15,255, 255,2);
+            encoderDrive(.15,-190,190,1.5);
+            encoderDrive(.15,850,850,2);
+            encoderDrive(.125,-530,-530,2);
+            encoderDrive(.1,-195,195,1.5);
+            encoderDrive(.15,1425,1425,4);
+            encoderDrive(.15,-167,167,1.5);
             encoderDrive(.175,1400,1400,2);
-            encoderAccessory(0.5,500,1);
+            encoderAccessory(0.5,700,1);
             runtime.reset();
             robot.intakeServo.setPosition(0.06);
             while (opModeIsActive() && runtime.seconds() < .75) {
@@ -309,7 +310,7 @@ public class autoRightStates extends LinearOpMode {
         } else if (key == 1) { //center
             telemetry.addData("Center", true);
             telemetry.update();
-            encoderDrive(.2,872,872,2);
+            encoderDrive(.2,947,947,2);
             encoderDrive(.15,-390,-390,2);
             encoderDrive(.1,-400,400,2);
             encoderDrive(.125,1620,1620,5);
@@ -328,6 +329,7 @@ public class autoRightStates extends LinearOpMode {
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
+            encoderDrive(0.1,75,75,1);
             encoderDrive(0.1,185,-185,1.25);
             encoderDrive(0.2,900,900,3);
             encoderDrive(0.125,-330,-330,2);
