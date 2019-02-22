@@ -268,12 +268,12 @@ public class autoLeftStates extends LinearOpMode {
         robot.leftBlock.setPosition(1); //unlatching procedure
         robot.rightBlock.setPosition(0);
         runtime.reset();
-        while (runtime.milliseconds() < 800 & opModeIsActive()) {
+        while (runtime.milliseconds() < 1200 && opModeIsActive()) {
         }
         robot.leftHook.setPosition(0);
         robot.rightHook.setPosition(1);
         runtime.reset();
-        while (runtime.milliseconds() < 500 & opModeIsActive()) {
+        while (runtime.milliseconds() < 325 && opModeIsActive()) {
         }
         robot.leftHook.setPosition(0.5);
         robot.rightHook.setPosition(0.5);
@@ -294,13 +294,16 @@ public class autoLeftStates extends LinearOpMode {
             telemetry.update();
             encoderDrive(.2,255, 255,2);
             encoderAccessory(0.5,500,1);
-            encoderDrive(.175,-195,195,2.5);
+            encoderDrive(.175,-170,170,1.5);
+            runtime.reset();
+            while (runtime.milliseconds() < 250 && opModeIsActive()) {
+            }
             encoderDrive(.2,1200,1200,1.75);
-            encoderDrive(.15,-375,-375,1.5);
+            encoderDrive(.15,-300,-300,1.5);
             encoderAccessory(0.4,750,1);
-            encoderDrive(.1,310,-310,2.5);
-            encoderAccessoryTimeout(0.9,2800,0,2);
-            encoderAccessory(0.5,400,1);
+            encoderDrive(.07,285,-285,2.5);
+            encoderDrive(0.15,1100,1100,3);
+            encoderAccessory(0.5,600,1);
             runtime.reset();
             robot.intakeServo.setPosition(0.06);
             while (opModeIsActive() && runtime.seconds() < .75) {
@@ -308,7 +311,8 @@ public class autoLeftStates extends LinearOpMode {
                 telemetry.update();
             }
             robot.intakeServo.setPosition(0.5);
-            encoderAccessoryTimeout(0.9,-2950,0,2);
+            encoderDrive(0.15,25,-25,1);
+            encoderDrive(0.15,-1100,-1100,3);
             /*encoderAccessory(0.5,-500,1);
             encoderDrive(.25,1150,1150,1.5);
             encoderAccessory(0.5,400,1);
@@ -328,8 +332,7 @@ public class autoLeftStates extends LinearOpMode {
             telemetry.addData("Center", true);
             telemetry.update();
             encoderDrive(0.1,75,75,1);
-            encoderDrive(0.3,30,-30,1);
-            encoderDrive(.2,1675,1675,2);
+            encoderDrive(.1,1725,1725,4);
             encoderAccessory(0.5,700,1);
             runtime.reset();
             robot.intakeServo.setPosition(0.06);
@@ -338,14 +341,14 @@ public class autoLeftStates extends LinearOpMode {
                 telemetry.update();
             }
             robot.intakeServo.setPosition(0.5);
-            encoderDrive(.15,-1275,-1275,2);
+            encoderDrive(.1,-1275,-1275,4);
             sleep(100);
             encoderAccessory(.2,400,1);
-            encoderAccessoryTimeout(.5,-200,0,1.5);
-            encoderDrive(.1,345,-345,1.5);
-            encoderDrive(.3,1600,1600,3.5);
-            encoderDrive(.35,120,-120,1.25);
-            encoderDrive(0.3,250,250,1.2);
+            encoderAccessoryTimeout(.5,-200,0,1);
+            encoderDrive(.1,362,-362,1.5);
+            encoderDrive(.275,1480,1480,3.5);
+            encoderDrive(.35,125,-125,1.25);
+            encoderDrive(0.3,200,200,2.5);
             encoderAccessory(0.5,650,1);
             encoderAccessory(0.98,2000,0);
         } else if (key == 2) { //right
@@ -353,11 +356,11 @@ public class autoLeftStates extends LinearOpMode {
             telemetry.update();
             encoderDrive(0.1,90,90,1);
             encoderAccessoryTimeout(0.5,775,1,2);
-            encoderDrive(0.15,185,-185,3.5);
+            encoderDrive(0.15,185,-185,2);
             encoderAccessoryTimeout(0.2,-500,1,1.5);
             encoderDrive(0.17,1515,1515,2);
             encoderAccessoryTimeout(0.3,800,1,2);
-            encoderDrive(0.1,-340,340,3.5);
+            encoderDrive(0.1,-340,340,2);
             encoderAccessoryTimeout(0.3,-400,1,1.5);
             encoderDrive(0.25,975,975,1.5);
             encoderAccessory(0.5,500,1);

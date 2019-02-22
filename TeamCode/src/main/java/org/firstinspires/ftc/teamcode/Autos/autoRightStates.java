@@ -149,7 +149,7 @@ public class autoRightStates extends LinearOpMode {
         }
 
         runtime.reset(); //TensorFlow Timer Wait
-        while (opModeIsActive() && runtime.seconds() < 0.75) {
+        while (opModeIsActive() && runtime.seconds() < 2) {
             if (tfod != null) {
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
@@ -262,15 +262,22 @@ public class autoRightStates extends LinearOpMode {
             telemetry.addData("gold mineral", "center");
         } else if (key == 2) {
             telemetry.addData("gold mineral", "right");
+        } else if (key == 4) {
+            telemetry.addData("gold mineral", "NOT DETECTED");
+            telemetry.addData("override", true);
+            key = 1;
         }
         telemetry.update();
 
         robot.leftBlock.setPosition(1); //unlatching procedure
         robot.rightBlock.setPosition(0);
+        runtime.reset();
+        while (runtime.milliseconds() < 1200 && opModeIsActive()) {
+        }
         robot.leftHook.setPosition(0);
         robot.rightHook.setPosition(1);
         runtime.reset();
-        while (runtime.milliseconds() < 1100 & opModeIsActive()) {
+        while (runtime.milliseconds() < 325 && opModeIsActive()) {
         }
         robot.leftHook.setPosition(0.5);
         robot.rightHook.setPosition(0.5);
@@ -293,9 +300,10 @@ public class autoRightStates extends LinearOpMode {
             encoderDrive(.22,-195,195,1.8);
             encoderDrive(.175,850,850,2);
             encoderDrive(.1,-430,-430,2);
+            encoderAccessory(0.5,650,1);
             encoderDrive(.15,-207,207,1.5);
             encoderDrive(.25,1500,1500,2.75);
-            encoderDrive(.15,-190,190,1.5);
+            encoderDrive(.15,-175,175,1.5);
             encoderDrive(0.23,1200,1200,1.8);
             encoderAccessory(0.5,800,1);
             runtime.reset();
@@ -345,9 +353,10 @@ public class autoRightStates extends LinearOpMode {
             encoderDrive(0.15,185,-185,1.25);
             encoderDrive(0.25,970,970,1.75);
             encoderDrive(0.175,-280,-280,1.5);
+            encoderAccessory(0.5,650,1);
             encoderDrive(0.15,-585,585,2);
             encoderDrive(0.25,2000,2000,3);
-            encoderDrive(0.1,-175,175,2);
+            encoderDrive(0.1,-172,172,2);
             encoderDrive(0.2,1500,1500,4);
             encoderAccessory(0.5,600,1);
             runtime.reset();
@@ -357,7 +366,7 @@ public class autoRightStates extends LinearOpMode {
                 telemetry.update();
             }
             robot.intakeServo.setPosition(0.5);
-            encoderDrive(0.1,-20,20,1);
+            encoderDrive(0.1,-25,25,1);
             encoderDrive(0.30,-2850,-2850,6);
         }
 
