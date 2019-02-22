@@ -267,11 +267,13 @@ public class autoLeftStates extends LinearOpMode {
 
         robot.leftBlock.setPosition(1); //unlatching procedure
         robot.rightBlock.setPosition(0);
-        sleep(1500);
         runtime.reset();
-        while (runtime.seconds() < 0.325 && opModeIsActive()) {
-            robot.leftHook.setPosition(0);
-            robot.rightHook.setPosition(1);
+        while (runtime.milliseconds() < 800 & opModeIsActive()) {
+        }
+        robot.leftHook.setPosition(0);
+        robot.rightHook.setPosition(1);
+        runtime.reset();
+        while (runtime.milliseconds() < 500 & opModeIsActive()) {
         }
         robot.leftHook.setPosition(0.5);
         robot.rightHook.setPosition(0.5);
@@ -281,10 +283,10 @@ public class autoLeftStates extends LinearOpMode {
         robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
         encoderAccessoryTimeout(0.5,925,0,2.5);
         encoderDrive(0.1,-75,-75,1);
-        encoderAccessory(0.4,-500,1);
-        encoderAccessoryTimeout(0.95,-1725,0,1.75);
+        encoderAccessory(0.4,-275,1);
+        encoderAccessoryTimeout(0.95,-1725,0,2);
         encoderAccessory(0.3,-1000,1);
-        encoderAccessoryTimeout(0.4,200,0,1);
+        encoderAccessoryTimeout(0.4,200,0,0.6);
         sleep(100);
 
         if (key == 0) { //left
@@ -349,14 +351,14 @@ public class autoLeftStates extends LinearOpMode {
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
-            encoderDrive(0.1,75,75,1);
-            encoderAccessory(0.5,775,1);
-            encoderDrive(0.1,195,-195,3.5);
-            encoderAccessory(0.2,-500,1);
+            encoderDrive(0.1,90,90,1);
+            encoderAccessoryTimeout(0.5,775,1,2);
+            encoderDrive(0.15,185,-185,3.5);
+            encoderAccessoryTimeout(0.2,-500,1,1.5);
             encoderDrive(0.17,1515,1515,2);
-            encoderAccessory(0.3,800,1);
+            encoderAccessoryTimeout(0.3,800,1,2);
             encoderDrive(0.1,-340,340,3.5);
-            encoderAccessory(0.3,-400,1);
+            encoderAccessoryTimeout(0.3,-400,1,1.5);
             encoderDrive(0.25,975,975,1.5);
             encoderAccessory(0.5,500,1);
             runtime.reset();
@@ -367,8 +369,7 @@ public class autoLeftStates extends LinearOpMode {
             }
             robot.intakeServo.setPosition(0.5);
             encoderDrive(0.1,-55,55,1.75);
-            encoderDrive(0.325,-2650,-2650,3);
-            encoderAccessoryTimeout(0.3,1800,1,3);
+            encoderDrive(0.325,-2800,-2800,3.5);
         }
 
         telemetry.addData("Path", "Complete");
@@ -511,7 +512,7 @@ public class autoLeftStates extends LinearOpMode {
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
-                    (robot.hexFrontLeft.isBusy() || robot.hexFrontRight.isBusy())) {
+                    (robot.hexFrontLeft.isBusy() || robot.hexFrontLeft.isBusy() || robot.hexFrontRight.isBusy() || robot.hexRearRight.isBusy())) {
 
                 // Display it for the driver.
                 telemetry.addData("Path1",  "Running to %7d :%7d", newFrontLeftTarget,  newFrontRightTarget);
@@ -521,19 +522,6 @@ public class autoLeftStates extends LinearOpMode {
                 telemetry.update();
             }
 
-            // Stop all motion;
-            robot.hexFrontLeft.setPower(0);
-            robot.hexFrontRight.setPower(0);
-            robot.hexRearLeft.setPower(0);
-            robot.hexRearRight.setPower(0);
-
-            // Turn off RUN_TO_POSITION
-            robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            sleep(250);   // optional pause after each move
         }
     }
 
