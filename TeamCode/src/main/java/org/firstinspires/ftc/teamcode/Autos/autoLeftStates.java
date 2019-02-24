@@ -277,12 +277,12 @@ public class autoLeftStates extends LinearOpMode {
         }
         robot.leftHook.setPosition(0.5);
         robot.rightHook.setPosition(0.5);
-        encoderAccessory(0.75,1200,1);
-        encoderAccessoryTimeout(0.7, 400, 0,1);
+        encoderAccessory(0.75,725,1);
+        encoderAccessoryTimeout(0.8, 650, 0,1);
         encoderDrive(0.15,100,100,2);
         robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
         encoderAccessoryTimeout(0.5,925,0,2.5);
-        encoderDrive(0.1,-75,-75,1);
+        encoderDrive(0.1,-40,-40,1);
         encoderAccessory(0.4,-275,1);
         encoderAccessoryTimeout(0.95,-1725,0,2);
         encoderAccessory(0.3,-1000,1);
@@ -331,7 +331,24 @@ public class autoLeftStates extends LinearOpMode {
         } else if (key == 1) { //center
             telemetry.addData("Center", true);
             telemetry.update();
-            encoderDrive(0.1,75,75,1);
+            encoderDrive(0.15,10,-10,1);
+            runtime.reset();
+            while (runtime.milliseconds() < 250 && opModeIsActive()) {
+            }
+            encoderDrive(.175,1800,1800,3);
+            encoderAccessory(0.5,700,1);
+            runtime.reset();
+            robot.intakeServo.setPosition(0.06);
+            while (opModeIsActive() && runtime.seconds() < .75) {
+                telemetry.addData("Dropping Marker!", true);
+                telemetry.update();
+            }
+            robot.intakeServo.setPosition(0.5);
+            encoderDrive(.175,-100,-100,4);
+            encoderDrive(0.1,-415,415,3);
+            encoderDrive(0.1,600,600,3);
+
+            /*encoderDrive(0.1,75,75,1);
             encoderDrive(.1,1725,1725,4);
             encoderAccessory(0.5,700,1);
             runtime.reset();
@@ -350,7 +367,7 @@ public class autoLeftStates extends LinearOpMode {
             encoderDrive(.35,125,-125,1.25);
             encoderDrive(0.3,200,200,2.5);
             encoderAccessory(0.5,650,1);
-            encoderAccessory(0.98,2000,0);
+            encoderAccessory(0.98,2000,0);*/
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
