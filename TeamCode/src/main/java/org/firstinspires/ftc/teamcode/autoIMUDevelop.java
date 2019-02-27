@@ -143,25 +143,32 @@ public class autoIMUDevelop extends LinearOpMode {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        imuTurn(0.3,90);
+        imuTurn(0.25,90,2);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
 
-    public void imuTurn(/*double leftSpeed, */double rightSpeed, double bearing/*, double timeoutS*/) {
-        double currentHeading = 1;
-        double deltaHeading = 0;
+    public void imuTurn(double speed, double bearing,int acceptRange/*, double timeoutS*/) {
+        double currentHeading = 0;
+        double deltaHeading = 1;
         double ratioHeading = 1;
-        while (bearing > angles.firstAngle && opModeIsActive()) {
+        boolean outOfRange = true;
+        while (outOfRange && opModeIsActive()) {
             currentHeading = angles.firstAngle;
             deltaHeading = bearing - currentHeading;
             ratioHeading = (deltaHeading / bearing);
             if (ratioHeading > 1) {
                 ratioHeading = 1;
             }
-            robot.hexFrontRight.setPower(rightSpeed * ratioHeading);
-            robot.hexRearRight.setPower(rightSpeed * ratioHeading);
+            runtime.reset();
+            if (Math.abs(deltaHeading) < acceptRange && runtime.seconds() < 2) {
+                outOfRange = false;
+            }
+            robot.hexFrontLeft.setPower(-speed * ratioHeading);
+            robot.hexFrontRight.setPower(speed * ratioHeading);
+            robot.hexRearLeft.setPower(-speed * ratioHeading);
+            robot.hexRearRight.setPower(speed * ratioHeading);
             telemetry.addData("current", currentHeading);
             telemetry.addData("delta", deltaHeading);
             telemetry.addData("ratioHeading", ratioHeading);
