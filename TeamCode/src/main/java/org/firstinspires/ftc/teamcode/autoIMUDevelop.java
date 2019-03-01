@@ -130,6 +130,11 @@ public class autoIMUDevelop extends LinearOpMode {
          */
         robot.init(hardwareMap);
 
+        /*robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.hexRearRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);*/
+
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
@@ -143,40 +148,63 @@ public class autoIMUDevelop extends LinearOpMode {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        imuTurn(0.25,90,2);
+        imuTurn(0.35,0,90,3);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
 
-    public void imuTurn(double speed, double bearing,int acceptRange/*, double timeoutS*/) {
+    public void imuTurn(double speed, double minSpeed, double bearing,int acceptRange/*, double timeoutS*/) {
         double currentHeading = 0;
         double deltaHeading = 1;
-        double ratioHeading = 1;
-        boolean outOfRange = true;
-        while (outOfRange && opModeIsActive()) {
+        double gain = 0.0075;
+        double driveSpeed;
+        int count = 0;
+        boolean turnDone = false;
+        boolean timerStart = false;
+        while (!turnDone && opModeIsActive()) {
             currentHeading = angles.firstAngle;
             deltaHeading = bearing - currentHeading;
-            ratioHeading = (deltaHeading / bearing);
-            if (ratioHeading > 1) {
-                ratioHeading = 1;
+            if (Math.abs(deltaHeading) <= 15) {
+                if (runtime.seconds() > 0.35) {
+                    count++;
+                }
             }
-            runtime.reset();
-            if (Math.abs(deltaHeading) < acceptRange && runtime.seconds() < 2) {
-                outOfRange = false;
+            if (Math.abs(deltaHeading) <= acceptRange) {
+                if (!timerStart) {
+                    runtime.reset();
+                    timerStart = true;
+                } else if (runtime.seconds() > .5) {
+                    turnDone = true;
+                }
+                driveSpeed = 0;
+            } else {
+                timerStart = false;
+                driveSpeed = gain * deltaHeading * speed;
+                if (driveSpeed > 1) {
+                    driveSpeed = 1;
+                } else if (driveSpeed < -1) {
+                    driveSpeed = -1;
+                } else if (Math.abs(driveSpeed) < minSpeed) {
+                    if (driveSpeed < 0) {
+                        driveSpeed = -minSpeed;
+                    } else {
+                        driveSpeed = minSpeed;
+                    }
+                }
             }
-            robot.hexFrontLeft.setPower(-speed * ratioHeading);
-            robot.hexFrontRight.setPower(speed * ratioHeading);
-            robot.hexRearLeft.setPower(-speed * ratioHeading);
-            robot.hexRearRight.setPower(speed * ratioHeading);
+            robot.hexFrontLeft.setPower(-driveSpeed);
+            robot.hexFrontRight.setPower(driveSpeed);
+            robot.hexRearLeft.setPower(-driveSpeed);
+            robot.hexRearRight.setPower(driveSpeed);
             telemetry.addData("current", currentHeading);
             telemetry.addData("delta", deltaHeading);
-            telemetry.addData("ratioHeading", ratioHeading);
-            telemetry.addData("runtime", runtime.seconds());
+            telemetry.addData("gain", gain);
+            telemetry.addData("count", count);
+            telemetry.addData("Left Power", -driveSpeed);
+            telemetry.addData("Right Power", driveSpeed);
             telemetry.update();
         }
-        robot.hexFrontRight.setPower(0);
-        robot.hexRearRight.setPower(0);
     }
 
     void composeTelemetry() {
