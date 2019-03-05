@@ -79,7 +79,7 @@ public class NewarkOp extends LinearOpMode {
         boolean fallDetected = false;
         double pivotStart = robot.pivotMotor.getCurrentPosition();
 
-        robot.mineralBlock.setPosition(0); //close
+        //robot.mineralBlock.setPosition(0); //close
 
         while (opModeIsActive()) {
 
@@ -109,7 +109,7 @@ public class NewarkOp extends LinearOpMode {
             //gamepad 2 (logitech)
             double slide = -gamepad2.left_stick_y;
             double pivot = gamepad2.right_stick_y;
-            double intake = ((gamepad2.left_trigger/2.28) - (gamepad2.right_trigger/2.28)) + 0.5;
+            double intake = ((-gamepad2.right_trigger) + (gamepad2.left_trigger));
 
 
             if (gamepad2.dpad_up) {
@@ -151,11 +151,11 @@ public class NewarkOp extends LinearOpMode {
             //gamepad 2 (logitech) setPower
             robot.hexSlide.setPower(slide);
             robot.pivotMotor.setPower(pivot/4);
-            robot.intakeServo.setPosition(intake);
+            robot.intakeMotor.setPower(intake);
 
             telemetry.addData("slide input", gamepad2.left_stick_y);
             telemetry.addData("slide LIVE", robot.hexSlide.getCurrentPosition());
-            telemetry.addData("intake", robot.intakeServo.getPosition());
+            telemetry.addData("intake", robot.intakeMotor.getPower());
             telemetry.addData("lpower", lPower);
             telemetry.addData("Status", "Running");
             telemetry.addData("slowmode", slowMode);
