@@ -113,9 +113,17 @@ public class NewarkOp extends LinearOpMode {
 
 
             if (gamepad2.dpad_up) {
-                robot.mineralBlock.setPosition(1); //open
+                robot.mineralGate.setPosition(1); //open
+                runtime.reset();
+                while (opModeIsActive() && runtime.seconds() < 0.6) {
+                }
+                robot.mineralGate.setPosition(0.5);
             } else if (gamepad2.dpad_down) {
-                robot.mineralBlock.setPosition(0); //close
+                robot.mineralGate.setPosition(0); //close
+                runtime.reset();
+                while (opModeIsActive() && runtime.seconds() < 0.6) {
+                }
+                robot.mineralGate.setPosition(0.5);
             }
 
             if (gamepad2.a) {
@@ -129,11 +137,11 @@ public class NewarkOp extends LinearOpMode {
                 slide /= 5;
             }
 
-            if (robot.mineralBlock.getPosition() == 1 && ((robot.pivotMotor.getCurrentPosition() - pivotStart)) > 500) {
+            /*if (robot.mineralBlock.getPosition() == 1 && ((robot.pivotMotor.getCurrentPosition() - pivotStart)) > 500) {
                 robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.FIRE_LARGE);
             } else if (robot.mineralBlock.getPosition() == 0) {
                 robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_2_COLOR_WAVES);
-            }
+            }*/
 
             if (gamepad2.dpad_right) {
                 robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_2_COLOR_WAVES);

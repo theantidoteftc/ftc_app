@@ -75,7 +75,7 @@ public class EncodersOp extends LinearOpMode {
         double sStart = robot.hexSlide.getCurrentPosition();
         double pStart = robot.pivotMotor.getCurrentPosition();
 
-        robot.mineralBlock.setPosition(0); //close
+        robot.mineralGate.setPosition(0); //close
 
         while (opModeIsActive()) {
 

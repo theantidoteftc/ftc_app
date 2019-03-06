@@ -68,7 +68,7 @@ public class NewarkHardware
     public Servo rightHook = null; //4 on the right
     public Servo leftBlock = null; //1 on the left
     public Servo rightBlock = null; //1 on the right
-    public Servo mineralBlock = null; //2 on the left
+    public Servo mineralGate = null;
     public Servo intakeServo = null; //2 on the left
 
     public RevBlinkinLedDriver blinkin = null; //5 on the right
@@ -102,7 +102,7 @@ public class NewarkHardware
         rightHook = hwMap.get(Servo.class, "rightHook");
         leftBlock = hwMap.get(Servo.class, "leftBlock");
         rightBlock = hwMap.get(Servo.class, "rightBlock");
-        mineralBlock = hwMap.get(Servo.class, "mineralBlock");
+        mineralGate = hwMap.get(Servo.class, "mineralGate");
 
         blinkin = hwMap.get(RevBlinkinLedDriver.class, "blinkin");
 
