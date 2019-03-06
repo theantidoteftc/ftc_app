@@ -148,13 +148,103 @@ public class autoIMUDevelop extends LinearOpMode {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        imuTurn(0.35,0,90,3);
+        experimentalDrive(0.3,2500, 2);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
 
-    public void imuTurn(double speed, double minSpeed, double bearing,int acceptRange/*, double timeoutS*/) {
+    public void experimentalDrive(double speed, double encoderAmount, double severity) {
+        robot.hexFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexRearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexRearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.hexRearRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        double startHeading = angles.firstAngle;
+        double currentHeading;
+        double deltaHeading;
+        double averageEncoder;
+        double deltaEncoder;
+        double leftSpeed;
+        double rightSpeed;
+        while (opModeIsActive()) {
+            leftSpeed = speed;
+            rightSpeed = speed;
+            currentHeading = angles.firstAngle;
+            deltaHeading = currentHeading - startHeading;
+            averageEncoder = ((robot.hexFrontLeft.getCurrentPosition() + robot.hexFrontRight.getCurrentPosition() + robot.hexRearLeft.getCurrentPosition() + robot.hexRearRight.getCurrentPosition()) / 4);
+            deltaEncoder = encoderAmount - averageEncoder;
+
+            if (deltaHeading > 0) {
+                rightSpeed -= (deltaHeading/100 * severity);
+            } else if (deltaHeading < 0) {
+                leftSpeed += (deltaHeading/100 * severity);
+            }
+
+            robot.hexFrontLeft.setPower(leftSpeed);
+            robot.hexFrontRight.setPower(rightSpeed);
+            robot.hexRearLeft.setPower(leftSpeed);
+            robot.hexRearRight.setPower(rightSpeed);
+            telemetry.addData("delta", deltaHeading);
+            telemetry.addData("live", averageEncoder);
+            telemetry.addData("left", leftSpeed);
+            telemetry.addData("right", rightSpeed);
+            telemetry.addData("delta encoder", deltaEncoder);
+            telemetry.update();
+        }
+    }
+
+    public void experimentalTurn(double speed, double bearing,int acceptRange/*, double timeoutS*/) {
+        double percentBearing = bearing * 0.45;
+        double currentHeading = 0;
+        double trueDeltaHeading = 1;
+        double deltaHeading = 1;
+        double gain = 0.0075;
+        double driveSpeed;
+        boolean turnDone = false;
+        boolean timerStart = false;
+        while (!turnDone && opModeIsActive()) {
+            currentHeading = angles.firstAngle;
+            trueDeltaHeading = bearing - currentHeading;
+            deltaHeading = percentBearing - currentHeading;
+            if (deltaHeading < 0) {
+                driveSpeed = .0175;
+                if (Math.abs(trueDeltaHeading) <= acceptRange) {
+                    if (!timerStart) {
+                        runtime.reset();
+                        timerStart = true;
+                    } else if (runtime.seconds() > .3) {
+                        turnDone = true;
+                    }
+                    driveSpeed = 0;
+                }
+            } else {
+                timerStart = false;
+                driveSpeed = gain * deltaHeading * speed;
+                if (driveSpeed > 1) {
+                    driveSpeed = 1;
+                } else if (driveSpeed < -1) {
+                    driveSpeed = -1;
+                }
+            }
+            robot.hexFrontLeft.setPower(-driveSpeed);
+            robot.hexFrontRight.setPower(driveSpeed);
+            robot.hexRearLeft.setPower(-driveSpeed);
+            robot.hexRearRight.setPower(driveSpeed);
+            telemetry.addData("current", currentHeading);
+            telemetry.addData("delta", deltaHeading);
+            telemetry.addData("gain", gain);
+            telemetry.addData("Left Power", -driveSpeed);
+            telemetry.addData("Right Power", driveSpeed);
+            telemetry.update();
+        }
+    }
+
+    public void deprecated(double speed, double minSpeed, double bearing,int acceptRange/*, double timeoutS*/) {
         double currentHeading = 0;
         double deltaHeading = 1;
         double gain = 0.0075;
@@ -165,11 +255,6 @@ public class autoIMUDevelop extends LinearOpMode {
         while (!turnDone && opModeIsActive()) {
             currentHeading = angles.firstAngle;
             deltaHeading = bearing - currentHeading;
-            if (Math.abs(deltaHeading) <= 15) {
-                if (runtime.seconds() > 0.35) {
-                    count++;
-                }
-            }
             if (Math.abs(deltaHeading) <= acceptRange) {
                 if (!timerStart) {
                     runtime.reset();
@@ -221,7 +306,7 @@ public class autoIMUDevelop extends LinearOpMode {
         }
         });
 
-        telemetry.addLine()
+        /*telemetry.addLine()
                 .addData("status", new Func<String>() {
                     @Override public String value() {
                         return imu.getSystemStatus().toShortString();
@@ -232,6 +317,8 @@ public class autoIMUDevelop extends LinearOpMode {
                         return imu.getCalibrationStatus().toString();
                     }
                 });
+
+        */
 
         telemetry.addLine()
                 .addData("heading", new Func<String>() {
@@ -251,7 +338,7 @@ public class autoIMUDevelop extends LinearOpMode {
                     }
                 });
 
-        telemetry.addLine()
+        /*telemetry.addLine()
                 .addData("grvty", new Func<String>() {
                     @Override public String value() {
                         return gravity.toString();
@@ -272,6 +359,8 @@ public class autoIMUDevelop extends LinearOpMode {
                         return formatAngle(angles.angleUnit, angles.thirdAngle);
                     }
                 });
+
+        */
     }
 
     //----------------------------------------------------------------------------------------------
