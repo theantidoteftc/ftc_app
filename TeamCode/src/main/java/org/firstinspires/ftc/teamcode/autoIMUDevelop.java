@@ -148,7 +148,9 @@ public class autoIMUDevelop extends LinearOpMode {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        experimentalDrive(0.3,2500, 2);
+        //experimentalDrive(0.3,2500, 2);
+        experimentalTurn(0.4,-90,3);
+        experimentalTurn(0.4,50,3);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
@@ -199,6 +201,7 @@ public class autoIMUDevelop extends LinearOpMode {
     }
 
     public void experimentalTurn(double speed, double bearing,int acceptRange/*, double timeoutS*/) {
+        double existingHeading = angles.firstAngle;
         double percentBearing = bearing * 0.45;
         double currentHeading = 0;
         double trueDeltaHeading = 1;
@@ -208,33 +211,65 @@ public class autoIMUDevelop extends LinearOpMode {
         boolean turnDone = false;
         boolean timerStart = false;
         while (!turnDone && opModeIsActive()) {
-            currentHeading = angles.firstAngle;
-            trueDeltaHeading = bearing - currentHeading;
-            deltaHeading = percentBearing - currentHeading;
-            if (deltaHeading < 0) {
-                driveSpeed = .0175;
-                if (Math.abs(trueDeltaHeading) <= acceptRange) {
-                    if (!timerStart) {
-                        runtime.reset();
-                        timerStart = true;
-                    } else if (runtime.seconds() > .3) {
-                        turnDone = true;
+            if (bearing > 0) {
+                currentHeading = angles.firstAngle - existingHeading;
+                trueDeltaHeading = bearing - currentHeading;
+                deltaHeading = percentBearing - currentHeading;
+                if (deltaHeading < 0) {
+                    driveSpeed = .015;
+                    if (Math.abs(trueDeltaHeading) <= acceptRange) {
+                        if (!timerStart) {
+                            runtime.reset();
+                            timerStart = true;
+                        } else if (runtime.seconds() > .3) {
+                            turnDone = true;
+                        }
+                        driveSpeed = 0;
                     }
-                    driveSpeed = 0;
+                } else {
+                    timerStart = false;
+                    driveSpeed = gain * deltaHeading * speed;
+                    if (driveSpeed > 1) {
+                        driveSpeed = 1;
+                    } else if (driveSpeed < -1) {
+                        driveSpeed = -1;
+                    }
                 }
+                robot.hexFrontLeft.setPower(-driveSpeed);
+                robot.hexFrontRight.setPower(driveSpeed);
+                robot.hexRearLeft.setPower(-driveSpeed);
+                robot.hexRearRight.setPower(driveSpeed);
+            } else if (bearing < 0){
+                currentHeading = angles.firstAngle - existingHeading;
+                trueDeltaHeading = currentHeading - bearing;
+                deltaHeading = currentHeading - percentBearing;
+                if (deltaHeading < 0) {
+                    driveSpeed = .015;
+                    if (Math.abs(trueDeltaHeading) <= acceptRange) {
+                        if (!timerStart) {
+                            runtime.reset();
+                            timerStart = true;
+                        } else if (runtime.seconds() > .3) {
+                            turnDone = true;
+                        }
+                        driveSpeed = 0;
+                    }
+                } else {
+                    timerStart = false;
+                    driveSpeed = gain * deltaHeading * speed;
+                    if (driveSpeed > 1) {
+                        driveSpeed = 1;
+                    } else if (driveSpeed < -1) {
+                        driveSpeed = -1;
+                    }
+                }
+                robot.hexFrontLeft.setPower(driveSpeed);
+                robot.hexFrontRight.setPower(-driveSpeed);
+                robot.hexRearLeft.setPower(driveSpeed);
+                robot.hexRearRight.setPower(-driveSpeed);
             } else {
-                timerStart = false;
-                driveSpeed = gain * deltaHeading * speed;
-                if (driveSpeed > 1) {
-                    driveSpeed = 1;
-                } else if (driveSpeed < -1) {
-                    driveSpeed = -1;
-                }
+                driveSpeed = 0;
             }
-            robot.hexFrontLeft.setPower(-driveSpeed);
-            robot.hexFrontRight.setPower(driveSpeed);
-            robot.hexRearLeft.setPower(-driveSpeed);
-            robot.hexRearRight.setPower(driveSpeed);
             telemetry.addData("current", currentHeading);
             telemetry.addData("delta", deltaHeading);
             telemetry.addData("gain", gain);
