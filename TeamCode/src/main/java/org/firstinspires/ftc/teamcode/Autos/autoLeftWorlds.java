@@ -38,8 +38,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -47,6 +51,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.NewarkHardware;
 
 import java.util.List;
+import java.util.Locale;
 
 //NOT NEEDED - motors are identified within actual program
 
@@ -160,6 +165,9 @@ public class autoLeftWorlds extends LinearOpMode {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         initVuforia(0);
+
+        // Set up our telemetry dashboard
+        composeTelemetry();
 
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start tracking - U R GO, GOOD LUCK!");
@@ -350,14 +358,17 @@ public class autoLeftWorlds extends LinearOpMode {
             telemetry.update();
             encoderDrive(0.2,875,875,2);
             encoderAccessoryTimeout(0.99,2500,0,1.5);
-            encoderAccessoryTimeout(0.5,400,1,2);
+            encoderAccessoryTimeout(0.5,325,1,2);
             robot.intakeMotor.setPower(-0.45);
             runtime.reset();
-            while (runtime.seconds() < 1) {
+            while (runtime.seconds() < .5) {
             }
             robot.intakeMotor.setPower(0);
-            encoderDrive(0.2,-350,-350,2);
-            encoderAccessoryTimeout(0.8,-2500,0,2);
+            encoderDrive(0.2,-350,-350,1.5);
+            encoderAccessoryTimeout(0.8,-2500,0,1.5);
+            experimentalTurn(0.5,0.0125,-90,3);
+            experimentalDrive(0.6,1550,2.5);
+            experimentalTurn(0.5,0.015,-35,3);
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
@@ -387,139 +398,13 @@ public class autoLeftWorlds extends LinearOpMode {
     }
 
 
-    public void encoderTurn(double baseSpeed, double leftAmount, double rightAmount) {
-        int newFrontLeftTarget;
-        int newFrontRightTarget;
-        int newRearLeftTarget;
-        int newRearRightTarget;
-        int greater = 0;
-        double speedRatio = 0;
-
-        // Ensure that the opmode is still active
-        if (opModeIsActive()) {
-
-            if (rightAmount > leftAmount) {
-                greater = 1;
-            } else if (rightAmount < leftAmount) {
-                greater = -1;
-            }
-
-            if (greater == 1) {
-                speedRatio = rightAmount/leftAmount;
-            } else if (greater == -1) {
-                speedRatio = leftAmount/rightAmount;
-            }
-
-            // Determine new target position, and pass to motor controller
-            newFrontLeftTarget = robot.hexFrontLeft.getCurrentPosition() + (int)(leftAmount);// * COUNTS_PER_INCH);
-            newFrontRightTarget = robot.hexFrontRight.getCurrentPosition() + (int)(rightAmount);// * COUNTS_PER_INCH);
-            newRearLeftTarget = robot.hexFrontLeft.getCurrentPosition() + (int)(leftAmount);// * COUNTS_PER_INCH);
-            newRearRightTarget = robot.hexFrontRight.getCurrentPosition() + (int)(rightAmount);// * COUNTS_PER_INCH);
-            robot.hexFrontLeft.setTargetPosition(newFrontLeftTarget);
-            robot.hexFrontRight.setTargetPosition(newFrontRightTarget);
-            robot.hexRearLeft.setTargetPosition(newRearLeftTarget);
-            robot.hexRearRight.setTargetPosition(newRearRightTarget);
-
-            // Turn On RUN_TO_POSITION
-            robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.hexRearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            // reset the timeout time and start motion.
-            runtime.reset();
-            if (greater == 1) {
-                robot.hexFrontLeft.setPower(Math.abs(baseSpeed));
-                robot.hexFrontRight.setPower(Math.abs(baseSpeed) * speedRatio);
-                robot.hexRearLeft.setPower(Math.abs(baseSpeed));
-                robot.hexRearRight.setPower(Math.abs(baseSpeed) * speedRatio);
-            } else if (greater == -1) {
-                robot.hexFrontLeft.setPower(Math.abs(baseSpeed) * speedRatio);
-                robot.hexFrontRight.setPower(Math.abs(baseSpeed));
-                robot.hexRearLeft.setPower(Math.abs(baseSpeed) * speedRatio);
-                robot.hexRearRight.setPower(Math.abs(baseSpeed));
-            }
-
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will
-            // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
-            // onto the next step, use (isBusy() || isBusy()) in the loop test.
-            while (opModeIsActive() &&
-                    (robot.hexFrontLeft.isBusy() || robot.hexFrontRight.isBusy())) {
-
-                // Display it for the driver.
-                telemetry.addData("yeet", robot.hexFrontLeft.getCurrentPosition());
-                telemetry.addData("Path1",  "Running to %7d :%7d", newFrontLeftTarget,  newFrontRightTarget);
-                telemetry.addData("Path2",  "Running at %7d :%7d",
-                        robot.hexFrontLeft.getCurrentPosition(),
-                        robot.hexFrontRight.getCurrentPosition());
-                telemetry.update();
-            }
-
-            // Stop all motion;
-            robot.hexFrontLeft.setPower(0);
-            robot.hexFrontRight.setPower(0);
-            robot.hexRearLeft.setPower(0);
-            robot.hexRearRight.setPower(0);
-
-            // Turn off RUN_TO_POSITION
-            robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            sleep(250);   // optional pause after each move
-        }
-    }
-
-    public void experimentalDrive(double speed, double encoderAmount, double severity) {
-        robot.hexFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.hexFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.hexRearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.hexRearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.hexRearRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        double startHeading = angles.firstAngle;
-        double currentHeading;
-        double deltaHeading;
-        double averageEncoder;
-        double deltaEncoder;
-        double leftSpeed;
-        double rightSpeed;
-        while (opModeIsActive()) {
-            leftSpeed = speed;
-            rightSpeed = speed;
-            currentHeading = angles.firstAngle;
-            deltaHeading = currentHeading - startHeading;
-            averageEncoder = ((robot.hexFrontLeft.getCurrentPosition() + robot.hexFrontRight.getCurrentPosition() + robot.hexRearLeft.getCurrentPosition() + robot.hexRearRight.getCurrentPosition()) / 4);
-            deltaEncoder = encoderAmount - averageEncoder;
-
-            if (deltaHeading > 0) {
-                rightSpeed -= (deltaHeading/100 * severity);
-            } else if (deltaHeading < 0) {
-                leftSpeed += (deltaHeading/100 * severity);
-            }
-
-            robot.hexFrontLeft.setPower(leftSpeed);
-            robot.hexFrontRight.setPower(rightSpeed);
-            robot.hexRearLeft.setPower(leftSpeed);
-            robot.hexRearRight.setPower(rightSpeed);
-            telemetry.addData("delta", deltaHeading);
-            telemetry.addData("live", averageEncoder);
-            telemetry.addData("left", leftSpeed);
-            telemetry.addData("right", rightSpeed);
-            telemetry.addData("delta encoder", deltaEncoder);
-            telemetry.update();
-        }
-    }
-
-    public void experimentalTurn(double speed, double bearing,int acceptRange/*, double timeoutS*/) {
-        double percentBearing = bearing * 0.45;
+    public void experimentalTurn(double speed, double minSpeed, double bearing,int acceptRange/*, double timeoutS*/) {
+        robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        double existingHeading = angles.firstAngle;
+        double percentBearing = bearing * 0.425;
         double currentHeading = 0;
         double trueDeltaHeading = 1;
         double deltaHeading = 1;
@@ -528,17 +413,17 @@ public class autoLeftWorlds extends LinearOpMode {
         boolean turnDone = false;
         boolean timerStart = false;
         while (!turnDone && opModeIsActive()) {
-            currentHeading = angles.firstAngle;
             if (bearing > 0) {
+                currentHeading = angles.firstAngle - existingHeading;
                 trueDeltaHeading = bearing - currentHeading;
                 deltaHeading = percentBearing - currentHeading;
                 if (deltaHeading < 0) {
-                    driveSpeed = .0175;
+                    driveSpeed = minSpeed;
                     if (Math.abs(trueDeltaHeading) <= acceptRange) {
                         if (!timerStart) {
                             runtime.reset();
                             timerStart = true;
-                        } else if (runtime.seconds() > .3) {
+                        } else if (runtime.seconds() > .2) {
                             turnDone = true;
                         }
                         driveSpeed = 0;
@@ -557,10 +442,11 @@ public class autoLeftWorlds extends LinearOpMode {
                 robot.hexRearLeft.setPower(-driveSpeed);
                 robot.hexRearRight.setPower(driveSpeed);
             } else if (bearing < 0){
+                currentHeading = angles.firstAngle - existingHeading;
                 trueDeltaHeading = currentHeading - bearing;
                 deltaHeading = currentHeading - percentBearing;
                 if (deltaHeading < 0) {
-                    driveSpeed = .0175;
+                    driveSpeed = minSpeed;
                     if (Math.abs(trueDeltaHeading) <= acceptRange) {
                         if (!timerStart) {
                             runtime.reset();
@@ -591,6 +477,79 @@ public class autoLeftWorlds extends LinearOpMode {
             telemetry.addData("gain", gain);
             telemetry.addData("Left Power", -driveSpeed);
             telemetry.addData("Right Power", driveSpeed);
+            telemetry.update();
+        }
+    }
+
+    public void experimentalDrive(double speed, double encoderAmount, double severity) {
+        robot.hexFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexRearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexRearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.hexRearRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        double startHeading = angles.firstAngle;
+        double currentHeading;
+        double deltaHeading;
+        double averageEncoder;
+        double deltaEncoder;
+        double trueDeltaEncoder;
+        double percentEncoder = encoderAmount * 0.75;
+        double gain = 0.0075;
+        double leftSpeed;
+        double rightSpeed;
+        boolean turnDone = false;
+        boolean timerStart = false;
+        while (!turnDone && opModeIsActive()) {
+            currentHeading = angles.firstAngle;
+            deltaHeading = currentHeading - startHeading;
+            averageEncoder = ((robot.hexFrontLeft.getCurrentPosition() + robot.hexFrontRight.getCurrentPosition() + robot.hexRearLeft.getCurrentPosition() + robot.hexRearRight.getCurrentPosition()) / 4);
+            trueDeltaEncoder = encoderAmount - averageEncoder;
+            deltaEncoder = percentEncoder - averageEncoder;
+
+            if (deltaEncoder < 0) {
+                leftSpeed = 0.15;
+                rightSpeed = 0.15;
+                if (Math.abs(trueDeltaEncoder) <= 40) {
+                    if (!timerStart) {
+                        runtime.reset();
+                        timerStart = true;
+                    } else if (runtime.seconds() > .3) {
+                        turnDone = true;
+                    }
+                    leftSpeed = 0;
+                    rightSpeed = 0;
+                }
+            } else {
+                leftSpeed = gain * deltaEncoder * speed;
+                rightSpeed = gain * deltaEncoder * speed;
+                if (leftSpeed > speed) {
+                    leftSpeed = speed;
+                }
+                if (rightSpeed > speed) {
+                    rightSpeed = speed;
+                }
+
+                if (deltaHeading > 0) {
+                    rightSpeed -= (deltaHeading/100 * severity);
+                } else if (deltaHeading < 0) {
+                    leftSpeed += (deltaHeading/100 * severity);
+                }
+            }
+
+            robot.hexFrontLeft.setPower(leftSpeed);
+            robot.hexFrontRight.setPower(rightSpeed);
+            robot.hexRearLeft.setPower(leftSpeed);
+            robot.hexRearRight.setPower(rightSpeed);
+            telemetry.addData("delta", deltaHeading);
+            telemetry.addData("live", averageEncoder);
+            telemetry.addData("left", leftSpeed);
+            telemetry.addData("right", rightSpeed);
+            telemetry.addData("delta encoder", deltaEncoder);
+            telemetry.addData("true delta encoder", trueDeltaEncoder);
             telemetry.update();
         }
     }
@@ -800,5 +759,88 @@ public class autoLeftWorlds extends LinearOpMode {
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
+    }
+
+    void composeTelemetry() {
+
+        // At the beginning of each telemetry update, grab a bunch of data
+        // from the IMU that we will then display in separate lines.
+        telemetry.addAction(new Runnable() { @Override public void run()
+        {
+            // Acquiring the angles is relatively expensive; we don't want
+            // to do that in each of the three items that need that info, as that's
+            // three times the necessary expense.
+            angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            gravity  = imu.getGravity();
+        }
+        });
+
+        /*telemetry.addLine()
+                .addData("status", new Func<String>() {
+                    @Override public String value() {
+                        return imu.getSystemStatus().toShortString();
+                    }
+                })
+                .addData("calib", new Func<String>() {
+                    @Override public String value() {
+                        return imu.getCalibrationStatus().toString();
+                    }
+                });
+
+        */
+
+        telemetry.addLine()
+                .addData("heading", new Func<String>() {
+                    @Override public String value() {
+                        return formatAngle(angles.angleUnit, angles.firstAngle);
+                    }
+                })
+                .addData("roll", new Func<String>() {
+                    @Override public String value() {
+                        return formatAngle(angles.angleUnit, angles.secondAngle);
+                    }
+                })
+                .addData("pitch", new Func<String>() {
+                    @Override public String value() {
+                        pitch = formatAngle(angles.angleUnit, angles.thirdAngle);
+                        return formatAngle(angles.angleUnit, angles.thirdAngle);
+                    }
+                });
+
+        /*telemetry.addLine()
+                .addData("grvty", new Func<String>() {
+                    @Override public String value() {
+                        return gravity.toString();
+                    }
+                })
+                .addData("mag", new Func<String>() {
+                    @Override public String value() {
+                        return String.format(Locale.getDefault(), "%.3f",
+                                Math.sqrt(gravity.xAccel*gravity.xAccel
+                                        + gravity.yAccel*gravity.yAccel
+                                        + gravity.zAccel*gravity.zAccel));
+                    }
+                });
+
+        telemetry.addLine()
+                .addData("Debugging: ", new Func<String>() {
+                    @Override public String value() {
+                        return formatAngle(angles.angleUnit, angles.thirdAngle);
+                    }
+                });
+
+        */
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // Formatting
+    //----------------------------------------------------------------------------------------------
+
+    String formatAngle(AngleUnit angleUnit, double angle) {
+        return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
+    }
+
+    String formatDegrees(double degrees){
+        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
 }
