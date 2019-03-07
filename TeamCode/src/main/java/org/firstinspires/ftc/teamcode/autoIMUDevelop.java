@@ -148,9 +148,15 @@ public class autoIMUDevelop extends LinearOpMode {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        //experimentalDrive(0.3,2500, 2);
-        experimentalTurn(0.4,-90,3);
-        experimentalTurn(0.4,50,3);
+        experimentalDrive(0.3,2500, 2);
+
+        /*experimentalTurn(0.5,135,3);
+        sleep(2000);
+        experimentalTurn(0.5,-90,3);
+        sleep(2000);
+        experimentalTurn(0.5,-135,3);
+        sleep(2000);
+        experimentalTurn(0.5,90,3);*/
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
@@ -171,20 +177,48 @@ public class autoIMUDevelop extends LinearOpMode {
         double deltaHeading;
         double averageEncoder;
         double deltaEncoder;
+        double trueDeltaEncoder;
+        double percentEncoder = encoderAmount * 0.75;
+        double gain = 0.0075;
         double leftSpeed;
         double rightSpeed;
-        while (opModeIsActive()) {
-            leftSpeed = speed;
-            rightSpeed = speed;
+        boolean turnDone = false;
+        boolean timerStart = false;
+        while (!turnDone && opModeIsActive()) {
             currentHeading = angles.firstAngle;
             deltaHeading = currentHeading - startHeading;
             averageEncoder = ((robot.hexFrontLeft.getCurrentPosition() + robot.hexFrontRight.getCurrentPosition() + robot.hexRearLeft.getCurrentPosition() + robot.hexRearRight.getCurrentPosition()) / 4);
-            deltaEncoder = encoderAmount - averageEncoder;
+            trueDeltaEncoder = encoderAmount - averageEncoder;
+            deltaEncoder = percentEncoder - averageEncoder;
 
-            if (deltaHeading > 0) {
-                rightSpeed -= (deltaHeading/100 * severity);
-            } else if (deltaHeading < 0) {
-                leftSpeed += (deltaHeading/100 * severity);
+            if (deltaEncoder < 0) {
+                leftSpeed = 0.15;
+                rightSpeed = 0.15;
+                if (Math.abs(trueDeltaEncoder) <= 40) {
+                    if (!timerStart) {
+                        runtime.reset();
+                        timerStart = true;
+                    } else if (runtime.seconds() > .3) {
+                        turnDone = true;
+                    }
+                    leftSpeed = 0;
+                    rightSpeed = 0;
+                }
+            } else {
+                leftSpeed = gain * deltaEncoder * speed;
+                rightSpeed = gain * deltaEncoder * speed;
+                if (leftSpeed > speed) {
+                    leftSpeed = speed;
+                }
+                if (rightSpeed > speed) {
+                    rightSpeed = speed;
+                }
+
+                if (deltaHeading > 0) {
+                    rightSpeed -= (deltaHeading/100 * severity);
+                } else if (deltaHeading < 0) {
+                    leftSpeed += (deltaHeading/100 * severity);
+                }
             }
 
             robot.hexFrontLeft.setPower(leftSpeed);
@@ -196,13 +230,14 @@ public class autoIMUDevelop extends LinearOpMode {
             telemetry.addData("left", leftSpeed);
             telemetry.addData("right", rightSpeed);
             telemetry.addData("delta encoder", deltaEncoder);
+            telemetry.addData("true delta encoder", trueDeltaEncoder);
             telemetry.update();
         }
     }
 
     public void experimentalTurn(double speed, double bearing,int acceptRange/*, double timeoutS*/) {
         double existingHeading = angles.firstAngle;
-        double percentBearing = bearing * 0.45;
+        double percentBearing = bearing * 0.425;
         double currentHeading = 0;
         double trueDeltaHeading = 1;
         double deltaHeading = 1;
@@ -216,7 +251,7 @@ public class autoIMUDevelop extends LinearOpMode {
                 trueDeltaHeading = bearing - currentHeading;
                 deltaHeading = percentBearing - currentHeading;
                 if (deltaHeading < 0) {
-                    driveSpeed = .015;
+                    driveSpeed = .0125;
                     if (Math.abs(trueDeltaHeading) <= acceptRange) {
                         if (!timerStart) {
                             runtime.reset();
@@ -244,7 +279,7 @@ public class autoIMUDevelop extends LinearOpMode {
                 trueDeltaHeading = currentHeading - bearing;
                 deltaHeading = currentHeading - percentBearing;
                 if (deltaHeading < 0) {
-                    driveSpeed = .015;
+                    driveSpeed = .0125;
                     if (Math.abs(trueDeltaHeading) <= acceptRange) {
                         if (!timerStart) {
                             runtime.reset();
