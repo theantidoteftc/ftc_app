@@ -148,7 +148,7 @@ public class autoIMUDevelop extends LinearOpMode {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        experimentalDrive(0.3,2500, 2);
+        experimentalDrive(0.6,175,0.9,2.5);
 
         /*experimentalTurn(0.5,135,3);
         sleep(2000);
@@ -162,7 +162,7 @@ public class autoIMUDevelop extends LinearOpMode {
         telemetry.update();
     }
 
-    public void experimentalDrive(double speed, double encoderAmount, double severity) {
+    public void experimentalDrive(double speed, double encoderAmount, double percentage, double severity) {
         robot.hexFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.hexFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.hexRearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -176,9 +176,9 @@ public class autoIMUDevelop extends LinearOpMode {
         double currentHeading;
         double deltaHeading;
         double averageEncoder;
-        double deltaEncoder;
-        double trueDeltaEncoder;
-        double percentEncoder = encoderAmount * 0.75;
+        double deltaEncoder = 1;
+        double trueDeltaEncoder = 1;
+        double percentEncoder = encoderAmount * percentage;
         double gain = 0.0075;
         double leftSpeed;
         double rightSpeed;
@@ -188,43 +188,78 @@ public class autoIMUDevelop extends LinearOpMode {
             currentHeading = angles.firstAngle;
             deltaHeading = currentHeading - startHeading;
             averageEncoder = ((robot.hexFrontLeft.getCurrentPosition() + robot.hexFrontRight.getCurrentPosition() + robot.hexRearLeft.getCurrentPosition() + robot.hexRearRight.getCurrentPosition()) / 4);
-            trueDeltaEncoder = encoderAmount - averageEncoder;
-            deltaEncoder = percentEncoder - averageEncoder;
 
-            if (deltaEncoder < 0) {
-                leftSpeed = 0.15;
-                rightSpeed = 0.15;
-                if (Math.abs(trueDeltaEncoder) <= 40) {
-                    if (!timerStart) {
-                        runtime.reset();
-                        timerStart = true;
-                    } else if (runtime.seconds() > .3) {
-                        turnDone = true;
+            if (encoderAmount > 0) {
+                trueDeltaEncoder = encoderAmount - averageEncoder;
+                deltaEncoder = percentEncoder - averageEncoder;
+                if (deltaEncoder < 0) {
+                    leftSpeed = 0.15;
+                    rightSpeed = 0.15;
+                    if (Math.abs(trueDeltaEncoder) <= 40) {
+                        if (!timerStart) {
+                            runtime.reset();
+                            timerStart = true;
+                        } else if (runtime.seconds() > .3) {
+                            turnDone = true;
+                        }
+                        leftSpeed = 0;
+                        rightSpeed = 0;
                     }
-                    leftSpeed = 0;
-                    rightSpeed = 0;
-                }
-            } else {
-                leftSpeed = gain * deltaEncoder * speed;
-                rightSpeed = gain * deltaEncoder * speed;
-                if (leftSpeed > speed) {
-                    leftSpeed = speed;
-                }
-                if (rightSpeed > speed) {
-                    rightSpeed = speed;
-                }
+                } else {
+                    leftSpeed = gain * deltaEncoder * speed;
+                    rightSpeed = gain * deltaEncoder * speed;
+                    if (leftSpeed > speed) {
+                        leftSpeed = speed;
+                    }
+                    if (rightSpeed > speed) {
+                        rightSpeed = speed;
+                    }
 
-                if (deltaHeading > 0) {
-                    rightSpeed -= (deltaHeading/100 * severity);
-                } else if (deltaHeading < 0) {
-                    leftSpeed += (deltaHeading/100 * severity);
+                    if (deltaHeading > 0) {
+                        rightSpeed -= (deltaHeading/100 * severity);
+                    } else if (deltaHeading < 0) {
+                        leftSpeed += (deltaHeading/100 * severity);
+                    }
                 }
+                robot.hexFrontLeft.setPower(leftSpeed);
+                robot.hexFrontRight.setPower(rightSpeed);
+                robot.hexRearLeft.setPower(leftSpeed);
+                robot.hexRearRight.setPower(rightSpeed);
+            } else if (encoderAmount < 0) {
+                trueDeltaEncoder = averageEncoder - encoderAmount;
+                deltaEncoder = averageEncoder - percentEncoder;
+                if (deltaEncoder < 0) {
+                    leftSpeed = 0.15;
+                    rightSpeed = 0.15;
+                    if (Math.abs(trueDeltaEncoder) <= 40) {
+                        if (!timerStart) {
+                            runtime.reset();
+                            timerStart = true;
+                        } else if (runtime.seconds() > .3) {
+                            turnDone = true;
+                        }
+                        leftSpeed = 0;
+                        rightSpeed = 0;
+                    }
+                } else {
+                    leftSpeed = gain * deltaEncoder * speed;
+                    rightSpeed = gain * deltaEncoder * speed;
+                    if (leftSpeed > speed) {
+                        leftSpeed = speed;
+                    }
+                    if (rightSpeed > speed) {
+                        rightSpeed = speed;
+                    }
+                }
+                robot.hexFrontLeft.setPower(-leftSpeed);
+                robot.hexFrontRight.setPower(-rightSpeed);
+                robot.hexRearLeft.setPower(-leftSpeed);
+                robot.hexRearRight.setPower(-rightSpeed);
+            } else {
+                leftSpeed = 0;
+                rightSpeed = 0;
             }
 
-            robot.hexFrontLeft.setPower(leftSpeed);
-            robot.hexFrontRight.setPower(rightSpeed);
-            robot.hexRearLeft.setPower(leftSpeed);
-            robot.hexRearRight.setPower(rightSpeed);
             telemetry.addData("delta", deltaHeading);
             telemetry.addData("live", averageEncoder);
             telemetry.addData("left", leftSpeed);
