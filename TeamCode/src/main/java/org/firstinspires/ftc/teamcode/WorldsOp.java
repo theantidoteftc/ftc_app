@@ -3,11 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Func;
@@ -23,7 +20,7 @@ import java.util.Locale;
 
 @TeleOp
 //@Disabled //DO NOT ENABLE UNLESS YOU HAVE ADI'S PERMISSION
-public class NewarkOp extends LinearOpMode {
+public class WorldsOp extends LinearOpMode {
 
     NewarkHardware robot = new NewarkHardware();
     private ElapsedTime runtime = new ElapsedTime();

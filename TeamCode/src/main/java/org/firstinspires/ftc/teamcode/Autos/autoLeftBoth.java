@@ -75,7 +75,7 @@ import java.util.List;
  */
 
 @Autonomous(name="autoLeftBoth", group="newark")
-//@Disabled
+@Disabled
 public class autoLeftBoth extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";

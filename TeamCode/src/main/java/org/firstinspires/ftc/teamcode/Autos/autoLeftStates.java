@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.Autos;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -74,7 +75,7 @@ import java.util.List;
  */
 
 @Autonomous(name="autoLeftStates", group="statesautos")
-//@Disabled
+@Disabled
 public class autoLeftStates extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";

@@ -131,7 +131,7 @@ public class NewarkHardware
         hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hexSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         hexFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         hexFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
