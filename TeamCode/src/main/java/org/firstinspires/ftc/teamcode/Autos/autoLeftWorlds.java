@@ -324,32 +324,27 @@ public class autoLeftWorlds extends LinearOpMode {
         encoderAccessoryTimeout(0.4,200,0,0.6);
         sleep(100);*/
 
-        key = 1;
+        key = 0;
 
         if (key == 0) { //left
             telemetry.addData("Left", true);
             telemetry.update();
-            encoderDrive(.2,255, 255,2);
-            encoderAccessory(0.5,500,1);
-            encoderDrive(.175,-170,170,1.5);
+            encoderDrive(0.1,225,225,1);
+            experimentalTurn(0.6,0.0175,43,4);
+            experimentalDrive(0.7,1575,0.45,3.5);
+            experimentalTurn(0.55,0.015,-83,3);
+            encoderAccessoryTimeout(0.99,2500,0,1.5);
+            encoderAccessoryTimeout(0.5,325,1,2);
+            robot.intakeMotor.setPower(-0.35);
             runtime.reset();
-            while (runtime.milliseconds() < 250 && opModeIsActive()) {
-            }
-            encoderDrive(.2,1200,1200,1.75);
-            encoderDrive(.15,-300,-300,1.5);
-            encoderAccessory(0.4,750,1);
-            encoderDrive(.07,285,-285,2.5);
-            encoderDrive(0.15,1100,1100,3);
-            encoderAccessory(0.5,600,1);
-            runtime.reset();
-            robot.intakeServo.setPosition(0.06);
-            while (opModeIsActive() && runtime.seconds() < .75) {
+            while (runtime.seconds() < .5) {
                 telemetry.addData("Dropping Marker!", true);
                 telemetry.update();
             }
-            robot.intakeServo.setPosition(0.5);
-            encoderDrive(0.15,25,-25,1);
-            encoderDrive(0.15,-1100,-1100,3);
+            robot.intakeMotor.setPower(0);
+            encoderAccessoryTimeout(0.8,-2500,0,1.5);
+            experimentalTurn(0.5,0.02,-14,3);
+            experimentalDrive(0.7,-1650,0.7,2);
         } else if (key == 1) { //center
             telemetry.addData("Center", true);
             telemetry.update();
@@ -367,7 +362,7 @@ public class autoLeftWorlds extends LinearOpMode {
             encoderAccessoryTimeout(0.8,-2500,0,1.5);
             experimentalTurn(0.55,0.015,-90,4);
             experimentalDrive(0.8,1625, 0.4, 2.5);
-            experimentalTurn(0.50,0.0155,-25,4);
+            experimentalTurn(0.45,0.0145,-25,4);
             experimentalDrive(0.7,888,0.7,2);
         } else if (key == 2) { //right
             telemetry.addData("Right", true);

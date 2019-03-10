@@ -142,7 +142,10 @@ public class autoIMUDevelop extends LinearOpMode {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        experimentalDrive(0.8,500,0.9,2.5);
+        experimentalDrive(0.9,-750,0.95,2.5);
+        experimentalDrive(0.9,750,0.95,2.5);
+
+        //experimentalTurn(0.9, 0.03,-90,3);
 
         /*experimentalTurn(0.5,135,3);
         sleep(2000);
@@ -229,7 +232,10 @@ public class autoIMUDevelop extends LinearOpMode {
             } else if (encoderAmount < 0) {
                 trueDeltaEncoder = averageEncoder - encoderAmount;
                 deltaEncoder = averageEncoder - percentEncoder;
-                if (deltaEncoder < 0) {
+                if (trueDeltaEncoder < 0) {
+                    leftSpeed = -0.15;
+                    rightSpeed = -0.15;
+                } else if (deltaEncoder < 0) {
                     leftSpeed = 0.15;
                     rightSpeed = 0.15;
                     if (Math.abs(trueDeltaEncoder) <= 40) {
@@ -298,7 +304,9 @@ public class autoIMUDevelop extends LinearOpMode {
                 deltaHeading = percentBearing - currentHeading;
                 if (deltaHeading < 0) {
                     driveSpeed = minSpeed;
-                    if (Math.abs(trueDeltaHeading) <= acceptRange) {
+                    if (trueDeltaHeading < 0) {
+                        driveSpeed = -0.04;
+                    } else if (Math.abs(trueDeltaHeading) <= acceptRange) {
                         if (!timerStart) {
                             runtime.reset();
                             timerStart = true;
@@ -326,7 +334,9 @@ public class autoIMUDevelop extends LinearOpMode {
                 deltaHeading = currentHeading - percentBearing;
                 if (deltaHeading < 0) {
                     driveSpeed = minSpeed;
-                    if (Math.abs(trueDeltaHeading) <= acceptRange) {
+                    if (trueDeltaHeading < 0) {
+                        driveSpeed = -0.04;
+                    } else if (Math.abs(trueDeltaHeading) <= acceptRange) {
                         if (!timerStart) {
                             runtime.reset();
                             timerStart = true;
