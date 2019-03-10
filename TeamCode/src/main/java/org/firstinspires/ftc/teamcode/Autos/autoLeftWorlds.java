@@ -31,7 +31,6 @@ package org.firstinspires.ftc.teamcode.Autos;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -46,11 +45,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.NewarkHardware;
 
-import java.util.List;
 import java.util.Locale;
 
 //NOT NEEDED - motors are identified within actual program
@@ -164,7 +161,7 @@ public class autoLeftWorlds extends LinearOpMode {
 
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
-        initVuforia(0);
+        //initVuforia(0);
 
         // Set up our telemetry dashboard
         composeTelemetry();
@@ -175,7 +172,7 @@ public class autoLeftWorlds extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+        /*if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
         } else {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
@@ -325,7 +322,9 @@ public class autoLeftWorlds extends LinearOpMode {
         encoderAccessoryTimeout(0.95,-1725,0,2);
         encoderAccessoryTimeout(0.3,-1000,1,1);
         encoderAccessoryTimeout(0.4,200,0,0.6);
-        sleep(100);
+        sleep(100);*/
+
+        key = 1;
 
         if (key == 0) { //left
             telemetry.addData("Left", true);
@@ -357,7 +356,7 @@ public class autoLeftWorlds extends LinearOpMode {
             encoderDrive(0.2,875,875,2);
             encoderAccessoryTimeout(0.99,2500,0,1.5);
             encoderAccessoryTimeout(0.5,325,1,2);
-            robot.intakeMotor.setPower(-0.45);
+            robot.intakeMotor.setPower(-0.35);
             runtime.reset();
             while (runtime.seconds() < .5) {
                 telemetry.addData("Dropping Marker!", true);
@@ -366,10 +365,10 @@ public class autoLeftWorlds extends LinearOpMode {
             robot.intakeMotor.setPower(0);
             encoderDrive(0.2,-350,-350,1.5);
             encoderAccessoryTimeout(0.8,-2500,0,1.5);
-            experimentalTurn(0.6,0.015,-90,3);
+            experimentalTurn(0.55,0.015,-90,4);
             experimentalDrive(0.8,1625, 0.4, 2.5);
-            experimentalTurn(0.55,0.0175,-25,3);
-            encoderAccessoryTimeout(0.8,1875,0,2);
+            experimentalTurn(0.50,0.0155,-25,4);
+            experimentalDrive(0.7,888,0.7,2);
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
@@ -512,7 +511,10 @@ public class autoLeftWorlds extends LinearOpMode {
             if (encoderAmount > 0) {
                 trueDeltaEncoder = encoderAmount - averageEncoder;
                 deltaEncoder = percentEncoder - averageEncoder;
-                if (deltaEncoder < 0) {
+                if (trueDeltaEncoder < 0) {
+                    leftSpeed = -0.125;
+                    rightSpeed = -0.125;
+                } else if (deltaEncoder < 0) {
                     leftSpeed = 0.17;
                     rightSpeed = 0.17;
                     if (Math.abs(trueDeltaEncoder) <= 40) {

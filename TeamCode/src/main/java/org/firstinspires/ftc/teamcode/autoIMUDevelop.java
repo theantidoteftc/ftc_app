@@ -31,15 +31,13 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Func;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -47,11 +45,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
-import java.util.List;
 import java.util.Locale;
 
 //NOT NEEDED - motors are identified within actual program
@@ -83,7 +77,7 @@ import java.util.Locale;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="autoIMUDevelop", group="conceptautos")
+@Autonomous(name="autoIMUDevelop", group="worldsautos")
 //@Disabled
 public class autoIMUDevelop extends LinearOpMode {
 
@@ -148,7 +142,7 @@ public class autoIMUDevelop extends LinearOpMode {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        experimentalDrive(0.6,175,0.9,2.5);
+        experimentalDrive(0.8,500,0.9,2.5);
 
         /*experimentalTurn(0.5,135,3);
         sleep(2000);
@@ -192,9 +186,12 @@ public class autoIMUDevelop extends LinearOpMode {
             if (encoderAmount > 0) {
                 trueDeltaEncoder = encoderAmount - averageEncoder;
                 deltaEncoder = percentEncoder - averageEncoder;
-                if (deltaEncoder < 0) {
-                    leftSpeed = 0.15;
-                    rightSpeed = 0.15;
+                if (trueDeltaEncoder < 0) {
+                    leftSpeed = -0.125;
+                    rightSpeed = -0.125;
+                } else if (deltaEncoder < 0) {
+                    leftSpeed = 0.17;
+                    rightSpeed = 0.17;
                     if (Math.abs(trueDeltaEncoder) <= 40) {
                         if (!timerStart) {
                             runtime.reset();
@@ -210,9 +207,13 @@ public class autoIMUDevelop extends LinearOpMode {
                     rightSpeed = gain * deltaEncoder * speed;
                     if (leftSpeed > speed) {
                         leftSpeed = speed;
+                    } else if (leftSpeed <= 0.15) {
+                        leftSpeed = 0.17;
                     }
                     if (rightSpeed > speed) {
                         rightSpeed = speed;
+                    } else if (rightSpeed <= 0.15) {
+                        rightSpeed = 0.17;
                     }
 
                     if (deltaHeading > 0) {
@@ -250,6 +251,12 @@ public class autoIMUDevelop extends LinearOpMode {
                     if (rightSpeed > speed) {
                         rightSpeed = speed;
                     }
+
+                    if (deltaHeading > 0) {
+                        rightSpeed += (deltaHeading/100 * severity);
+                    } else if (deltaHeading < 0) {
+                        leftSpeed -= (deltaHeading/100 * severity);
+                    }
                 }
                 robot.hexFrontLeft.setPower(-leftSpeed);
                 robot.hexFrontRight.setPower(-rightSpeed);
@@ -270,7 +277,11 @@ public class autoIMUDevelop extends LinearOpMode {
         }
     }
 
-    public void experimentalTurn(double speed, double bearing,int acceptRange/*, double timeoutS*/) {
+    public void experimentalTurn(double speed, double minSpeed, double bearing,int acceptRange/*, double timeoutS*/) {
+        robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double existingHeading = angles.firstAngle;
         double percentBearing = bearing * 0.425;
         double currentHeading = 0;
@@ -286,12 +297,12 @@ public class autoIMUDevelop extends LinearOpMode {
                 trueDeltaHeading = bearing - currentHeading;
                 deltaHeading = percentBearing - currentHeading;
                 if (deltaHeading < 0) {
-                    driveSpeed = .0125;
+                    driveSpeed = minSpeed;
                     if (Math.abs(trueDeltaHeading) <= acceptRange) {
                         if (!timerStart) {
                             runtime.reset();
                             timerStart = true;
-                        } else if (runtime.seconds() > .3) {
+                        } else if (runtime.seconds() > .2) {
                             turnDone = true;
                         }
                         driveSpeed = 0;
@@ -314,7 +325,7 @@ public class autoIMUDevelop extends LinearOpMode {
                 trueDeltaHeading = currentHeading - bearing;
                 deltaHeading = currentHeading - percentBearing;
                 if (deltaHeading < 0) {
-                    driveSpeed = .0125;
+                    driveSpeed = minSpeed;
                     if (Math.abs(trueDeltaHeading) <= acceptRange) {
                         if (!timerStart) {
                             runtime.reset();
