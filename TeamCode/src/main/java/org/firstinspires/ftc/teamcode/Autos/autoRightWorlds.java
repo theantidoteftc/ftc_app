@@ -80,9 +80,9 @@ import java.util.Locale;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="autoLeftWorlds", group="worldsautos")
+@Autonomous(name="autoRightWorlds", group="worldsautos")
 //@Disabled
-public class autoLeftWorlds extends LinearOpMode {
+public class autoRightWorlds extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
@@ -325,68 +325,60 @@ public class autoLeftWorlds extends LinearOpMode {
         encoderAccessoryTimeout(0.4,200,0,0.6);
         sleep(100);*/
 
-        key = 2;
+        key = 0;
 
         if (key == 0) { //left
             telemetry.addData("Left", true);
             telemetry.update();
-            encoderDrive(0.1,225,225,1);
-            experimentalTurn(0.6,0.0175,43,4);
-            experimentalDrive(0.7,1575,0.45,3.5);
-            experimentalTurn(0.5,0.0125,-83,3);
-            encoderAccessoryTimeout(0.99,2500,0,1.5);
-            encoderAccessoryTimeout(0.5,325,1,2);
-            robot.intakeMotor.setPower(-0.35);
-            runtime.reset();
-            while (runtime.seconds() < .5) {
-                telemetry.addData("Dropping Marker!", true);
-                telemetry.update();
-            }
-            robot.intakeMotor.setPower(0);
-            encoderAccessoryTimeout(0.8,-2500,0,1.5);
-            experimentalTurn(0.5,0.0125,-14,3);
-            experimentalDrive(0.7,-1650,0.7,2);
+            experimentalDrive(0.75,400,0.5,2);
+            experimentalTurn(0.6,0.0145,40,2);
+            experimentalDrive(0.75,900,0.5,2);
+            experimentalTurn(0.6,0.014,45,2);
+            experimentalDrive(0.875,1125,0.5,2);
+            experimentalTurn(0.6,0.05,25,5);
+            experimentalDrive(0.75,1000,0.5,2);
+            experimentalTurn(0.6,0.05,15,5);
         } else if (key == 1) { //center
             telemetry.addData("Center", true);
             telemetry.update();
-            encoderDrive(0.2,875,875,2);
-            encoderAccessoryTimeout(0.99,2500,0,1.5);
-            encoderAccessoryTimeout(0.5,325,1,2);
-            robot.intakeMotor.setPower(-0.35);
+            encoderDrive(.2,947,947,2);
+            encoderDrive(.175,-390,-390,2);
+            encoderDrive(.15,-400,400,2);
+            encoderDrive(.175,1640,1640,3.5);
+            encoderDrive(0.125,-170,170,2);
+            encoderDrive(0.225,1600,1600,3.5);
+            encoderAccessory(0.5,500,1);
             runtime.reset();
-            while (runtime.seconds() < .5) {
+            robot.intakeServo.setPosition(0.06);
+            while (opModeIsActive() && runtime.seconds() < .75) {
                 telemetry.addData("Dropping Marker!", true);
                 telemetry.update();
             }
-            robot.intakeMotor.setPower(0);
-            encoderDrive(0.2,-350,-350,1.5);
-            encoderAccessoryTimeout(0.8,-2500,0,1.5);
-            experimentalTurn(0.55,0.015,-90,4);
-            experimentalDrive(0.8,1625, 0.4, 2.5);
-            experimentalTurn(0.45,0.0145,-25,4);
-            experimentalDrive(0.7,888,0.7,2);
+            robot.intakeServo.setPosition(0.5);
+            encoderDrive(0.15,-17,17,1);
+            encoderDrive(0.30,-2775,-2775,4);
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
-            encoderDrive(0.1,150,150,1);
-            experimentalTurn(0.6,0.0175,-45,4);
-            experimentalDrive(0.7,1670,0.45,3.5);
-            experimentalTurn(0.5,0.02,85,4);
-            //experimentalDrive(0.2,175,0,2.5);
-            experimentalDrive(0.6,175,0.9,2.5);
-            encoderAccessoryTimeout(0.8,2500,0,1.75);
-            encoderAccessoryTimeout(0.5,325,1,2);
-            robot.intakeMotor.setPower(-0.45);
+            encoderDrive(0.15,75,75,1);
+            encoderDrive(0.15,185,-185,1.25);
+            encoderDrive(0.25,970,970,1.75);
+            encoderDrive(0.175,-280,-280,1.5);
+            encoderAccessory(0.5,650,1);
+            encoderDrive(0.15,-585,585,2);
+            encoderDrive(0.25,2000,2000,3);
+            encoderDrive(0.1,-172,172,2);
+            encoderDrive(0.2,1500,1500,4);
+            encoderAccessory(0.5,600,1);
             runtime.reset();
-            while (runtime.seconds() < .5) {
+            robot.intakeServo.setPosition(0.06);
+            while (opModeIsActive() && runtime.seconds() < .75) {
                 telemetry.addData("Dropping Marker!", true);
                 telemetry.update();
             }
-            robot.intakeMotor.setPower(0);
-            encoderAccessoryTimeout(0.99,-2350,0,1.5);
-            experimentalTurn(0.5,0.02,13,3);
-            experimentalDrive(0.7,-1700,0.4,15); //0.7
-
+            robot.intakeServo.setPosition(0.5);
+            encoderDrive(0.1,-25,25,1);
+            encoderDrive(0.30,-2850,-2850,6);
         }
 
         telemetry.addData("Path", "Complete");

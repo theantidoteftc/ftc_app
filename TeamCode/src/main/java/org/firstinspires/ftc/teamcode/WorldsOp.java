@@ -112,7 +112,7 @@ public class WorldsOp extends LinearOpMode {
             if (gamepad2.dpad_up) {
                 robot.mineralGate.setPosition(1); //open
                 runtime.reset();
-                while (opModeIsActive() && runtime.seconds() < 0.6) {
+                while (opModeIsActive() && runtime.seconds() < 0.55) {
                 }
                 robot.mineralGate.setPosition(0.5);
             } else if (gamepad2.dpad_down) {
