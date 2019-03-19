@@ -330,14 +330,37 @@ public class autoRightWorlds extends LinearOpMode {
         if (key == 0) { //left
             telemetry.addData("Left", true);
             telemetry.update();
-            experimentalDrive(0.75,400,0.5,2);
-            experimentalTurn(0.6,0.0145,40,2);
+            /*experimentalDrive(0.75,400,0.5,2);
+            experimentalTurn(0.8,0.01,40,2);
             experimentalDrive(0.75,900,0.5,2);
-            experimentalTurn(0.6,0.014,45,2);
-            experimentalDrive(0.875,1125,0.5,2);
-            experimentalTurn(0.6,0.05,25,5);
+            experimentalTurn(0.8,0.02,35,1);
+            experimentalDrive(0.875,1400,0.5,2);
+            experimentalTurn(0.8,0.02,25,1);
             experimentalDrive(0.75,1000,0.5,2);
-            experimentalTurn(0.6,0.05,15,5);
+            experimentalTurn(0.8,0.02,12,1);*/
+            encoderDrive(.175,230, 230,2);
+            encoderDrive(.22,-195,195,1.8);
+            sleep(250);
+            encoderDrive(.175,850,850,2);
+            encoderDrive(.1,-430,-430,2);
+            experimentalTurn(0.9,0.01,43,3);
+            experimentalDrive(.9,1675,0.75,2.75);
+            encoderDrive(0.2,-225,225,1.5);/*
+            experimentalDrive(0.6,600,0.9,2.5);
+            encoderAccessoryTimeout(0.99,2600,0,2);
+            encoderAccessory(0.5,800,1);
+            robot.intakeMotor.setPower(-0.5);
+            runtime.reset();
+            while (runtime.seconds() < .5) {
+                telemetry.addData("Dropping Marker!", true);
+                telemetry.update();
+            }
+            robot.intakeMotor.setPower(0);
+            encoderAccessoryTimeout(0.99,-2500,0,2);
+            encoderDrive(.15,-175,175,1.5);
+            encoderDrive(.15,-175,175,1.5);
+            encoderDrive(0.23,1200,1200,1.8);
+            encoderAccessory(0.5,800,1);*/
         } else if (key == 1) { //center
             telemetry.addData("Center", true);
             telemetry.update();
@@ -387,16 +410,20 @@ public class autoRightWorlds extends LinearOpMode {
 
 
     public void experimentalTurn(double speed, double minSpeed, double bearing,int acceptRange/*, double timeoutS*/) {
+        robot.hexFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexRearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexRearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double existingHeading = angles.firstAngle;
-        double percentBearing = bearing * 0.425;
+        double percentBearing = bearing * 0.35; //425
         double currentHeading = 0;
         double trueDeltaHeading = 1;
         double deltaHeading = 1;
-        double gain = 0.0075;
+        double gain = 0.004; //75
         double driveSpeed;
         boolean turnDone = false;
         boolean timerStart = false;
@@ -405,7 +432,10 @@ public class autoRightWorlds extends LinearOpMode {
                 currentHeading = angles.firstAngle - existingHeading;
                 trueDeltaHeading = bearing - currentHeading;
                 deltaHeading = percentBearing - currentHeading;
-                if (deltaHeading < 0) {
+                if (trueDeltaHeading < 0) {
+                    //driveSpeed = -0.03;
+                    break;
+                } else if (deltaHeading < 0) {
                     driveSpeed = minSpeed;
                     if (Math.abs(trueDeltaHeading) <= acceptRange) {
                         if (!timerStart) {
@@ -425,10 +455,10 @@ public class autoRightWorlds extends LinearOpMode {
                         driveSpeed = -1;
                     }
                 }
-                robot.hexFrontLeft.setPower(-driveSpeed);
-                robot.hexFrontRight.setPower(driveSpeed);
-                robot.hexRearLeft.setPower(-driveSpeed);
-                robot.hexRearRight.setPower(driveSpeed);
+                /*robot.hexFrontLeft.setPower(-driveSpeed);
+                robot.hexFrontRight.setPower(driveSpeed);*/
+                robot.hexRearLeft.setPower(-driveSpeed * 2);
+                robot.hexRearRight.setPower(driveSpeed * 2);
             } else if (bearing < 0){
                 currentHeading = angles.firstAngle - existingHeading;
                 trueDeltaHeading = currentHeading - bearing;
@@ -465,6 +495,8 @@ public class autoRightWorlds extends LinearOpMode {
             telemetry.addData("gain", gain);
             telemetry.addData("Left Power", -driveSpeed);
             telemetry.addData("Right Power", driveSpeed);
+            telemetry.addData("BACK Left Power", -driveSpeed * 1.5);
+            telemetry.addData("BACK Right Power", driveSpeed * 1.5);
             telemetry.update();
         }
     }
@@ -499,22 +531,21 @@ public class autoRightWorlds extends LinearOpMode {
             if (encoderAmount > 0) {
                 trueDeltaEncoder = encoderAmount - averageEncoder;
                 deltaEncoder = percentEncoder - averageEncoder;
-                if (trueDeltaEncoder < 0) {
-                    leftSpeed = -0.125;
-                    rightSpeed = -0.125;
+                if (Math.abs(trueDeltaEncoder) <= 40) {
+                    if (!timerStart) {
+                        runtime.reset();
+                        timerStart = true;
+                    } else if (runtime.seconds() > .3) {
+                        turnDone = true;
+                    }
+                    leftSpeed = 0;
+                    rightSpeed = 0;
+                } else if (trueDeltaEncoder < 0) {
+                    leftSpeed = -0.14;
+                    rightSpeed = -0.14;
                 } else if (deltaEncoder < 0) {
                     leftSpeed = 0.17;
                     rightSpeed = 0.17;
-                    if (Math.abs(trueDeltaEncoder) <= 40) {
-                        if (!timerStart) {
-                            runtime.reset();
-                            timerStart = true;
-                        } else if (runtime.seconds() > .3) {
-                            turnDone = true;
-                        }
-                        leftSpeed = 0;
-                        rightSpeed = 0;
-                    }
                 } else {
                     leftSpeed = gain * deltaEncoder * speed;
                     rightSpeed = gain * deltaEncoder * speed;
@@ -585,7 +616,7 @@ public class autoRightWorlds extends LinearOpMode {
             telemetry.addData("left", leftSpeed);
             telemetry.addData("right", rightSpeed);
             telemetry.addData("delta encoder", deltaEncoder);
-            telemetry.addData("true delta encoder", trueDeltaEncoder);
+            telemetry.addData("REMAINDER", trueDeltaEncoder);
             telemetry.update();
         }
     }
@@ -603,6 +634,11 @@ public class autoRightWorlds extends LinearOpMode {
         int newFrontRightTarget;
         int newRearLeftTarget;
         int newRearRightTarget;
+
+        robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {

@@ -112,13 +112,82 @@ public class WorldsOp extends LinearOpMode {
             if (gamepad2.dpad_up) {
                 robot.mineralGate.setPosition(1); //open
                 runtime.reset();
-                while (opModeIsActive() && runtime.seconds() < 0.55) {
+                while (opModeIsActive() && runtime.seconds() < 0.8) {
+                    //gamepad 1 (xbox)
+                    throttle = ((gamepad1.right_trigger) - (gamepad1.left_trigger));
+                    steering = gamepad1.left_stick_x;
+                    if (gamepad1.a) {
+                        slowMode = true;
+                    }
+                    if (gamepad1.b) {
+                        slowMode = false;
+                    }
+                    rPower = throttle - steering;
+                    lPower = throttle + steering;
+                    if (slowMode == true) {
+                        if (steering != 0) {
+                            lPower /= 2.5;
+                            rPower /= 2.5;
+                        } else {
+                            lPower /= 2;
+                            rPower /= 2;
+                        }
+                    }
+                    //gamepad 2 (logitech)
+                    slide = -gamepad2.left_stick_y;
+                    pivot = gamepad2.right_stick_y;
+                    intake = ((-gamepad2.right_trigger) + (gamepad2.left_trigger));
+
+                    //gamepad 1 (xbox) setPower
+                    robot.hexFrontLeft.setPower(lPower/4);
+                    robot.hexFrontRight.setPower(rPower/4);
+                    robot.hexRearLeft.setPower(lPower/4);
+                    robot.hexRearRight.setPower(rPower/4);
+
+                    //gamepad 2 (logitech) setPower
+                    robot.hexSlide.setPower(slide);
+                    robot.pivotMotor.setPower(pivot/4);
+                    robot.intakeMotor.setPower(intake);
                 }
                 robot.mineralGate.setPosition(0.5);
             } else if (gamepad2.dpad_down) {
                 robot.mineralGate.setPosition(0); //close
                 runtime.reset();
-                while (opModeIsActive() && runtime.seconds() < 0.6) {
+                while (opModeIsActive() && runtime.seconds() < 1) {
+                    throttle = ((gamepad1.right_trigger) - (gamepad1.left_trigger));
+                    steering = gamepad1.left_stick_x;
+                    if (gamepad1.a) {
+                        slowMode = true;
+                    }
+                    if (gamepad1.b) {
+                        slowMode = false;
+                    }
+                    rPower = throttle - steering;
+                    lPower = throttle + steering;
+                    if (slowMode == true) {
+                        if (steering != 0) {
+                            lPower /= 2.5;
+                            rPower /= 2.5;
+                        } else {
+                            lPower /= 2;
+                            rPower /= 2;
+                        }
+                    }
+                    //gamepad 2 (logitech)
+                    slide = -gamepad2.left_stick_y;
+                    pivot = gamepad2.right_stick_y;
+                    intake = ((-gamepad2.right_trigger) + (gamepad2.left_trigger));
+
+                    //gamepad 1 (xbox) setPower
+                    robot.hexFrontLeft.setPower(lPower/4);
+                    robot.hexFrontRight.setPower(rPower/4);
+                    robot.hexRearLeft.setPower(lPower/4);
+                    robot.hexRearRight.setPower(rPower/4);
+
+                    //gamepad 2 (logitech) setPower
+                    robot.hexSlide.setPower(slide);
+                    robot.pivotMotor.setPower(pivot/4);
+                    robot.intakeMotor.setPower(intake);
                 }
                 robot.mineralGate.setPosition(0.5);
             }
