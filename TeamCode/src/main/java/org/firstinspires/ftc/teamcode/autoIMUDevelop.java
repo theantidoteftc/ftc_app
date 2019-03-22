@@ -142,10 +142,13 @@ public class autoIMUDevelop extends LinearOpMode {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        experimentalTurn(0.8,0.006,150,3);
-        runtime.reset();
-        while (runtime.seconds() < 3 && opModeIsActive()) {
+        /*experimentalTurn(0.8,0.006,150,3);*/
+        while (opModeIsActive()) {
             telemetry.addData("heading", angles.firstAngle);
+            telemetry.addData("60", 4.4112e-4 + (1.8732e-4 * (Math.log(60))));
+            telemetry.addData("90", 4.4112e-4 + (1.8732e-4 * (Math.log(90))));
+            telemetry.addData("120", 4.4112e-4 + (1.8732e-4 * (Math.log(120))));
+            telemetry.addData("150", 4.4112e-4 + (1.8732e-4 * (Math.log(150))));
             telemetry.update();
         }
 
@@ -178,7 +181,7 @@ public class autoIMUDevelop extends LinearOpMode {
         double currentHeading = 0;
         double trueDeltaHeading = 1;
         double deltaHeading = 1;
-        double gain = 0.001375; //0.0013 //75
+        double gain = /*4.4112e-4 + */(1.8732e-4 * (Math.log(bearing)));//(0.000002*bearing) + 0.001106; //0.001375; //0.0013 //75
         double driveSpeed;
         boolean turnDone = false;
         boolean timerStart = false;
