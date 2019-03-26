@@ -146,10 +146,7 @@ public class autoIMUDevelop extends LinearOpMode {
         /*experimentalTurn(.8,0.006,90,3);*/
 
         //UNDER 30 DEGREES
-        experimentalTurn(.8,0.006,90,2);
-        experimentalTurn(.8,0.006,-105,2);
-        experimentalTurn(5,0.02,30,2);
-        experimentalTurn(5,0.02,-15,2);
+        //experimentalTurn(5,0.02,-15,2);
         while (opModeIsActive()) {
             telemetry.addData("heading", angles.firstAngle);
             telemetry.update();
