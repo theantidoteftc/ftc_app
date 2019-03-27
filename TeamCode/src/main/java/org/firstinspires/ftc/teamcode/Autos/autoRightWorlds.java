@@ -325,7 +325,7 @@ public class autoRightWorlds extends LinearOpMode {
         encoderAccessoryTimeout(0.4,200,0,0.6);
         sleep(100);*/
 
-        key = 0;
+        key = 2;
 
         if (key == 0) { //left
             telemetry.addData("Left", true);
@@ -346,27 +346,22 @@ public class autoRightWorlds extends LinearOpMode {
             }
             robot.intakeMotor.setPower(0);
             encoderAccessoryTimeout(0.99,-2500,0,3);
-            encoderDrive(0.3,-80,80,1.5);
+            encoderDrive(0.7,-90,90,.8);
             robot.hexFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            encoderDrive(.2,-1900,-1900,5);
+            encoderDrive(.25,-1900,-1900,5);
         } else if (key == 1) { //center
             //OVER 30 DEGREES
-            /*experimentalTurn(.8,0.006,90,3);*/
-
-            //UNDER 30 DEGREES
-            //experimentalTurn(5,0.02,-15,2);
             telemetry.addData("Center", true);
             telemetry.update();
-            experimentalDrive(0.7,1100,0.7,3);
-            experimentalDrive(0.5,-250,0.6,3);
-            experimentalTurn(0.9,0.006,86,3);
+            experimentalDrive(0.8,1050,0.4,3);
+            experimentalDrive(0.5,-200,0.6,3);
+            experimentalTurn(0.9,0.005,87,2);
             experimentalDrive(0.95,1800,0.6,3);
-            encoderDrive(0.2,-160,160,1.2);
-            experimentalDrive(0.7,1000,0.5,3);
-            encoderDrive(0.25,-90,90,1);
+            encoderDrive(0.2,-170,170,1.2);
+            experimentalDrive(0.9,1000,0.4,3);
             encoderAccessoryTimeout(1,2500,0,1.5);
             encoderAccessoryTimeout(0.75,400,1,1);
             robot.intakeMotor.setPower(-0.75);
@@ -377,25 +372,25 @@ public class autoRightWorlds extends LinearOpMode {
             }
             robot.intakeMotor.setPower(0);
             encoderAccessoryTimeout(0.99,-2500,0,3);
-            encoderDrive(0.3,-50,50,1);
+            sleep(200);
+            encoderDrive(0.6,-100,100,1.25);
             robot.hexFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            encoderDrive(.8,-1700,-1700,3);
+            encoderDrive(.25,-1900,-1900,5);
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
             experimentalTurn(5,0.03,-30,2);
             sleep(500);
-            experimentalDrive(0.7,1150,0.7,3);
-            experimentalDrive(0.5,-380,0.6,3);
-            experimentalTurn(0.9,0.006,115,3);
-            experimentalDrive(0.7,2375,0.7,3);
-            encoderDrive(0.1,-165,165,1.5);
-            experimentalDrive(0.8,750,0.4,3);
-            encoderDrive(0.3,-90,90,1);
-            encoderAccessoryTimeout(1,2500,0,1.7);
+            experimentalDrive(0.8,1175,0.4,3);
+            experimentalDrive(0.5,-325,0.6,3);
+            experimentalTurn(0.9,0.005,118,2);
+            experimentalDrive(0.7,2300,0.7,3);
+            encoderDrive(0.2,-167,167,1.2);
+            experimentalDrive(0.9,950,0.4,3);
+            encoderAccessoryTimeout(1,2500,0,1.5);
             encoderAccessoryTimeout(0.75,400,1,1);
             robot.intakeMotor.setPower(-0.75);
             runtime.reset();
@@ -404,12 +399,14 @@ public class autoRightWorlds extends LinearOpMode {
                 telemetry.update();
             }
             robot.intakeMotor.setPower(0);
-            encoderAccessoryTimeout(0.99,-2500,0,2);
+            encoderAccessoryTimeout(0.99,-2500,0,3);
+            sleep(200);
+            encoderDrive(0.6,-100,100,1.25);
             robot.hexFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            encoderDrive(1,-1700,-1700,3);
+            encoderDrive(.25,-1900,-1900,5);
         }
 
         telemetry.addData("Path", "Complete");
@@ -649,9 +646,12 @@ public class autoRightWorlds extends LinearOpMode {
             } else if (encoderAmount < 0) {
                 trueDeltaEncoder = averageEncoder - encoderAmount;
                 deltaEncoder = averageEncoder - percentEncoder;
-                if (deltaEncoder < 0) {
-                    leftSpeed = 0.15;
-                    rightSpeed = 0.15;
+                if (trueDeltaEncoder < 0) {
+                    leftSpeed = -0.14;
+                    rightSpeed = -0.14;
+                } else if (deltaEncoder < 0) {
+                    leftSpeed = 0.17;
+                    rightSpeed = 0.17;
                     if (Math.abs(trueDeltaEncoder) <= 40) {
                         if (!timerStart) {
                             runtime.reset();
@@ -667,9 +667,13 @@ public class autoRightWorlds extends LinearOpMode {
                     rightSpeed = gain * deltaEncoder * speed;
                     if (leftSpeed > speed) {
                         leftSpeed = speed;
+                    } else if (leftSpeed <= 0.15) {
+                        leftSpeed = 0.17;
                     }
                     if (rightSpeed > speed) {
                         rightSpeed = speed;
+                    } else if (rightSpeed <= 0.15) {
+                        rightSpeed = 0.17;
                     }
 
                     if (deltaHeading > 0) {
