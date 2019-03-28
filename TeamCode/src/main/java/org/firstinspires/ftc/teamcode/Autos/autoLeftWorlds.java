@@ -333,6 +333,27 @@ public class autoLeftWorlds extends LinearOpMode {
             experimentalTurn(5,0.02,34,2);
             sleep(425);
             experimentalDrive(0.85,1825,0.4,3);
+            experimentalTurn(0.9,0.005,-75,2);
+            encoderAccessoryTimeout(1,2500,0,1.5);
+            encoderAccessoryTimeout(0.75,400,1,1);
+            robot.intakeMotor.setPower(-0.75);
+            runtime.reset();
+            while (runtime.seconds() < .35) {
+                telemetry.addData("Dropping Marker!", true);
+                telemetry.update();
+            }
+            robot.intakeMotor.setPower(0);
+            encoderAccessoryTimeout(0.99,-2500,0,3);
+            experimentalTurn(0.7,0.006,168,2);
+            experimentalDrive(0.5,1150,0.4,3);
+            encoderAccessoryTimeout(0.75,500,1,1.5);
+            encoderAccessoryTimeout(1,2500,0,1.5);
+            robot.intakeMotor.setPower(1);
+            runtime.reset();
+            while (opModeIsActive()) {
+                telemetry.addData("Dropping Marker!", true);
+                telemetry.update();
+            }
         } else if (key == 1) { //center
             telemetry.addData("Center", true);
             telemetry.update();
