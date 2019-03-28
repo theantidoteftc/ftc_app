@@ -325,7 +325,7 @@ public class autoRightWorlds extends LinearOpMode {
         encoderAccessoryTimeout(0.4,200,0,0.6);
         sleep(100);*/
 
-        key = 0;
+        key = 2;
 
         if (key == 0) { //left
             telemetry.addData("Left", true);
