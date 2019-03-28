@@ -215,6 +215,11 @@ public class WorldsOp extends LinearOpMode {
                 robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
             }
 
+            if (gamepad1.right_bumper) {
+                lPower *= 5;
+                rPower *= 5;
+            }
+
 
             //gamepad 1 (xbox) setPower
             robot.hexFrontLeft.setPower(lPower/4);
