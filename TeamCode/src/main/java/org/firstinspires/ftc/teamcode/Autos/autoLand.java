@@ -72,7 +72,7 @@ import org.firstinspires.ftc.teamcode.NewarkHardware;
  */
 
 @Autonomous(name="autoLand", group="newarkautos")
-@Disabled
+//@Disabled
 public class autoLand extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
@@ -150,24 +150,27 @@ public class autoLand extends LinearOpMode {
 
         robot.leftBlock.setPosition(1); //unlatching procedure
         robot.rightBlock.setPosition(0);
-        sleep(1500);
         runtime.reset();
-        while (runtime.seconds() < 0.325 && opModeIsActive()) {
-            robot.leftHook.setPosition(0);
-            robot.rightHook.setPosition(1);
+        while (runtime.milliseconds() < 1200 && opModeIsActive()) {
+        }
+        robot.leftHook.setPosition(0);
+        robot.rightHook.setPosition(1);
+        runtime.reset();
+        while (runtime.milliseconds() < 325 && opModeIsActive()) {
         }
         robot.leftHook.setPosition(0.5);
         robot.rightHook.setPosition(0.5);
-        encoderAccessory(0.75,1200,1);
-        encoderAccessory(0.5, 750, 0);
-        encoderDrive(0.15,350,350,3);
+        encoderAccessory(0.75,725,1);
+        encoderAccessoryTimeout(0.8, 525, 0,1);
+        encoderDrive(0.15,100,100,2);
         robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-        encoderAccessory(0.5,925,0);
-        encoderDrive(0.125,150,150,3);
-        encoderAccessoryTimeout(0.5,-1925,0,3);
-        encoderAccessory(0.3,-450,1);
+        encoderAccessoryTimeout(0.5,925,0,2.5);
+        encoderDrive(0.1,-40,-40,1);
+        encoderAccessory(0.4,-275,1);
+        encoderAccessoryTimeout(0.95,-1725,0,2);
+        encoderAccessoryTimeout(0.3,-1000,1,1);
+        encoderAccessoryTimeout(0.4,200,0,0.6);
         sleep(100);
-        encoderDrive(0.125,-85,85,2);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();

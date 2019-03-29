@@ -46,9 +46,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.NewarkHardware;
 
+import java.util.List;
 import java.util.Locale;
 
 //NOT NEEDED - motors are identified within actual program
@@ -162,7 +164,7 @@ public class autoRightWorlds extends LinearOpMode {
 
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
-        //initVuforia(0);
+        initVuforia(0);
 
         // Set up our telemetry dashboard
         composeTelemetry();
@@ -173,7 +175,7 @@ public class autoRightWorlds extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        /*if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
         } else {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
@@ -185,7 +187,7 @@ public class autoRightWorlds extends LinearOpMode {
         }
 
         runtime.reset(); //TensorFlow Timer Wait
-        while (opModeIsActive() && runtime.seconds() < .75) {
+        while (opModeIsActive() && runtime.seconds() < 1.5) {
             if (tfod != null) {
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
@@ -298,10 +300,13 @@ public class autoRightWorlds extends LinearOpMode {
             telemetry.addData("gold mineral", "center");
         } else if (key == 2) {
             telemetry.addData("gold mineral", "right");
+        } else if (key == 4) {
+            telemetry.addData("FAILURE TO DETECT", "OVERRIDE TO KEY 0");
+            key = 0;
         }
-        telemetry.update();*/
+        telemetry.update();
 
-        /*robot.leftBlock.setPosition(1); //unlatching procedure
+        robot.leftBlock.setPosition(1); //unlatching procedure
         robot.rightBlock.setPosition(0);
         runtime.reset();
         while (runtime.milliseconds() < 1200 && opModeIsActive()) {
@@ -315,17 +320,13 @@ public class autoRightWorlds extends LinearOpMode {
         robot.rightHook.setPosition(0.5);
         encoderAccessory(0.75,725,1);
         encoderAccessoryTimeout(0.8, 525, 0,1);
-        encoderDrive(0.15,100,100,2);
-        robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-        encoderAccessoryTimeout(0.5,925,0,2.5);
-        encoderDrive(0.1,-40,-40,1);
-        encoderAccessory(0.4,-275,1);
-        encoderAccessoryTimeout(0.95,-1725,0,2);
+        encoderDrive(0.4,175,175,2);
+        encoderAccessoryTimeout(0.7,925,0,2.5);
+        encoderAccessory(0.5,-150,1);
+        encoderAccessoryTimeout(0.99,-1725,0,2);
         encoderAccessoryTimeout(0.3,-1000,1,1);
-        encoderAccessoryTimeout(0.4,200,0,0.6);
-        sleep(100);*/
-
-        key = 0;
+        encoderAccessoryTimeout(0.5,-100,0,1);
+        sleep(100);
 
         if (key == 0) { //left
             telemetry.addData("Left", true);
