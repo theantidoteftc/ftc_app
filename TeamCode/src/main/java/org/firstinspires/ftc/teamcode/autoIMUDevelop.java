@@ -147,10 +147,10 @@ public class autoIMUDevelop extends LinearOpMode {
 
         //UNDER 30 DEGREES
         //experimentalTurn(5,0.02,-15,2);
-        while (opModeIsActive()) {
+        /*while (opModeIsActive()) {
             telemetry.addData("heading", angles.firstAngle);
             telemetry.update();
-        }
+        }*/
 
 
         //experimentalTurn(0.9, 0.03,-90,3);
@@ -163,8 +163,74 @@ public class autoIMUDevelop extends LinearOpMode {
         sleep(2000);
         experimentalTurn(0.5,90,3);*/
 
+        while (opModeIsActive()) {
+            telemetry.addData("distance travelled", ((robot.hexFrontLeft.getCurrentPosition() + robot.hexFrontRight.getCurrentPosition() + robot.hexRearLeft.getCurrentPosition() + robot.hexRearRight.getCurrentPosition()) / 4));
+            telemetry.update();
+        }
+
         telemetry.addData("Path", "Complete");
         telemetry.update();
+    }
+
+    public void encoderDrive(double speed, double leftEncoder, double rightEncoder, double timeoutS) {
+        int newFrontLeftTarget;
+        int newFrontRightTarget;
+        int newRearLeftTarget;
+        int newRearRightTarget;
+        robot.hexFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexRearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexRearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newFrontLeftTarget = robot.hexFrontLeft.getCurrentPosition() + (int)(leftEncoder);// * COUNTS_PER_INCH);
+            newFrontRightTarget = robot.hexFrontRight.getCurrentPosition() + (int)(rightEncoder);// * COUNTS_PER_INCH);
+            newRearLeftTarget = robot.hexFrontLeft.getCurrentPosition() + (int)(leftEncoder);// * COUNTS_PER_INCH);
+            newRearRightTarget = robot.hexFrontRight.getCurrentPosition() + (int)(rightEncoder);// * COUNTS_PER_INCH);
+            robot.hexFrontLeft.setTargetPosition(newFrontLeftTarget);
+            robot.hexFrontRight.setTargetPosition(newFrontRightTarget);
+            robot.hexRearLeft.setTargetPosition(newRearLeftTarget);
+            robot.hexRearRight.setTargetPosition(newRearRightTarget);
+
+            // Turn On RUN_TO_POSITION
+            robot.hexFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.hexFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.hexRearLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.hexRearRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            robot.hexFrontLeft.setPower(Math.abs(speed));
+            robot.hexFrontRight.setPower(Math.abs(speed));
+            robot.hexRearLeft.setPower(Math.abs(speed));
+            robot.hexRearRight.setPower(Math.abs(speed));
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (robot.hexFrontLeft.isBusy() || robot.hexRearLeft.isBusy() || robot.hexFrontRight.isBusy() || robot.hexRearRight.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1",  "Running to %7d :%7d", newFrontLeftTarget,  newFrontRightTarget);
+                telemetry.addData("Path2",  "Running at %7d :%7d",
+                        robot.hexFrontLeft.getCurrentPosition(),
+                        robot.hexFrontRight.getCurrentPosition());
+                telemetry.update();
+            }
+
+        }
     }
 
     public void experimentalTurn(double speed, double minSpeed, double bearing,int acceptRange/*, double timeoutS*/) {
@@ -357,11 +423,11 @@ public class autoIMUDevelop extends LinearOpMode {
                 trueDeltaEncoder = encoderAmount - averageEncoder;
                 deltaEncoder = percentEncoder - averageEncoder;
                 if (trueDeltaEncoder < 0) {
-                    leftSpeed = -0.14;
-                    rightSpeed = -0.14;
+                    leftSpeed = -0.22;
+                    rightSpeed = -0.22;
                 } else if (deltaEncoder < 0) {
-                    leftSpeed = 0.17;
-                    rightSpeed = 0.17;
+                    leftSpeed = 0.1; //0.17
+                    rightSpeed = 0.1; //0.17
                     if (Math.abs(trueDeltaEncoder) <= 40) {
                         if (!timerStart) {
                             runtime.reset();

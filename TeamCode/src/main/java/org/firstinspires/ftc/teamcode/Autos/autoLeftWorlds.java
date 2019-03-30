@@ -46,9 +46,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.NewarkHardware;
 
+import java.util.List;
 import java.util.Locale;
 
 //NOT NEEDED - motors are identified within actual program
@@ -132,12 +134,6 @@ public class autoLeftWorlds extends LinearOpMode {
         parameters.loggingTag          = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
-        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-        // and named "imu".
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
-
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
@@ -162,10 +158,7 @@ public class autoLeftWorlds extends LinearOpMode {
 
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
-        //initVuforia(0);
-
-        // Set up our telemetry dashboard
-        composeTelemetry();
+        initVuforia(0);
 
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start tracking - U R GO, GOOD LUCK!");
@@ -173,7 +166,7 @@ public class autoLeftWorlds extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        /*if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
         } else {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
@@ -299,9 +292,9 @@ public class autoLeftWorlds extends LinearOpMode {
         } else if (key == 2) {
             telemetry.addData("gold mineral", "right");
         }
-        telemetry.update();*/
+        telemetry.update();
 
-        /*robot.leftBlock.setPosition(1); //unlatching procedure
+        robot.leftBlock.setPosition(1); //unlatching procedure
         robot.rightBlock.setPosition(0);
         runtime.reset();
         while (runtime.milliseconds() < 1200 && opModeIsActive()) {
@@ -314,65 +307,64 @@ public class autoLeftWorlds extends LinearOpMode {
         robot.leftHook.setPosition(0.5);
         robot.rightHook.setPosition(0.5);
         encoderAccessory(0.75,725,1);
-        encoderAccessoryTimeout(0.8, 525, 0,1);
+        encoderAccessoryTimeout(0.8, 450, 0,1);
         encoderDrive(0.15,100,100,2);
         robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-        encoderAccessoryTimeout(0.5,925,0,2.5);
+        encoderAccessoryTimeout(0.5,1000,0,2.5);
         encoderDrive(0.1,-40,-40,1);
-        encoderAccessory(0.4,-275,1);
-        encoderAccessoryTimeout(0.95,-1725,0,2);
-        encoderAccessoryTimeout(0.3,-1000,1,1);
-        encoderAccessoryTimeout(0.4,200,0,0.6);
-        sleep(100);*/
+        encoderAccessory(0.4,-150,1);
+        encoderAccessoryTimeout(1,-1825,0,2.25);
+        /*encoderAccessoryTimeout(0.3,-800,1,1);
+        encoderAccessoryTimeout(0.4,200,0,0.6);*/
+        sleep(100);
 
-        key = 0;
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+
+        // Set up our telemetry dashboard
+        composeTelemetry();
 
         if (key == 0) { //left
             telemetry.addData("Left", true);
             telemetry.update();
-            experimentalTurn(5,0.02,34,2);
-            sleep(425);
-            experimentalDrive(0.85,1825,0.4,3);
-            experimentalTurn(0.9,0.005,-75,2);
-            encoderAccessoryTimeout(1,2500,0,1.5);
-            encoderAccessoryTimeout(0.75,400,1,1);
-            robot.intakeMotor.setPower(-0.75);
+            experimentalTurn(5,0.03,34,3);
+            sleep(254); //meow
+            experimentalDrive(0.9,1850,0.5,3);
+            experimentalTurn(0.9,0.006,-70,3);
+            encoderAccessoryTimeout(0.9,2500,0,1.5);
+            encoderAccessoryTimeout(0.925,600,1,2.5);
+            robot.intakeMotor.setPower(-0.45);
             runtime.reset();
-            while (runtime.seconds() < .35) {
+            while (runtime.seconds() < .5) {
                 telemetry.addData("Dropping Marker!", true);
                 telemetry.update();
             }
             robot.intakeMotor.setPower(0);
-            encoderAccessoryTimeout(0.99,-2500,0,3);
-            experimentalTurn(0.7,0.006,168,2);
-            experimentalDrive(0.5,1150,0.4,3);
-            encoderAccessoryTimeout(0.75,500,1,1.5);
-            encoderAccessoryTimeout(1,2500,0,1.5);
-            robot.intakeMotor.setPower(1);
-            runtime.reset();
-            while (opModeIsActive()) {
-                telemetry.addData("Dropping Marker!", true);
-                telemetry.update();
-            }
+            encoderAccessoryTimeout(0.99,-2575,0,3);
+            encoderDrive(0.4,105,-105,1.75);
+            experimentalDrive(0.5,-1675,0.6,3);
         } else if (key == 1) { //center
             telemetry.addData("Center", true);
             telemetry.update();
-            encoderDrive(0.3,50,-50,1);
-            experimentalDrive(0.8,1100,.7,3);
-            encoderAccessoryTimeout(1,2500,0,1.5);
-            encoderAccessoryTimeout(0.75,400,1,1);
-            robot.intakeMotor.setPower(-0.75);
+            encoderDrive(0.3,30,-30,1);
+            experimentalDrive(0.7,1100,.9,3);
+            encoderAccessoryTimeout(0.5,2500,0,1.5);
+            encoderAccessoryTimeout(0.925,600,1,2.5);
+            robot.intakeMotor.setPower(-0.875);
             runtime.reset();
-            while (runtime.seconds() < .35) {
+            while (runtime.seconds() < .5) {
                 telemetry.addData("Dropping Marker!", true);
                 telemetry.update();
             }
             robot.intakeMotor.setPower(0);
-            encoderAccessoryTimeout(0.99,-2500,0,3);
+            encoderAccessoryTimeout(0.99,-2575,0,3);
             experimentalDrive(0.5,-325,0.6,3);
-            experimentalTurn(0.9,0.004,-89,2);
-            experimentalDrive(0.9,2000,0.4,3);
-            experimentalTurn(5,0.03,-25,2);
+            experimentalTurn(0.9,0.005,-89,2);
+            experimentalDrive(0.9,1925,0.6,3);
+            experimentalTurn(5,0.0325,-25,4);
             encoderAccessoryTimeout(0.75,500,1,1.5);
             encoderAccessoryTimeout(1,2500,0,1.5);
             robot.intakeMotor.setPower(1);
@@ -383,27 +375,29 @@ public class autoLeftWorlds extends LinearOpMode {
             }
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
+            telemetry.update();
             experimentalTurn(5,0.02,-37,2);
             sleep(425);
-            experimentalDrive(0.85,1825,0.4,3);
-            experimentalTurn(0.9,0.006,77,3);
-            encoderAccessoryTimeout(1,2500,0,1.5);
-            encoderAccessoryTimeout(0.75,400,1,1);
-            robot.intakeMotor.setPower(-0.75);
+            experimentalDrive(0.95,1825,0.5,3);
+            experimentalTurn(0.9,0.006,70,3);
+            experimentalDrive(0.9,400,0.9,2);
+            encoderAccessoryTimeout(0.5,2500,0,1.5);
+            encoderAccessoryTimeout(0.925,600,1,2.5);
+            robot.intakeMotor.setPower(-0.875);
             runtime.reset();
-            while (runtime.seconds() < .35) {
+            while (runtime.seconds() < .5) {
                 telemetry.addData("Dropping Marker!", true);
                 telemetry.update();
             }
             robot.intakeMotor.setPower(0);
-            encoderAccessoryTimeout(0.99,-2500,0,3);
+            encoderAccessoryTimeout(0.99,-2575,0,3);
             sleep(200);
-            encoderDrive(0.6,-100,100,1.25);
+            encoderDrive(0.6,-150,150,1.25);
             robot.hexFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            encoderDrive(.25,-1900,-1900,5);
+            encoderDrive(.25,-2050,-2050,5);
         }
 
         telemetry.addData("Path", "Complete");
@@ -601,11 +595,11 @@ public class autoLeftWorlds extends LinearOpMode {
                 trueDeltaEncoder = encoderAmount - averageEncoder;
                 deltaEncoder = percentEncoder - averageEncoder;
                 if (trueDeltaEncoder < 0) {
-                    leftSpeed = -0.14;
-                    rightSpeed = -0.14;
+                    leftSpeed = -0.22;
+                    rightSpeed = -0.22;
                 } else if (deltaEncoder < 0) {
-                    leftSpeed = 0.17;
-                    rightSpeed = 0.17;
+                    leftSpeed = 0.1; //0.17
+                    rightSpeed = 0.1; //0.17
                     if (Math.abs(trueDeltaEncoder) <= 40) {
                         if (!timerStart) {
                             runtime.reset();
@@ -644,11 +638,11 @@ public class autoLeftWorlds extends LinearOpMode {
                 trueDeltaEncoder = averageEncoder - encoderAmount;
                 deltaEncoder = averageEncoder - percentEncoder;
                 if (trueDeltaEncoder < 0) {
-                    leftSpeed = -0.14;
-                    rightSpeed = -0.14;
+                    leftSpeed = -0.22;
+                    rightSpeed = -0.22;
                 } else if (deltaEncoder < 0) {
-                    leftSpeed = 0.17;
-                    rightSpeed = 0.17;
+                    leftSpeed = 0.1; //0.17
+                    rightSpeed = 0.1; //0.17
                     if (Math.abs(trueDeltaEncoder) <= 40) {
                         if (!timerStart) {
                             runtime.reset();

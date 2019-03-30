@@ -164,7 +164,7 @@ public class autoRightWorlds extends LinearOpMode {
 
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
-        initVuforia(0);
+        //initVuforia(0);
 
         // Set up our telemetry dashboard
         composeTelemetry();
@@ -175,7 +175,7 @@ public class autoRightWorlds extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+        /*if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
         } else {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
@@ -187,7 +187,7 @@ public class autoRightWorlds extends LinearOpMode {
         }
 
         runtime.reset(); //TensorFlow Timer Wait
-        while (opModeIsActive() && runtime.seconds() < 1.5) {
+        while (opModeIsActive() && runtime.seconds() < .75) {
             if (tfod != null) {
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
@@ -326,17 +326,19 @@ public class autoRightWorlds extends LinearOpMode {
         encoderAccessoryTimeout(0.99,-1725,0,2);
         encoderAccessoryTimeout(0.3,-1000,1,1);
         encoderAccessoryTimeout(0.5,-100,0,1);
-        sleep(100);
+        sleep(100);*/
+
+        key = 0;
 
         if (key == 0) { //left
             telemetry.addData("Left", true);
             telemetry.update();
             experimentalTurn(5,0.02,30,2);
-            experimentalDrive(0.7,1150,0.5,3);
+            experimentalDrive(0.95,1150,0.9,3);
             experimentalTurn(0.9,0.005,57,2);
-            experimentalDrive(0.7,1250,0.5,3);
+            experimentalDrive(0.95,1250,0.9,3);
             experimentalTurn(5,0.03,30,3);
-            experimentalDrive(0.9,1400,0.4,3);
+            experimentalDrive(0.95,1400,0.9,3);/*
             encoderAccessoryTimeout(1,2500,0,1.5);
             encoderAccessoryTimeout(0.75,400,1,1);
             robot.intakeMotor.setPower(-0.75);
@@ -352,7 +354,7 @@ public class autoRightWorlds extends LinearOpMode {
             robot.hexFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            encoderDrive(.25,-1900,-1900,5);
+            encoderDrive(.25,-1900,-1900,5);*/
         } else if (key == 1) { //center
             //OVER 30 DEGREES
             telemetry.addData("Center", true);
@@ -605,11 +607,11 @@ public class autoRightWorlds extends LinearOpMode {
                 trueDeltaEncoder = encoderAmount - averageEncoder;
                 deltaEncoder = percentEncoder - averageEncoder;
                 if (trueDeltaEncoder < 0) {
-                    leftSpeed = -0.14;
-                    rightSpeed = -0.14;
+                    leftSpeed = -0.22;
+                    rightSpeed = -0.22;
                 } else if (deltaEncoder < 0) {
-                    leftSpeed = 0.17;
-                    rightSpeed = 0.17;
+                    leftSpeed = 0.1; //0.17
+                    rightSpeed = 0.1; //0.17
                     if (Math.abs(trueDeltaEncoder) <= 40) {
                         if (!timerStart) {
                             runtime.reset();
@@ -647,12 +649,9 @@ public class autoRightWorlds extends LinearOpMode {
             } else if (encoderAmount < 0) {
                 trueDeltaEncoder = averageEncoder - encoderAmount;
                 deltaEncoder = averageEncoder - percentEncoder;
-                if (trueDeltaEncoder < 0) {
-                    leftSpeed = -0.14;
-                    rightSpeed = -0.14;
-                } else if (deltaEncoder < 0) {
-                    leftSpeed = 0.17;
-                    rightSpeed = 0.17;
+                if (deltaEncoder < 0) {
+                    leftSpeed = 0.15;
+                    rightSpeed = 0.15;
                     if (Math.abs(trueDeltaEncoder) <= 40) {
                         if (!timerStart) {
                             runtime.reset();
@@ -668,13 +667,9 @@ public class autoRightWorlds extends LinearOpMode {
                     rightSpeed = gain * deltaEncoder * speed;
                     if (leftSpeed > speed) {
                         leftSpeed = speed;
-                    } else if (leftSpeed <= 0.15) {
-                        leftSpeed = 0.17;
                     }
                     if (rightSpeed > speed) {
                         rightSpeed = speed;
-                    } else if (rightSpeed <= 0.15) {
-                        rightSpeed = 0.17;
                     }
 
                     if (deltaHeading > 0) {
