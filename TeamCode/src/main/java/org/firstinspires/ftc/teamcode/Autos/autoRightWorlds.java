@@ -333,14 +333,14 @@ public class autoRightWorlds extends LinearOpMode {
         if (key == 0) { //left
             telemetry.addData("Left", true);
             telemetry.update();
-            experimentalTurn(5,0.02,30,2);
+            experimentalTurn(5,0.02,31,2);
             sleep(254);
-            experimentalDrive(0.8,1150,0.4,3);
-            experimentalDrive(0.5,-200,0.6,3);
-            experimentalTurn(0.9,0.005,59,2);
-            experimentalDrive(0.9,1350,0.5,3);
-            experimentalTurn(5,0.03,35,3);
-            experimentalDrive(0.9,1550,0.5,3);
+            experimentalDrive(0.8,1200,0.6,3);
+            experimentalDrive(0.5,-250,0.6,3);
+            experimentalTurn(0.9,0.006,56,3);
+            experimentalDrive(0.9,1480,0.5,3);
+            experimentalTurn(5,0.02,31,2);
+            experimentalDrive(0.9,1100,0.6,3);
             encoderAccessoryTimeout(1,2500,0,1.5);
             encoderAccessoryTimeout(0.75,400,1,1);
             robot.intakeMotor.setPower(-0.75);
@@ -351,7 +351,8 @@ public class autoRightWorlds extends LinearOpMode {
             }
             robot.intakeMotor.setPower(0);
             encoderAccessoryTimeout(0.99,-2500,0,3);
-            encoderDrive(0.7,-100,100,.8);
+            sleep(200);
+            encoderDrive(0.6,-100,100,1.25);
             robot.hexFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -387,11 +388,11 @@ public class autoRightWorlds extends LinearOpMode {
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
-            experimentalTurn(5,0.03,-30,3);
+            experimentalTurn(5,0.035,-37,3);
             sleep(750);
             experimentalDrive(0.6,1225,0.8,3);
             experimentalDrive(0.5,-375,0.6,3);
-            experimentalTurn(0.9,0.005,118,2);
+            experimentalTurn(0.8,0.005,124,2);
             experimentalDrive(0.7,2200,0.7,3);
             encoderDrive(0.2,-177,177,1.5);
             experimentalDrive(0.9,950,0.4,3);
@@ -411,7 +412,7 @@ public class autoRightWorlds extends LinearOpMode {
             robot.hexFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            encoderDrive(.45,-1900,-1900,5);
+            encoderDrive(.35,-1900,-1900,5);
         }
 
         telemetry.addData("Path", "Complete");
