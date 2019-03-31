@@ -134,12 +134,6 @@ public class autoRightWorlds extends LinearOpMode {
         parameters.loggingTag          = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
-        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-        // and named "imu".
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
-
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
@@ -164,10 +158,7 @@ public class autoRightWorlds extends LinearOpMode {
 
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
-        //initVuforia(0);
-
-        // Set up our telemetry dashboard
-        composeTelemetry();
+        initVuforia(0);
 
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start tracking - U R GO, GOOD LUCK!");
@@ -175,7 +166,7 @@ public class autoRightWorlds extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        /*if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
         } else {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
@@ -187,7 +178,7 @@ public class autoRightWorlds extends LinearOpMode {
         }
 
         runtime.reset(); //TensorFlow Timer Wait
-        while (opModeIsActive() && runtime.seconds() < .75) {
+        while (opModeIsActive() && runtime.seconds() < 1.25) {
             if (tfod != null) {
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
@@ -301,8 +292,8 @@ public class autoRightWorlds extends LinearOpMode {
         } else if (key == 2) {
             telemetry.addData("gold mineral", "right");
         } else if (key == 4) {
-            telemetry.addData("FAILURE TO DETECT", "OVERRIDE TO KEY 0");
-            key = 0;
+            key = 1;
+            telemetry.addData("GOLD DETECTION FAILURE", "OVERRIDE KEY 1");
         }
         telemetry.update();
 
@@ -319,26 +310,37 @@ public class autoRightWorlds extends LinearOpMode {
         robot.leftHook.setPosition(0.5);
         robot.rightHook.setPosition(0.5);
         encoderAccessory(0.75,725,1);
-        encoderAccessoryTimeout(0.8, 525, 0,1);
-        encoderDrive(0.4,175,175,2);
-        encoderAccessoryTimeout(0.7,925,0,2.5);
-        encoderAccessory(0.5,-150,1);
-        encoderAccessoryTimeout(0.99,-1725,0,2);
-        encoderAccessoryTimeout(0.3,-1000,1,1);
-        encoderAccessoryTimeout(0.5,-100,0,1);
-        sleep(100);*/
+        encoderAccessoryTimeout(0.8, 450, 0,1);
+        encoderDrive(0.15,100,100,2);
+        robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+        encoderAccessoryTimeout(0.5,1000,0,2.5);
+        encoderDrive(0.1,-40,-40,1);
+        encoderAccessory(0.4,-150,1);
+        encoderAccessoryTimeout(1,-1775,0,2.25);
+        /*encoderAccessoryTimeout(0.3,-800,1,1);
+        encoderAccessoryTimeout(0.4,200,0,0.6);*/
+        sleep(100);
 
-        key = 0;
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+
+        // Set up our telemetry dashboard
+        composeTelemetry();
 
         if (key == 0) { //left
             telemetry.addData("Left", true);
             telemetry.update();
             experimentalTurn(5,0.02,30,2);
-            experimentalDrive(0.95,1150,0.9,3);
-            experimentalTurn(0.9,0.005,57,2);
-            experimentalDrive(0.95,1250,0.9,3);
-            experimentalTurn(5,0.03,30,3);
-            experimentalDrive(0.95,1400,0.9,3);/*
+            sleep(254);
+            experimentalDrive(0.8,1150,0.4,3);
+            experimentalDrive(0.5,-200,0.6,3);
+            experimentalTurn(0.9,0.005,59,2);
+            experimentalDrive(0.9,1350,0.5,3);
+            experimentalTurn(5,0.03,35,3);
+            experimentalDrive(0.9,1550,0.5,3);
             encoderAccessoryTimeout(1,2500,0,1.5);
             encoderAccessoryTimeout(0.75,400,1,1);
             robot.intakeMotor.setPower(-0.75);
@@ -349,18 +351,18 @@ public class autoRightWorlds extends LinearOpMode {
             }
             robot.intakeMotor.setPower(0);
             encoderAccessoryTimeout(0.99,-2500,0,3);
-            encoderDrive(0.7,-90,90,.8);
+            encoderDrive(0.7,-100,100,.8);
             robot.hexFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            encoderDrive(.25,-1900,-1900,5);*/
+            encoderDrive(.25,-1900,-1900,5);
         } else if (key == 1) { //center
             //OVER 30 DEGREES
             telemetry.addData("Center", true);
             telemetry.update();
-            experimentalDrive(0.8,1050,0.4,3);
-            experimentalDrive(0.5,-200,0.6,3);
+            experimentalDrive(0.8,1100,0.4,3);
+            experimentalDrive(0.5,-275,0.6,3);
             experimentalTurn(0.9,0.005,87,2);
             experimentalDrive(0.95,1800,0.6,3);
             encoderDrive(0.2,-170,170,1.2);
@@ -385,13 +387,13 @@ public class autoRightWorlds extends LinearOpMode {
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
-            experimentalTurn(5,0.03,-30,2);
-            sleep(500);
-            experimentalDrive(0.8,1175,0.4,3);
-            experimentalDrive(0.5,-325,0.6,3);
+            experimentalTurn(5,0.03,-30,3);
+            sleep(750);
+            experimentalDrive(0.6,1225,0.8,3);
+            experimentalDrive(0.5,-375,0.6,3);
             experimentalTurn(0.9,0.005,118,2);
-            experimentalDrive(0.7,2300,0.7,3);
-            encoderDrive(0.2,-167,167,1.2);
+            experimentalDrive(0.7,2200,0.7,3);
+            encoderDrive(0.2,-177,177,1.5);
             experimentalDrive(0.9,950,0.4,3);
             encoderAccessoryTimeout(1,2500,0,1.5);
             encoderAccessoryTimeout(0.75,400,1,1);
@@ -409,7 +411,7 @@ public class autoRightWorlds extends LinearOpMode {
             robot.hexFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            encoderDrive(.25,-1900,-1900,5);
+            encoderDrive(.45,-1900,-1900,5);
         }
 
         telemetry.addData("Path", "Complete");
@@ -440,7 +442,7 @@ public class autoRightWorlds extends LinearOpMode {
                 currentHeading = angles.firstAngle - existingHeading;
                 trueDeltaHeading = bearing - currentHeading;
                 deltaHeading = percentBearing - currentHeading;
-                if (bearing > 40) {
+                if (bearing >= 40) {
                     if (trueDeltaHeading < 0) {
                         break;
                     } else if (deltaHeading < 0) {
@@ -500,7 +502,7 @@ public class autoRightWorlds extends LinearOpMode {
                 currentHeading = angles.firstAngle - existingHeading;
                 trueDeltaHeading = currentHeading - bearing;
                 deltaHeading = currentHeading - percentBearing;
-                if (bearing < -40) {
+                if (bearing <= -40) {
                     if (trueDeltaHeading < 0) {
                         break;
                     } else if (deltaHeading < 0) {
@@ -610,9 +612,9 @@ public class autoRightWorlds extends LinearOpMode {
                     leftSpeed = -0.22;
                     rightSpeed = -0.22;
                 } else if (deltaEncoder < 0) {
-                    leftSpeed = 0.1; //0.17
-                    rightSpeed = 0.1; //0.17
-                    if (Math.abs(trueDeltaEncoder) <= 40) {
+                    leftSpeed = 0.17; //0.1
+                    rightSpeed = 0.17; //0.1
+                    if (Math.abs(trueDeltaEncoder) <= 55) {
                         if (!timerStart) {
                             runtime.reset();
                             timerStart = true;
@@ -649,10 +651,13 @@ public class autoRightWorlds extends LinearOpMode {
             } else if (encoderAmount < 0) {
                 trueDeltaEncoder = averageEncoder - encoderAmount;
                 deltaEncoder = averageEncoder - percentEncoder;
-                if (deltaEncoder < 0) {
-                    leftSpeed = 0.15;
-                    rightSpeed = 0.15;
-                    if (Math.abs(trueDeltaEncoder) <= 40) {
+                if (trueDeltaEncoder < 0) {
+                    leftSpeed = -0.22;
+                    rightSpeed = -0.22;
+                } else if (deltaEncoder < 0) {
+                    leftSpeed = 0.17; //0.1
+                    rightSpeed = 0.17; //0.1
+                    if (Math.abs(trueDeltaEncoder) <= 55) {
                         if (!timerStart) {
                             runtime.reset();
                             timerStart = true;
@@ -667,9 +672,13 @@ public class autoRightWorlds extends LinearOpMode {
                     rightSpeed = gain * deltaEncoder * speed;
                     if (leftSpeed > speed) {
                         leftSpeed = speed;
+                    } else if (leftSpeed <= 0.15) {
+                        leftSpeed = 0.17;
                     }
                     if (rightSpeed > speed) {
                         rightSpeed = speed;
+                    } else if (rightSpeed <= 0.15) {
+                        rightSpeed = 0.17;
                     }
 
                     if (deltaHeading > 0) {

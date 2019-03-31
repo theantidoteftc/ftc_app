@@ -178,7 +178,7 @@ public class autoLeftWorlds extends LinearOpMode {
         }
 
         runtime.reset(); //TensorFlow Timer Wait
-        while (opModeIsActive() && runtime.seconds() < .75) {
+        while (opModeIsActive() && runtime.seconds() < 1.25) {
             if (tfod != null) {
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
@@ -291,6 +291,9 @@ public class autoLeftWorlds extends LinearOpMode {
             telemetry.addData("gold mineral", "center");
         } else if (key == 2) {
             telemetry.addData("gold mineral", "right");
+        } else if (key == 4) {
+            key = 1;
+            telemetry.addData("GOLD DETECTION FAILURE", "OVERRIDE KEY 1");
         }
         telemetry.update();
 
@@ -313,7 +316,7 @@ public class autoLeftWorlds extends LinearOpMode {
         encoderAccessoryTimeout(0.5,1000,0,2.5);
         encoderDrive(0.1,-40,-40,1);
         encoderAccessory(0.4,-150,1);
-        encoderAccessoryTimeout(1,-1825,0,2.25);
+        encoderAccessoryTimeout(1,-1775,0,2.25);
         /*encoderAccessoryTimeout(0.3,-800,1,1);
         encoderAccessoryTimeout(0.4,200,0,0.6);*/
         sleep(100);
@@ -330,13 +333,13 @@ public class autoLeftWorlds extends LinearOpMode {
         if (key == 0) { //left
             telemetry.addData("Left", true);
             telemetry.update();
-            experimentalTurn(5,0.03,34,3);
+            experimentalTurn(5,0.025,33,2);
             sleep(254); //meow
-            experimentalDrive(0.9,1850,0.5,3);
+            experimentalDrive(0.75,1850,0.5,3);
             experimentalTurn(0.9,0.006,-70,3);
             encoderAccessoryTimeout(0.9,2500,0,1.5);
-            encoderAccessoryTimeout(0.925,600,1,2.5);
-            robot.intakeMotor.setPower(-0.45);
+            encoderAccessoryTimeout(0.925,525,1,2.5);
+            robot.intakeMotor.setPower(-0.25);
             runtime.reset();
             while (runtime.seconds() < .5) {
                 telemetry.addData("Dropping Marker!", true);
@@ -344,8 +347,9 @@ public class autoLeftWorlds extends LinearOpMode {
             }
             robot.intakeMotor.setPower(0);
             encoderAccessoryTimeout(0.99,-2575,0,3);
-            encoderDrive(0.4,105,-105,1.75);
-            experimentalDrive(0.5,-1675,0.6,3);
+            encoderDrive(0.4,115,-115,1.75);
+            sleep(254);
+            experimentalDrive(0.5,-1725,0.6,3);
         } else if (key == 1) { //center
             telemetry.addData("Center", true);
             telemetry.update();
@@ -361,11 +365,12 @@ public class autoLeftWorlds extends LinearOpMode {
             }
             robot.intakeMotor.setPower(0);
             encoderAccessoryTimeout(0.99,-2575,0,3);
-            experimentalDrive(0.5,-325,0.6,3);
+            experimentalDrive(0.5,-400,0.6,3);
             experimentalTurn(0.9,0.005,-89,2);
-            experimentalDrive(0.9,1925,0.6,3);
-            experimentalTurn(5,0.0325,-25,4);
-            encoderAccessoryTimeout(0.75,500,1,1.5);
+            experimentalDrive(0.9,1850,0.6,3);
+            experimentalTurn(5,0.0325,-23,4);
+            encoderDrive(0.5,120,120,1.5);
+            encoderAccessoryTimeout(0.75,650,1,1.85);
             encoderAccessoryTimeout(1,2500,0,1.5);
             robot.intakeMotor.setPower(1);
             runtime.reset();
@@ -598,8 +603,8 @@ public class autoLeftWorlds extends LinearOpMode {
                     leftSpeed = -0.22;
                     rightSpeed = -0.22;
                 } else if (deltaEncoder < 0) {
-                    leftSpeed = 0.1; //0.17
-                    rightSpeed = 0.1; //0.17
+                    leftSpeed = 0.17; //0.1
+                    rightSpeed = 0.17; //0.1
                     if (Math.abs(trueDeltaEncoder) <= 40) {
                         if (!timerStart) {
                             runtime.reset();
@@ -641,8 +646,8 @@ public class autoLeftWorlds extends LinearOpMode {
                     leftSpeed = -0.22;
                     rightSpeed = -0.22;
                 } else if (deltaEncoder < 0) {
-                    leftSpeed = 0.1; //0.17
-                    rightSpeed = 0.1; //0.17
+                    leftSpeed = 0.17; //0.1
+                    rightSpeed = 0.17; //0.1
                     if (Math.abs(trueDeltaEncoder) <= 40) {
                         if (!timerStart) {
                             runtime.reset();
