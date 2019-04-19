@@ -5,6 +5,7 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Func;
@@ -38,8 +39,6 @@ public class WorldsOp extends LinearOpMode {
     public void runOpMode() {
         robot.init(hardwareMap);
 
-        robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_2_COLOR_WAVES);
-
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
         // provide positional information.
@@ -65,6 +64,8 @@ public class WorldsOp extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        runtime.reset();
+
         // run until the end of the match (driver presses STOP)
 
         // Start the logging of measured acceleration
@@ -72,11 +73,8 @@ public class WorldsOp extends LinearOpMode {
 
         boolean slowMode = false;
         boolean slowSlide = false;
-        double startPosPivot = robot.pivotMotor.getCurrentPosition();
-        boolean fallDetected = false;
-        double pivotStart = robot.pivotMotor.getCurrentPosition();
-
-        //robot.mineralBlock.setPosition(0); //close
+        boolean sorterOpen = false;
+        boolean ledSorter = false;
 
         while (opModeIsActive()) {
 
@@ -108,11 +106,53 @@ public class WorldsOp extends LinearOpMode {
             double pivot = gamepad2.right_stick_y;
             double intake = ((-gamepad2.right_trigger) + (gamepad2.left_trigger));
 
+            if (gamepad2.x) {
+                intake = 0.4;
+            }
+
+            if (gamepad2.left_bumper) {
+                robot.hexSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                robot.pivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                robot.hexSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
 
             if (gamepad2.dpad_up) {
                 robot.mineralGate.setPosition(1); //open
+                ledSorter = true;
+            } else if (gamepad2.dpad_down) {
+                robot.mineralGate.setPosition(0.5); //close
+                ledSorter = false;
+            }
+
+            if (!sorterOpen && robot.hexSlide.getCurrentPosition() >= 2000 && robot.pivotMotor.getCurrentPosition() >= 1650) {
+                sorterOpen = true;
+                robot.mineralGate.setPosition(1); //open
+            } else if (sorterOpen && robot.hexSlide.getCurrentPosition() <= 1700 && robot.pivotMotor.getCurrentPosition() <= 950) {
+                sorterOpen = false;
+                robot.mineralGate.setPosition(0.5); //close
+            }
+
+            if (runtime.seconds() < 1) {
+                robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.STROBE_WHITE);
+            } else if (runtime.seconds() > 105) {
+                robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.STROBE_GOLD);
+            } else if (runtime.seconds() > 90) {
+                robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.STROBE_RED);
+            } else if (runtime.seconds() > 75) {
+                robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.STROBE_WHITE);
+            } else if (runtime.seconds() > 0) {
+                robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_BLUE);
+            }
+
+            if (ledSorter || sorterOpen) {
+                robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_RAINBOW_PALETTE);
+            }
+
+            /*if (gamepad2.dpad_up) { //old procedure
+                robot.mineralGate.setPosition(1); //open
                 runtime.reset();
-                while (opModeIsActive() && runtime.seconds() < 0.8) {
+                while (opModeIsActive() && runtime.seconds() < .85) {
                     //gamepad 1 (xbox)
                     throttle = ((gamepad1.right_trigger) - (gamepad1.left_trigger));
                     steering = gamepad1.left_stick_x;
@@ -146,14 +186,14 @@ public class WorldsOp extends LinearOpMode {
 
                     //gamepad 2 (logitech) setPower
                     robot.hexSlide.setPower(slide);
-                    robot.pivotMotor.setPower(pivot/4);
+                    robot.pivotMotor.setPower(pivot/3);
                     robot.intakeMotor.setPower(intake);
                 }
                 robot.mineralGate.setPosition(0.5);
             } else if (gamepad2.dpad_down) {
                 robot.mineralGate.setPosition(0); //close
                 runtime.reset();
-                while (opModeIsActive() && runtime.seconds() < 1) {
+                while (opModeIsActive() && runtime.seconds() < 1.2) {
                     throttle = ((gamepad1.right_trigger) - (gamepad1.left_trigger));
                     steering = gamepad1.left_stick_x;
                     if (gamepad1.a) {
@@ -186,11 +226,96 @@ public class WorldsOp extends LinearOpMode {
 
                     //gamepad 2 (logitech) setPower
                     robot.hexSlide.setPower(slide);
-                    robot.pivotMotor.setPower(pivot/4);
+                    robot.pivotMotor.setPower(pivot/3);
                     robot.intakeMotor.setPower(intake);
                 }
                 robot.mineralGate.setPosition(0.5);
-            }
+            }*/
+
+            /*if (!sorterOpen && robot.hexSlide.getCurrentPosition() >= 2000 && robot.pivotMotor.getCurrentPosition() >= 1450) {
+                sorterOpen = true;
+                robot.mineralGate.setPosition(1); //open
+                runtime.reset();
+                while (opModeIsActive() && runtime.seconds() < .65) {
+                    //gamepad 1 (xbox)
+                    throttle = ((gamepad1.right_trigger) - (gamepad1.left_trigger));
+                    steering = gamepad1.left_stick_x;
+                    if (gamepad1.a) {
+                        slowMode = true;
+                    }
+                    if (gamepad1.b) {
+                        slowMode = false;
+                    }
+                    rPower = throttle - steering;
+                    lPower = throttle + steering;
+                    if (slowMode == true) {
+                        if (steering != 0) {
+                            lPower /= 2.5;
+                            rPower /= 2.5;
+                        } else {
+                            lPower /= 2;
+                            rPower /= 2;
+                        }
+                    }
+                    //gamepad 2 (logitech)
+                    slide = -gamepad2.left_stick_y;
+                    pivot = gamepad2.right_stick_y;
+                    intake = ((-gamepad2.right_trigger) + (gamepad2.left_trigger));
+
+                    //gamepad 1 (xbox) setPower
+                    robot.hexFrontLeft.setPower(lPower/4);
+                    robot.hexFrontRight.setPower(rPower/4);
+                    robot.hexRearLeft.setPower(lPower/4);
+                    robot.hexRearRight.setPower(rPower/4);
+
+                    //gamepad 2 (logitech) setPower
+                    robot.hexSlide.setPower(slide);
+                    robot.pivotMotor.setPower(pivot/3);
+                    robot.intakeMotor.setPower(intake);
+                }
+                robot.mineralGate.setPosition(0.5);
+            } else if (sorterOpen && robot.hexSlide.getCurrentPosition() <= 1500 && robot.pivotMotor.getCurrentPosition() <= 950) {
+                sorterOpen = false;
+                robot.mineralGate.setPosition(0); //close
+                runtime.reset();
+                while (opModeIsActive() && runtime.seconds() < 1.2) {
+                    throttle = ((gamepad1.right_trigger) - (gamepad1.left_trigger));
+                    steering = gamepad1.left_stick_x;
+                    if (gamepad1.a) {
+                        slowMode = true;
+                    }
+                    if (gamepad1.b) {
+                        slowMode = false;
+                    }
+                    rPower = throttle - steering;
+                    lPower = throttle + steering;
+                    if (slowMode == true) {
+                        if (steering != 0) {
+                            lPower /= 2.5;
+                            rPower /= 2.5;
+                        } else {
+                            lPower /= 2;
+                            rPower /= 2;
+                        }
+                    }
+                    //gamepad 2 (logitech)
+                    slide = -gamepad2.left_stick_y;
+                    pivot = gamepad2.right_stick_y;
+                    intake = ((-gamepad2.right_trigger) + (gamepad2.left_trigger));
+
+                    //gamepad 1 (xbox) setPower
+                    robot.hexFrontLeft.setPower(lPower/4);
+                    robot.hexFrontRight.setPower(rPower/4);
+                    robot.hexRearLeft.setPower(lPower/4);
+                    robot.hexRearRight.setPower(rPower/4);
+
+                    //gamepad 2 (logitech) setPower
+                    robot.hexSlide.setPower(slide);
+                    robot.pivotMotor.setPower(pivot/3);
+                    robot.intakeMotor.setPower(intake);
+                }
+                robot.mineralGate.setPosition(0.5);
+            }*/
 
             if (gamepad2.a) {
                 slowSlide = true;
@@ -201,18 +326,6 @@ public class WorldsOp extends LinearOpMode {
 
             if (slowSlide == true) {
                 slide /= 5;
-            }
-
-            /*if (robot.mineralBlock.getPosition() == 1 && ((robot.pivotMotor.getCurrentPosition() - pivotStart)) > 500) {
-                robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.FIRE_LARGE);
-            } else if (robot.mineralBlock.getPosition() == 0) {
-                robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_2_COLOR_WAVES);
-            }*/
-
-            if (gamepad2.dpad_right) {
-                robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_2_COLOR_WAVES);
-            } else if (gamepad2.dpad_left) {
-                robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
             }
 
             if (gamepad1.right_bumper) {
@@ -229,14 +342,14 @@ public class WorldsOp extends LinearOpMode {
 
             //gamepad 2 (logitech) setPower
             robot.hexSlide.setPower(slide);
-            robot.pivotMotor.setPower(pivot/4);
+            robot.pivotMotor.setPower(pivot/3);
             robot.intakeMotor.setPower(intake);
 
             telemetry.addData("slide input", gamepad2.left_stick_y);
             telemetry.addData("slide LIVE", robot.hexSlide.getCurrentPosition());
-            telemetry.addData("intake", robot.intakeMotor.getPower());
-            telemetry.addData("lpower", lPower);
+            telemetry.addData("pivot LIVE", robot.pivotMotor.getCurrentPosition());
             telemetry.addData("Status", "Running");
+            telemetry.addData("runtime", runtime.seconds());
             telemetry.addData("slowmode", slowMode);
             telemetry.update();
         }

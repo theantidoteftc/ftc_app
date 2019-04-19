@@ -311,11 +311,11 @@ public class autoLeftWorlds extends LinearOpMode {
         robot.rightHook.setPosition(0.5);
         encoderAccessory(0.75,725,1);
         encoderAccessoryTimeout(0.8, 450, 0,1);
-        encoderDrive(0.15,100,100,2);
-        robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+        encoderDrive(0.15,180,180,2);
+        robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_RED);
         encoderAccessoryTimeout(0.5,1000,0,2.5);
         encoderDrive(0.1,-40,-40,1);
-        encoderAccessory(0.4,-150,1);
+        encoderAccessory(0.4,-300,1);
         encoderAccessoryTimeout(1,-1775,0,2.25);
         /*encoderAccessoryTimeout(0.3,-800,1,1);
         encoderAccessoryTimeout(0.4,200,0,0.6);*/
@@ -354,22 +354,22 @@ public class autoLeftWorlds extends LinearOpMode {
             telemetry.addData("Center", true);
             telemetry.update();
             encoderDrive(0.3,30,-30,1);
-            experimentalDrive(0.7,1100,.9,3);
-            encoderAccessoryTimeout(0.5,2500,0,1.5);
-            encoderAccessoryTimeout(0.925,600,1,2.5);
-            robot.intakeMotor.setPower(-0.875);
+            experimentalDrive(0.5,1500,.9,3);
+            encoderAccessoryTimeout(0.99,300,0,1);
+            encoderAccessoryTimeout(0.99,625,1,1.5);
+            sleep(375);
+            robot.intakeMotor.setPower(-1);
             runtime.reset();
-            while (runtime.seconds() < .5) {
+            while (runtime.seconds() < 1) {
                 telemetry.addData("Dropping Marker!", true);
                 telemetry.update();
             }
             robot.intakeMotor.setPower(0);
-            encoderAccessoryTimeout(0.99,-2575,0,3);
-            experimentalDrive(0.5,-400,0.6,3);
-            experimentalTurn(0.9,0.005,-89,2);
-            experimentalDrive(0.9,1850,0.6,3);
-            experimentalTurn(5,0.0325,-23,4);
-            encoderDrive(0.5,120,120,1.5);
+            experimentalDrive(0.4,-675,0.8,3);
+            experimentalTurn(0.9,0.005,-95,2);
+            experimentalDrive(0.9,-1850,0.6,3);
+            experimentalTurn(5,0.0325,23,4);
+            encoderDrive(0.5,-600,-600,4);/*
             encoderAccessoryTimeout(0.75,650,1,1.85);
             encoderAccessoryTimeout(1,2500,0,1.5);
             robot.intakeMotor.setPower(1);
@@ -377,7 +377,7 @@ public class autoLeftWorlds extends LinearOpMode {
             while (opModeIsActive()) {
                 telemetry.addData("Dropping Marker!", true);
                 telemetry.update();
-            }
+            }*/
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();

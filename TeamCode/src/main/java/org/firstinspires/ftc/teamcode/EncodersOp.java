@@ -103,6 +103,8 @@ public class EncodersOp extends LinearOpMode {
             robot.hexSlide.setPower(slide);
             robot.pivotMotor.setPower(pivot/4);
 
+            robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.STROBE_GOLD);
+
             telemetry.addData("Delta IMU", (angles.firstAngle - imuStart));
             telemetry.addData("Delta Front Left", robot.hexFrontLeft.getCurrentPosition() - fLStart);
             telemetry.addData("Delta Front Right", robot.hexFrontRight.getCurrentPosition() - fRStart);
