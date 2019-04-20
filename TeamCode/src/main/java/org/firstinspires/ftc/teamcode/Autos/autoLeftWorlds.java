@@ -338,10 +338,10 @@ public class autoLeftWorlds extends LinearOpMode {
             experimentalDrive(0.75,1850,0.5,3);
             experimentalTurn(0.9,0.006,-70,3);
             encoderAccessoryTimeout(0.9,2500,0,1.5);
-            encoderAccessoryTimeout(0.925,525,1,2.5);
-            robot.intakeMotor.setPower(-0.25);
+            encoderAccessoryTimeout(0.925,625,1,2.5);
+            robot.intakeMotor.setPower(-1);
             runtime.reset();
-            while (runtime.seconds() < .5) {
+            while (runtime.seconds() < .75) {
                 telemetry.addData("Dropping Marker!", true);
                 telemetry.update();
             }
@@ -349,14 +349,15 @@ public class autoLeftWorlds extends LinearOpMode {
             encoderAccessoryTimeout(0.99,-2575,0,3);
             encoderDrive(0.4,115,-115,1.75);
             sleep(254);
-            experimentalDrive(0.5,-1725,0.6,3);
+            experimentalDrive(0.5,-1900,0.6,3);
         } else if (key == 1) { //center
             telemetry.addData("Center", true);
             telemetry.update();
             encoderDrive(0.3,30,-30,1);
             experimentalDrive(0.5,1500,.9,3);
             encoderAccessoryTimeout(0.99,300,0,1);
-            encoderAccessoryTimeout(0.99,625,1,1.5);
+            encoderAccessoryTimeout(0.99,750,1,1.25);
+            encoderAccessoryTimeout(0.5,150,0,0.75);
             sleep(375);
             robot.intakeMotor.setPower(-1);
             runtime.reset();
@@ -365,25 +366,41 @@ public class autoLeftWorlds extends LinearOpMode {
                 telemetry.update();
             }
             robot.intakeMotor.setPower(0);
-            experimentalDrive(0.4,-675,0.8,3);
-            experimentalTurn(0.9,0.005,-95,2);
-            experimentalDrive(0.9,-1850,0.6,3);
-            experimentalTurn(5,0.0325,23,4);
-            encoderDrive(0.5,-600,-600,4);/*
-            encoderAccessoryTimeout(0.75,650,1,1.85);
-            encoderAccessoryTimeout(1,2500,0,1.5);
-            robot.intakeMotor.setPower(1);
-            runtime.reset();
-            while (opModeIsActive()) {
-                telemetry.addData("Dropping Marker!", true);
-                telemetry.update();
-            }*/
+            encoderAccessoryTimeout(0.95,-500,0,1.5);
+            experimentalDrive(0.4,-850,0.8,3);
+            experimentalTurn(0.9,0.004,-91,2);
+            experimentalDrive(0.9,-1600,0.6,3);
+            experimentalTurn(5,0.02,19,2);
+            encoderDrive(0.5,-600,-600,4);
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
-            experimentalTurn(5,0.02,-37,2);
-            sleep(425);
-            experimentalDrive(0.95,1825,0.5,3);
+            experimentalTurn(5,0.02,-35,2);
+            sleep(700);
+            experimentalDrive(0.30,1200,0.8,3);
+            experimentalDrive(0.6,-500,0.6,3);
+            experimentalTurn(.8,0.006,-51,2);
+            experimentalDrive(0.9,-2000,0.5,3);
+            experimentalTurn(1,0.006,51,3);
+            experimentalDrive(0.8,2000,0.5,3);
+            encoderAccessoryTimeout(0.99,750,1,1.25);
+            encoderAccessoryTimeout(0.5,150,0,0.75);
+            sleep(375);
+            robot.intakeMotor.setPower(-1);
+            runtime.reset();
+            while (runtime.seconds() < .7) {
+                telemetry.addData("Dropping Marker!", true);
+                telemetry.update();
+            }
+            robot.intakeMotor.setPower(0);
+            encoderAccessoryTimeout(0.95,-200,0,.5);
+            encoderDrive(0.4,70,-75,.75);
+            robot.hexFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            robot.hexFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            robot.hexRearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            robot.hexRearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            encoderDrive(.25,-2050,-2050,5);
+            /*
             experimentalTurn(0.9,0.006,70,3);
             experimentalDrive(0.9,400,0.9,2);
             encoderAccessoryTimeout(0.5,2500,0,1.5);
@@ -402,7 +419,7 @@ public class autoLeftWorlds extends LinearOpMode {
             robot.hexFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            encoderDrive(.25,-2050,-2050,5);
+            encoderDrive(.25,-2050,-2050,5);*/
         }
 
         telemetry.addData("Path", "Complete");
