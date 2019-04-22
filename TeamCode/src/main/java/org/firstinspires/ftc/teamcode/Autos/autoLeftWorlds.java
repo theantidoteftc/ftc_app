@@ -357,6 +357,7 @@ public class autoLeftWorlds extends LinearOpMode {
         } else if (key == 1) { //center
             telemetry.addData("Center", true);
             telemetry.update();
+            encoderDrive(0.3,30,-30,1);
             experimentalDrive(0.5,1600,.9,3);
             encoderAccessoryTimeout(0.99,750,1,1.25);
             sleep(375);
@@ -367,21 +368,21 @@ public class autoLeftWorlds extends LinearOpMode {
                 telemetry.update();
             }
             robot.intakeMotor.setPower(0);
-            experimentalDrive(0.3,-930,0.6,3);
-            experimentalTurn(0.8,0.006,-89,2);
-            experimentalDrive(0.9,-1675,0.6,3);
-            experimentalTurn(5,0.02,25,2);
+            experimentalDrive(0.5,-930,0.6,3);
+            experimentalTurn(0.8,0.006,-93,2);
+            experimentalDrive(0.95,-1675,0.7,3);
+            experimentalTurn(5,0.02,21,2);
             encoderDrive(0.5,-600,-600,4);
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
-            experimentalTurn(5,0.02,-35,2);
+            experimentalTurn(5,0.02,-36,2);
             sleep(700);
             experimentalDrive(0.45,1200,0.8,3);
             experimentalDrive(0.6,-500,0.6,3);
-            experimentalTurn(.8,0.006,-49,2);
-            experimentalDrive(0.9,-2000,0.5,3);
-            experimentalTurn(1,0.007,51,3);
+            experimentalTurn(.8,0.006,-52,2);
+            experimentalDrive(0.95,-2000,0.7,8);
+            experimentalTurn(1,0.007,49,3);
             experimentalDrive(0.8,2000,0.5,3);
             encoderAccessoryTimeout(0.99,750,1,1.25);
             sleep(375);
