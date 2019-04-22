@@ -311,12 +311,12 @@ public class autoRightWorlds extends LinearOpMode {
         robot.rightHook.setPosition(0.5);
         encoderAccessory(0.75,725,1);
         encoderAccessoryTimeout(0.8, 450, 0,1);
-        encoderDrive(0.15,100,100,2);
-        robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+        encoderDrive(0.15,180,180,2);
+        robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_RED);
         encoderAccessoryTimeout(0.5,1000,0,2.5);
         encoderDrive(0.1,-40,-40,1);
-        encoderAccessory(0.4,-150,1);
-        encoderAccessoryTimeout(1,-1775,0,2.25);
+        encoderAccessory(0.4,-300,1);
+        encoderAccessoryTimeout(1,-1650,0,2.25);
         /*encoderAccessoryTimeout(0.3,-800,1,1);
         encoderAccessoryTimeout(0.4,200,0,0.6);*/
         sleep(100);
@@ -335,11 +335,11 @@ public class autoRightWorlds extends LinearOpMode {
             telemetry.update();
             experimentalTurn(5,0.02,31,2);
             sleep(254);
-            experimentalDrive(0.8,1200,0.6,3);
-            experimentalDrive(0.5,-250,0.6,3);
+            experimentalDrive(0.8,1275,0.6,3);
+            experimentalDrive(0.5,-325,0.6,3);
             experimentalTurn(0.9,0.006,56,3);
             experimentalDrive(0.9,1480,0.5,3);
-            experimentalTurn(5,0.02,31,2);
+            experimentalTurn(5,0.035,31,2);
             experimentalDrive(0.9,1100,0.6,3);
             encoderAccessoryTimeout(1,2500,0,1.5);
             encoderAccessoryTimeout(0.75,400,1,1);
@@ -357,15 +357,15 @@ public class autoRightWorlds extends LinearOpMode {
             robot.hexFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            encoderDrive(.25,-1900,-1900,5);
+            encoderDrive(.3,-1900,-1900,5);
         } else if (key == 1) { //center
             //OVER 30 DEGREES
             telemetry.addData("Center", true);
             telemetry.update();
-            experimentalDrive(0.8,1100,0.4,3);
-            experimentalDrive(0.5,-275,0.6,3);
+            experimentalDrive(0.65,950,0.4,3);
+            experimentalDrive(0.5,-285,0.6,3);
             experimentalTurn(0.9,0.005,87,2);
-            experimentalDrive(0.95,1800,0.6,3);
+            experimentalDrive(0.95,1850,0.6,3);
             encoderDrive(0.2,-170,170,1.2);
             experimentalDrive(0.9,1000,0.4,3);
             encoderAccessoryTimeout(1,2500,0,1.5);
@@ -388,11 +388,11 @@ public class autoRightWorlds extends LinearOpMode {
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
-            experimentalTurn(5,0.035,-36,3);
+            experimentalTurn(5,0.035,-31,2);
             sleep(750);
-            experimentalDrive(0.6,1225,0.8,3);
-            experimentalDrive(0.5,-375,0.6,3);
-            experimentalTurn(0.8,0.007,124,3);
+            experimentalDrive(0.5,1000,0.8,3);
+            experimentalDrive(0.5,-260,0.6,3);
+            experimentalTurn(0.8,0.006,123,2);
             experimentalDrive(0.7,2200,0.7,3);
             encoderDrive(0.2,-177,177,1.5);
             experimentalDrive(0.9,950,0.4,3);
@@ -407,12 +407,12 @@ public class autoRightWorlds extends LinearOpMode {
             robot.intakeMotor.setPower(0);
             encoderAccessoryTimeout(0.99,-2500,0,3);
             sleep(200);
-            encoderDrive(0.6,-125,125,1.5);
+            encoderDrive(0.6,-125,125,.75);
             robot.hexFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            encoderDrive(.35,-1900,-1900,5);
+            encoderDrive(.45,-1900,-1900,5);
         }
 
         telemetry.addData("Path", "Complete");
