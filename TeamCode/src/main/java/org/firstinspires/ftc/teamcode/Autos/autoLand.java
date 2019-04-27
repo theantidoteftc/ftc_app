@@ -161,15 +161,15 @@ public class autoLand extends LinearOpMode {
         robot.leftHook.setPosition(0.5);
         robot.rightHook.setPosition(0.5);
         encoderAccessory(0.75,725,1);
-        encoderAccessoryTimeout(0.8, 525, 0,1);
-        encoderDrive(0.15,100,100,2);
-        robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-        encoderAccessoryTimeout(0.5,925,0,2.5);
+        encoderAccessoryTimeout(0.8, 575, 0,1);
+        encoderDrive(0.15,180,180,2);
+        robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_RED);
+        encoderAccessoryTimeout(0.5,875,0,2.5);
         encoderDrive(0.1,-40,-40,1);
-        encoderAccessory(0.4,-275,1);
-        encoderAccessoryTimeout(0.95,-1725,0,2);
-        encoderAccessoryTimeout(0.3,-1000,1,1);
-        encoderAccessoryTimeout(0.4,200,0,0.6);
+        encoderAccessory(0.4,-300,1);
+        encoderAccessoryTimeout(1,-1650,0,2.25);
+        /*encoderAccessoryTimeout(0.3,-800,1,1);
+        encoderAccessoryTimeout(0.4,200,0,0.6);*/
         sleep(100);
 
         telemetry.addData("Path", "Complete");
