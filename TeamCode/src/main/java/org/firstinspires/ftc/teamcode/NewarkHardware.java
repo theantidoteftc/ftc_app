@@ -62,6 +62,7 @@ public class NewarkHardware
     public DcMotor  hexRearRight  = null;
     public DcMotor  hexSlide  = null;
     public DcMotor  pivotMotor  = null;
+    public DcMotor hSLeft = null;
     public DcMotor intakeMotor = null;
 
     public Servo leftHook = null; //3 on the left
@@ -94,6 +95,7 @@ public class NewarkHardware
         hexRearRight = hwMap.get(DcMotor.class, "hexRearRight");
         hexSlide  = hwMap.get(DcMotor.class, "hexSlide");
         pivotMotor = hwMap.get(DcMotor.class, "pivotMotor");
+        hSLeft = hwMap.get(DcMotor.class, "hSLeft");
         intakeMotor = hwMap.get(DcMotor.class, "intakeMotor");
 
         // Define and Initialize Servos
@@ -112,6 +114,7 @@ public class NewarkHardware
         hexRearRight.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
         hexSlide.setDirection(DcMotor.Direction.FORWARD);
         pivotMotor.setDirection(DcMotor.Direction.FORWARD);
+        hSLeft.setDirection(DcMotor.Direction.FORWARD);
         intakeMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // Set all motors to zero power
@@ -121,6 +124,7 @@ public class NewarkHardware
         hexRearRight.setPower(0);
         hexSlide.setPower(0);
         pivotMotor.setPower(0);
+        hSLeft.setPower(0);
         intakeMotor.setPower(0);
 
         // Set all motors to run without encoders.
@@ -131,6 +135,7 @@ public class NewarkHardware
         hexRearRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         hexSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hSLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         hexFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -139,6 +144,7 @@ public class NewarkHardware
         hexRearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         hexSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         pivotMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hSLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
  }
