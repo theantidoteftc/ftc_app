@@ -158,7 +158,7 @@ public class autoLeftWorlds extends LinearOpMode {
 
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
-        initVuforia(0);
+        //initVuforia(0);
 
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start tracking - U R GO, GOOD LUCK!");
@@ -166,7 +166,7 @@ public class autoLeftWorlds extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+        /*if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
         } else {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
@@ -330,6 +330,8 @@ public class autoLeftWorlds extends LinearOpMode {
         // Set up our telemetry dashboard
         composeTelemetry();
 
+        key = 2;
+
         if (key == 0) { //left
             telemetry.addData("Left", true);
             telemetry.update();
@@ -377,14 +379,15 @@ public class autoLeftWorlds extends LinearOpMode {
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
-            experimentalTurn(5,0.035,-38,2);
-            sleep(700);
-            experimentalDrive(0.45,1200,0.8,3);
-            experimentalDrive(0.6,-470,0.6,3);
-            experimentalTurn(.8,0.006,-52,2);
-            experimentalDrive(0.95,-1850,0.7,8);
-            experimentalTurn(1,0.007,58,3);
-            experimentalDrive(0.8,2000,0.5,3);
+            encoderAccessoryTimeout(0.5,1100,1,2);
+            experimentalTurn(5,0.035,-40,2);
+            sleep(1111);
+            experimentalDrive(0.25,1200,0.8,3);
+            experimentalDrive(0.6,-575,0.6,3);
+            experimentalTurn(.8,0.006,-48,2);
+            experimentalDrive(0.95,-1900,0.7,8);
+            experimentalTurn(1,0.007,55,3);
+            experimentalDrive(0.87,2000,0.5,3);
             encoderAccessoryTimeout(0.99,750,1,1.25);
             sleep(375);
             robot.intakeMotor.setPower(-1);
@@ -450,7 +453,7 @@ public class autoLeftWorlds extends LinearOpMode {
                 currentHeading = angles.firstAngle - existingHeading;
                 trueDeltaHeading = bearing - currentHeading;
                 deltaHeading = percentBearing - currentHeading;
-                if (bearing >= 40) {
+                if (bearing >= 41) {
                     if (trueDeltaHeading < 0) {
                         break;
                     } else if (deltaHeading < 0) {
@@ -510,7 +513,7 @@ public class autoLeftWorlds extends LinearOpMode {
                 currentHeading = angles.firstAngle - existingHeading;
                 trueDeltaHeading = currentHeading - bearing;
                 deltaHeading = currentHeading - percentBearing;
-                if (bearing <= -40) {
+                if (bearing <= -41) {
                     if (trueDeltaHeading < 0) {
                         break;
                     } else if (deltaHeading < 0) {
