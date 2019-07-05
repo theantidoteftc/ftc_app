@@ -11,6 +11,7 @@
 // Include common definitions from above.
 apply from: '../build.common.gradle'
 dependencies {
+    compile 'org.openftc:rev-extensions-2:1.1'
     implementation project(':openCVLibrary3')
     implementation project(':DogeCV')
 }

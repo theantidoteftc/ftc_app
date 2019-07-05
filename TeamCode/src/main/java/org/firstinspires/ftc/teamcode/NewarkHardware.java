@@ -31,9 +31,13 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.openftc.revextensions2.ExpansionHubEx;
+import org.openftc.revextensions2.RevExtensions2;
 
 //Based on org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot
 
@@ -55,6 +59,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 public class NewarkHardware
 {
+
     /* Public OpMode members. */
     public DcMotor  hexFrontLeft   = null;
     public DcMotor  hexFrontRight  = null;
@@ -114,7 +119,7 @@ public class NewarkHardware
         hexRearRight.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
         hexSlide.setDirection(DcMotor.Direction.FORWARD);
         pivotMotor.setDirection(DcMotor.Direction.FORWARD);
-        hSLeft.setDirection(DcMotor.Direction.FORWARD);
+        hSLeft.setDirection(DcMotor.Direction.REVERSE);
         intakeMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // Set all motors to zero power

@@ -176,16 +176,17 @@ public class WorldsOp extends LinearOpMode {
 
             //gamepad 2 (logitech) setPower
             robot.hexSlide.setPower(slide);
-            robot.hSLeft.setPower(-slide);
+            robot.hSLeft.setPower(slide);
             robot.pivotMotor.setPower(pivot/3);
             robot.intakeMotor.setPower(intake);
 
+            telemetry.addData("slowmode", slowMode);
+            telemetry.addData("gate position", robot.mineralGate.getPosition());
             telemetry.addData("slide input", gamepad2.left_stick_y);
             telemetry.addData("slide LIVE", robot.hexSlide.getCurrentPosition());
             telemetry.addData("pivot LIVE", robot.pivotMotor.getCurrentPosition());
             telemetry.addData("Status", "Running");
             telemetry.addData("runtime", runtime.seconds());
-            telemetry.addData("slowmode", slowMode);
             telemetry.update();
         }
     }
