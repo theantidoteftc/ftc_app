@@ -125,10 +125,10 @@ public class WorldsOp extends LinearOpMode {
                 ledSorter = false;
             }
 
-            if (!sorterOpen && robot.hexSlide.getCurrentPosition() >= 2000 && robot.pivotMotor.getCurrentPosition() >= 1650) {
+            if (!sorterOpen && robot.hexSlide.getCurrentPosition() >= 1700 && robot.pivotMotor.getCurrentPosition() >= 1100) {
                 sorterOpen = true;
-                robot.mineralGate.setPosition(1); //open
-            } else if (sorterOpen && robot.hexSlide.getCurrentPosition() <= 1700 && robot.pivotMotor.getCurrentPosition() <= 950) {
+                robot.mineralGate.setPosition(.99); //open
+            } else if (sorterOpen && robot.hexSlide.getCurrentPosition() <= 800 && robot.pivotMotor.getCurrentPosition() <= 950) {
                 sorterOpen = false;
                 robot.mineralGate.setPosition(0.5); //close
             }

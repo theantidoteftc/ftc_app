@@ -158,7 +158,7 @@ public class autoLeftWorlds extends LinearOpMode {
 
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
-        //initVuforia(0);
+        initVuforia(0);
 
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start tracking - U R GO, GOOD LUCK!");
@@ -166,7 +166,7 @@ public class autoLeftWorlds extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        /*if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
         } else {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
@@ -310,7 +310,7 @@ public class autoLeftWorlds extends LinearOpMode {
         robot.leftHook.setPosition(0.5);
         robot.rightHook.setPosition(0.5);
         encoderAccessory(0.75,725,1);
-        encoderAccessoryTimeout(0.8, 575, 0,1);
+        encoderAccessoryTimeout(0.8, 725, 0,1);
         encoderDrive(0.15,180,180,2);
         robot.blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_RED);
         encoderAccessoryTimeout(0.5,875,0,2.5);
@@ -330,12 +330,11 @@ public class autoLeftWorlds extends LinearOpMode {
         // Set up our telemetry dashboard
         composeTelemetry();
 
-        key = 2;
-
         if (key == 0) { //left
             telemetry.addData("Left", true);
             telemetry.update();
-            experimentalTurn(5,0.02,39,2);
+            encoderAccessoryTimeout(0.5,1100,1,2);
+            experimentalTurn(5,0.02,37,2);
             sleep(254); //meow
             experimentalDrive(0.75,1850,0.5,3);
             experimentalTurn(0.9,0.006,-70,3);

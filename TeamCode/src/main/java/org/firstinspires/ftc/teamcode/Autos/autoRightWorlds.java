@@ -333,10 +333,11 @@ public class autoRightWorlds extends LinearOpMode {
         if (key == 0) { //left
             telemetry.addData("Left", true);
             telemetry.update();
-            experimentalTurn(5,0.035,33,2);
+            encoderAccessoryTimeout(0.5,1100,1,2);
+            experimentalTurn(5,0.03,33,2);
             sleep(254);
-            experimentalDrive(0.8,1275,0.6,3);
-            experimentalDrive(0.5,-400,0.6,3);
+            experimentalDrive(0.8,1475,0.6,3);
+            /*experimentalDrive(0.5,-400,0.6,3);
             experimentalTurn(0.9,0.006,57,3);
             experimentalDrive(0.9,1500,0.5,3);
             experimentalTurn(5,0.035,30,2);
@@ -357,13 +358,22 @@ public class autoRightWorlds extends LinearOpMode {
             robot.hexFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            encoderDrive(.3,-1900,-1900,5);
+            encoderDrive(.3,-1900,-1900,5);*/
         } else if (key == 1) { //center
             //OVER 30 DEGREES
             telemetry.addData("Center", true);
             telemetry.update();
-            experimentalDrive(0.65,1025,0.4,3);
-            experimentalDrive(0.5,-375,0.6,3);
+            experimentalDrive(0.95,1325,0.75,3);
+            encoderAccessoryTimeout(0.8,800,1,1.5);
+            encoderAccessoryTimeout(0.7,1500,0,2);
+            robot.intakeMotor.setPower(0.75);
+            runtime.reset();
+            while (runtime.seconds() < 3) {
+                telemetry.addData("INTAKING YEA YEA YEA!", true);
+                telemetry.update();
+            }
+            robot.intakeMotor.setPower(0);
+            /*experimentalDrive(0.5,-375,0.6,3);
             experimentalTurn(0.9,0.005,89,2);
             experimentalDrive(0.95,1900,0.4,3);
             encoderDrive(0.2,-175,175,1.5);
@@ -384,14 +394,14 @@ public class autoRightWorlds extends LinearOpMode {
             robot.hexFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            encoderDrive(.25,-1900,-1900,5);
+            encoderDrive(.25,-1900,-1900,5);*/
         } else if (key == 2) { //right
             telemetry.addData("Right", true);
             telemetry.update();
             sleep(254);
             experimentalTurn(5,0.0325,-35,2);
             sleep(750);
-            experimentalDrive(0.5,1225,0.8,3);
+            experimentalDrive(0.75,1775,0.8,3);/*
             experimentalDrive(0.5,-425,0.6,3);
             experimentalTurn(0.8,0.0055,126,2);
             experimentalDrive(0.7,2350,0.7,3);
@@ -413,7 +423,7 @@ public class autoRightWorlds extends LinearOpMode {
             robot.hexFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.hexRearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            encoderDrive(.45,-1900,-1900,5);
+            encoderDrive(.45,-1900,-1900,5);*/
         }
 
         telemetry.addData("Path", "Complete");
