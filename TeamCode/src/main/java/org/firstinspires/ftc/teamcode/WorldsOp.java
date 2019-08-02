@@ -169,10 +169,17 @@ public class WorldsOp extends LinearOpMode {
 
 
             //gamepad 1 (xbox) setPower
-            robot.hexFrontLeft.setPower(lPower/4);
-            robot.hexFrontRight.setPower(rPower/4);
-            robot.hexRearLeft.setPower(lPower/4);
-            robot.hexRearRight.setPower(rPower/4);
+            if (steering != 0) {
+                robot.hexFrontLeft.setPower(lPower);
+                robot.hexFrontRight.setPower(rPower);
+                robot.hexRearLeft.setPower(-lPower);
+                robot.hexRearRight.setPower(-rPower);
+            } else {
+                robot.hexFrontLeft.setPower(lPower);
+                robot.hexFrontRight.setPower(rPower);
+                robot.hexRearLeft.setPower(lPower);
+                robot.hexRearRight.setPower(rPower);
+            }
 
             //gamepad 2 (logitech) setPower
             robot.hexSlide.setPower(slide);
@@ -181,6 +188,8 @@ public class WorldsOp extends LinearOpMode {
             robot.intakeMotor.setPower(intake);
 
             telemetry.addData("slowmode", slowMode);
+            telemetry.addData("front", robot.hexFrontRight.getCurrentPosition());
+            telemetry.addData("rear", robot.hexRearRight.getCurrentPosition());
             telemetry.addData("gate position", robot.mineralGate.getPosition());
             telemetry.addData("slide input", gamepad2.left_stick_y);
             telemetry.addData("slide LIVE", robot.hexSlide.getCurrentPosition());

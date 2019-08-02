@@ -36,8 +36,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.openftc.revextensions2.ExpansionHubEx;
-import org.openftc.revextensions2.RevExtensions2;
+//import org.openftc.revextensions2.ExpansionHubEx;
+//import org.openftc.revextensions2.RevExtensions2;
 
 //Based on org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot
 
@@ -115,8 +115,8 @@ public class NewarkHardware
 
         hexFrontLeft.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         hexFrontRight.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
-        hexRearLeft.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
-        hexRearRight.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
+        hexRearLeft.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
+        hexRearRight.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         hexSlide.setDirection(DcMotor.Direction.FORWARD);
         pivotMotor.setDirection(DcMotor.Direction.FORWARD);
         hSLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -152,5 +152,5 @@ public class NewarkHardware
         hSLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
- }
+}
 
