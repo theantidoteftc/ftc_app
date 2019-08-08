@@ -170,10 +170,17 @@ public class WorldsOp extends LinearOpMode {
 
             //gamepad 1 (xbox) setPower
             if (steering != 0) {
-                robot.hexFrontLeft.setPower(lPower);
-                robot.hexFrontRight.setPower(rPower);
-                robot.hexRearLeft.setPower(-lPower);
-                robot.hexRearRight.setPower(-rPower);
+                if (throttle != 0) {
+                    robot.hexFrontLeft.setPower(lPower);
+                    robot.hexFrontRight.setPower(rPower);
+                    robot.hexRearLeft.setPower(lPower);
+                    robot.hexRearRight.setPower(rPower);
+                } else {
+                    robot.hexFrontLeft.setPower(lPower);
+                    robot.hexFrontRight.setPower(rPower);
+                    robot.hexRearLeft.setPower(-lPower);
+                    robot.hexRearRight.setPower(-rPower);
+                }
             } else {
                 robot.hexFrontLeft.setPower(lPower);
                 robot.hexFrontRight.setPower(rPower);
